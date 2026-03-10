@@ -42,58 +42,34 @@
 
 <div class="layout">
 
-    <!-- SIDEBAR -->
+       <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sb-section">
             <div class="sb-title">SHOP BY</div>
-            <a class="sb-item active" href="{% url 'home' %}"><span class="sb-icon">🏠</span> Home</a>
-            <a class="sb-item" href="{% url 'sale' %}"><span class="sb-icon">🔥</span> On Sale <span class="sb-badge">HOT</span></a>
-            <a class="sb-item" href="{% url 'shoes' %}"><span class="sb-icon">👟</span> Shoes</a>
-            <a class="sb-item" href="{% url 'apparel' %}"><span class="sb-icon">👕</span> Apparel</a>
-            <a class="sb-item" href="{% url 'toys' %}"><span class="sb-icon">🧸</span> Toys</a>
+            <a class="sb-item {% block sb_home %}{% endblock %}" href="{% url 'home' %}"><span class="sb-icon">🏠</span> Home</a>
+            <a class="sb-item {% block sb_sale %}{% endblock %}" href="{% url 'sale' %}"><span class="sb-icon">🔥</span> On Sale <span class="sb-badge">HOT</span></a>
+            <a class="sb-item {% block sb_shoes %}{% endblock %}" href="{% url 'shoes' %}"><span class="sb-icon">👟</span> Shoes</a>
+            <a class="sb-item {% block sb_apparel %}{% endblock %}" href="{% url 'apparel' %}"><span class="sb-icon">👕</span> Apparel</a>
+            <a class="sb-item {% block sb_toys %}{% endblock %}" href="{% url 'toys' %}"><span class="sb-icon">🧸</span> Toys</a>
             <a class="sb-item" href="{% url 'new' %}"><span class="sb-icon">✨</span> New Arrivals <span class="sb-badge" style="background:#1a1aff">NEW</span></a>
         </div>
 
-         <!-- BRANDS STRIP -->
-            <div class="brands-strip">
-                <div class="brands-label">— OUR BRANDS —</div>
-                <div class="brands-row">
-                    <a class="brand-item" href="{% url 'all' %}?brand=Nike">
-                        <img src="{% static 'images/nikelogo.jpg' %}" alt="Nike Logo" class="brand-svg-lg">
-                        <span>NIKE</span>
-                    </a>
-                    <a class="brand-item" href="{% url 'all' %}?brand=Jordan">
-                        <img src="{% static 'images/jordanlogo.png' %}" alt="Jordan Logo" class="brand-svg-lg">
-                        <span>JORDAN</span>
-                    </a>
-                    <a class="brand-item" href="{% url 'all' %}?brand=Adidas">
-                        <img src="{% static 'images/adidaslogo.png' %}" alt="Adidas Logo" class="brand-svg-lg">
-                        <span>ADIDAS</span>
-                    </a>
-                    <a class="brand-item" href="{% url 'all' %}?brand=NewBalance">
-                        <img src="{% static 'images/newbalancelogo.png' %}" alt="Nike Logo" class="brand-svg-lg">
-                        <span>NEW BALANCE</span>
-                    </a>
-                    <a class="brand-item" href="{% url 'all' %}?brand=Puma">
-                        <img src="{% static 'images/pumalogo.png' %}" alt="Puma Logo" class="brand-svg-lg">
-                         <span>PUMA</span>
-                    </a>
-                    <a class="brand-item" href="{% url 'all' %}?brand=Vans">
-                       <img src="{% static 'images/vanslogo.png' %}" alt="Nike Logo" class="brand-svg-lg">
-                        <span>VANS</span>
-                    </a>
-                    <a class="brand-item" href="{% url 'all' %}?brand=Converse">
-                        <img src="{% static 'images/converselogo.png' %}" alt="Converse Logo" class="brand-svg-lg">
-                        <span>CONVERSE</span>
-                    </a>
-                    <a class="brand-item" href="{% url 'all' %}?brand=Reebok">
-                        <img src="{% static 'images/reeboklogo.png' %}" alt="Reebok Logo" class="brand-svg-lg">
-                        <span>REEBOK</span>
-                    </a>
-                </div>
+        <!-- BRANDS STRIP -->
+        <div class="brands-strip">
+            <div class="brands-label">— OUR BRANDS —</div>
+            <div class="brands-row">
+                <a class="brand-item" href="{% url 'all' %}?brand=Nike"><img src="{% static 'images/nikelogo.jpg' %}" alt="Nike Logo" class="brand-svg-lg"><span>NIKE</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=Jordan"><img src="{% static 'images/jordanlogo.png' %}" alt="Jordan Logo" class="brand-svg-lg"><span>JORDAN</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=Adidas"><img src="{% static 'images/adidaslogo.png' %}" alt="Adidas Logo" class="brand-svg-lg"><span>ADIDAS</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=NewBalance"><img src="{% static 'images/newbalancelogo.png' %}" alt="New Balance Logo" class="brand-svg-lg"><span>NEW BALANCE</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=Puma"><img src="{% static 'images/pumalogo.png' %}" alt="Puma Logo" class="brand-svg-lg"><span>PUMA</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=Vans"><img src="{% static 'images/vanslogo.png' %}" alt="Vans Logo" class="brand-svg-lg"><span>VANS</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=Converse"><img src="{% static 'images/converselogo.png' %}" alt="Converse Logo" class="brand-svg-lg"><span>CONVERSE</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=Reebok"><img src="{% static 'images/reeboklogo.png' %}" alt="Reebok Logo" class="brand-svg-lg"><span>REEBOK</span></a>
             </div>
-            
+        </div>
 
+        {% block sidebar_sizes %}
         <div class="sb-section">
             <div class="sb-title">SHOE SIZE (US)</div>
             <div class="size-grid">
@@ -106,6 +82,7 @@
                 <div class="sz-btn">XL</div><div class="sz-btn">XXL</div>
             </div>
         </div>
+        {% endblock %}
 
         <div class="sb-section">
             <div class="sb-title">COLOR</div>
@@ -130,9 +107,14 @@
             </div>
             <button class="apply-btn">APPLY FILTER</button>
         </div>
-        </aside>
-{% block content %}
-{% endblock %}
+    </aside>
+
+    <!-- PAGE CONTENT -->
+    {% block content %}{% endblock %}
+
+</div><!-- end layout -->
+
+</div><!-- end layout -->
  <!-- ABOUT -->
             <div class="about-wrapper">
                 <div class="about-block">
