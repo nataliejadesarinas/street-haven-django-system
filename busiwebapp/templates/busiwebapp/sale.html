@@ -1,216 +1,120 @@
 {% extends "base.html" %}
-{% block content %}
 {% load static %}
-    <div class="main-content">
 
-        <!-- PAGE HEADER -->
-        <div class="pg-header">
-            <div class="pg-title"><span class="red">SALE</span> PICKS</div>
-            <div class="pg-desc">Limited-time deals — grab them before they're gone</div>
+{% block title %}Sale — Street.Haven{% endblock %}
+{% block nav_sale %}active{% endblock %}
+{% block sb_sale %}active{% endblock %}
+
+{% block content %}
+<div class="main-content">
+
+    <div class="pg-header">
+        <div class="pg-title"><span class="red">SALE</span> PICKS</div>
+        <div class="pg-desc">Limited-time deals — grab them before they're gone</div>
+    </div>
+
+    <div class="sale-hero">
+        <div>
+            <div class="s-big">MEGA SALE IS ON!</div>
+            <div class="s-sm">Up to 60% off on selected items — while stocks last</div>
         </div>
+        <div class="sale-tag">UP TO 60% OFF</div>
+    </div>
 
-        <!-- SALE HERO BANNER -->
-        <div class="sale-hero">
-            <div>
-                <div class="s-big">MEGA SALE IS ON!</div>
-                <div class="s-sm">Up to 60% off on selected items — while stocks last</div>
+    <div class="toolbar">
+        <span class="toolbar-label">SORT BY</span>
+        <select class="sort-select">
+            <option value="default">Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="discount">Biggest Discount</option>
+        </select>
+        <span class="result-count">13 items</span>
+    </div>
+
+    <div class="section" style="padding-top:24px">
+        <div class="product-grid">
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/air_forcelow1.jpg' %}" alt="Nike Air Force 1 Low" onerror="this.outerHTML='👟'"></div>
+                <div class="product-info"><div class="p-brand">Nike</div><div class="p-name">Air Force 1 Low</div><div class="p-price"><span class="p-now">₱4,200</span><span class="p-old">₱5,800</span></div><button class="add-btn">+ ADD TO CART</button></div>
             </div>
-            <div class="sale-tag">UP TO 60% OFF</div>
-        </div>
 
-        <!-- TOOLBAR -->
-        <div class="toolbar">
-            <span class="toolbar-label">SORT BY</span>
-            <select class="sort-select">
-                <option value="default">Featured</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="discount">Biggest Discount</option>
-            </select>
-            <span class="result-count">13 items</span>
-        </div>
-
-        <div class="section" style="padding-top:24px">
-            <div class="product-grid">
-
-                <!-- 1: Nike Air Force 1 Low -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img src="https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/b7d9211d-1769-4f37-9409-30adc7db9229/air-force-1-07-shoes-WnZjD2.png" alt="Nike Air Force 1 Low" onerror="this.outerHTML='👟'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Nike</div>
-                        <div class="p-name">Air Force 1 Low</div>
-                        <div class="p-price"><span class="p-now">₱4,200</span><span class="p-old">₱5,800</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 2: Nike Air Max 90 -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img src="https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/i1-f94c1cd8-d336-4b14-8e23-04e4a7be9b95/air-max-90-shoes-kRsBnD.png" alt="Nike Air Max 90" onerror="this.outerHTML='👟'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Nike</div>
-                        <div class="p-name">Air Max 90</div>
-                        <div class="p-price"><span class="p-now">₱5,500</span><span class="p-old">₱7,200</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 3: Jordan 1 Mid -->
-                <div class="product-card">
-                    <div class="badge badge-hot">HOT</div>
-                    <div class="product-thumb">
-                        <img src="https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/0de4f354-95b4-4b3d-a50a-16ea5ce00a80/air-jordan-1-mid-shoes-BpARGV.png" alt="Jordan 1 Mid" onerror="this.outerHTML='👟'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Jordan</div>
-                        <div class="p-name">Jordan 1 Mid</div>
-                        <div class="p-price"><span class="p-now">₱8,900</span><span class="p-old">₱10,500</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 4: Adidas Ultraboost 22 -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/a1f4c38840de45e59fc9ae2e010e0228_9366/Ultraboost_22_Shoes_Black_GZ0127_01_standard.jpg" alt="Adidas Ultraboost 22" onerror="this.outerHTML='👟'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Adidas</div>
-                        <div class="p-name">Ultraboost 22</div>
-                        <div class="p-price"><span class="p-now">₱7,200</span><span class="p-old">₱9,000</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 5: New Balance 990v5 -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img src="https://nb.scene7.com/is/image/NB/m990gl5_nb_02_i?$pdpflexf2$&qlt=80&fmt=webp&wid=440&hei=440" alt="New Balance 990v5" onerror="this.outerHTML='👟'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">New Balance</div>
-                        <div class="p-name">990v5</div>
-                        <div class="p-price"><span class="p-now">₱8,500</span><span class="p-old">₱10,000</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 6: Puma Suede Classic -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img src="https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/374915/01/sv01/fnd/PNA/fmt/png/Suede-Classic-XXI-Sneakers" alt="Puma Suede Classic" onerror="this.outerHTML='👟'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Puma</div>
-                        <div class="p-name">Suede Classic</div>
-                        <div class="p-price"><span class="p-now">₱3,200</span><span class="p-old">₱4,500</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 7: Converse Chuck Taylor -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img src="https://www.converse.com/dw/image/v2/BCZC_PRD/on/demandware.static/-/Sites-cnv-master-catalog/default/dw92f48dca/images/a_107/M9166_A_107X1.jpg?sw=440&sh=440&sm=fit&sfrm=png" alt="Converse Chuck Taylor All Star" onerror="this.outerHTML='👟'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Converse</div>
-                        <div class="p-name">Chuck Taylor All Star</div>
-                        <div class="p-price"><span class="p-now">₱2,500</span><span class="p-old">₱3,200</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 8: Nike Graphic Tee -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img src="https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/a6dba7e4-78f3-42ab-90d2-f15ce4dc9f84/sportswear-graphic-t-shirt-FnKZkt.png" alt="Nike Graphic Tee" onerror="this.outerHTML='👕'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Nike</div>
-                        <div class="p-name">Graphic Tee Vol.1</div>
-                        <div class="p-price"><span class="p-now">₱1,200</span><span class="p-old">₱1,800</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 9: Adidas Track Jacket -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/a3e694c36e45499abf49acd2012f7f7f_9366/Track_Jacket_Black_H46099_21_model.jpg" alt="Adidas Track Jacket" onerror="this.outerHTML='🧥'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Adidas</div>
-                        <div class="p-name">Track Jacket</div>
-                        <div class="p-price"><span class="p-now">₱2,200</span><span class="p-old">₱3,000</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 10: Puma Essential Hoodie -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img src="https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/586686/01/mod01/fnd/PNA/fmt/png/PUMA-SQUAD-Men's-Hoodie" alt="Puma Essential Hoodie" onerror="this.outerHTML='🧥'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Puma</div>
-                        <div class="p-name">Puma Essential Hoodie</div>
-                        <div class="p-price"><span class="p-now">₱2,000</span><span class="p-old">₱2,800</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 11: New Balance Jogger Pants -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img src="https://nb.scene7.com/is/image/NB/mp41g0t_nb_02_i?$pdpflexf2$&qlt=80&fmt=webp&wid=440&hei=440" alt="New Balance Jogger Pants" onerror="this.outerHTML='👖'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">New Balance</div>
-                        <div class="p-name">Jogger Pants</div>
-                        <div class="p-price"><span class="p-now">₱1,800</span><span class="p-old">₱2,500</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 12: Nike Sneaker Keychain Set -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb" style="font-size:55px">🔑</div>
-                    <div class="product-info">
-                        <div class="p-brand">Nike</div>
-                        <div class="p-name">Sneaker Keychain Set</div>
-                        <div class="p-price"><span class="p-now">₱450</span><span class="p-old">₱800</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 13: Vans Sneaker Care Kit -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb" style="font-size:55px">🧴</div>
-                    <div class="product-info">
-                        <div class="p-brand">Vans</div>
-                        <div class="p-name">Sneaker Care Kit</div>
-                        <div class="p-price"><span class="p-now">₱780</span><span class="p-old">₱1,100</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/air_max90.jpg' %}" alt="Nike Air Max 90" onerror="this.outerHTML='👟'"></div>
+                <div class="product-info"><div class="p-brand">Nike</div><div class="p-name">Air Max 90</div><div class="p-price"><span class="p-now">₱5,500</span><span class="p-old">₱7,200</span></div><button class="add-btn">+ ADD TO CART</button></div>
             </div>
+
+            <div class="product-card">
+                <div class="badge badge-hot">HOT</div>
+                <div class="product-thumb"><img src="{% static 'images/jordan1mid.jpg' %}" alt="Jordan 1 Mid" onerror="this.outerHTML='👟'"></div>
+                <div class="product-info"><div class="p-brand">Jordan</div><div class="p-name">Jordan 1 Mid</div><div class="p-price"><span class="p-now">₱8,900</span><span class="p-old">₱10,500</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/ultraboost22.jpg' %}" alt="Adidas Ultraboost 22" onerror="this.outerHTML='👟'"></div>
+                <div class="product-info"><div class="p-brand">Adidas</div><div class="p-name">Ultraboost 22</div><div class="p-price"><span class="p-now">₱7,200</span><span class="p-old">₱9,000</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/990v5.jpg' %}" alt="New Balance 990v5" onerror="this.outerHTML='👟'"></div>
+                <div class="product-info"><div class="p-brand">New Balance</div><div class="p-name">990v5</div><div class="p-price"><span class="p-now">₱8,500</span><span class="p-old">₱10,000</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/suedeclassic.jpg' %}" alt="Puma Suede Classic" onerror="this.outerHTML='👟'"></div>
+                <div class="product-info"><div class="p-brand">Puma</div><div class="p-name">Suede Classic</div><div class="p-price"><span class="p-now">₱3,200</span><span class="p-old">₱4,500</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/chucktalyor.jpg' %}" alt="Converse Chuck Taylor All Star" onerror="this.outerHTML='👟'"></div>
+                <div class="product-info"><div class="p-brand">Converse</div><div class="p-name">Chuck Taylor All Star</div><div class="p-price"><span class="p-now">₱2,500</span><span class="p-old">₱3,200</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/graphicteev1.jpg' %}" alt="Nike Graphic Tee" onerror="this.outerHTML='👕'"></div>
+                <div class="product-info"><div class="p-brand">Nike</div><div class="p-name">Graphic Tee Vol.1</div><div class="p-price"><span class="p-now">₱1,200</span><span class="p-old">₱1,800</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/trackjacket.jpg' %}" alt="Adidas Track Jacket" onerror="this.outerHTML='🧥'"></div>
+                <div class="product-info"><div class="p-brand">Adidas</div><div class="p-name">Track Jacket</div><div class="p-price"><span class="p-now">₱2,200</span><span class="p-old">₱3,000</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/pumaessantialhoddie.jpg' %}" alt="Puma Essential Hoodie" onerror="this.outerHTML='🧥'"></div>
+                <div class="product-info"><div class="p-brand">Puma</div><div class="p-name">Puma Essential Hoodie</div><div class="p-price"><span class="p-now">₱2,000</span><span class="p-old">₱2,800</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/jaggerpants.jpg' %}" alt="New Balance Jogger Pants" onerror="this.outerHTML='👖'"></div>
+                <div class="product-info"><div class="p-brand">New Balance</div><div class="p-name">Jogger Pants</div><div class="p-price"><span class="p-now">₱1,800</span><span class="p-old">₱2,500</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/keychainset.jpg' %}" alt="Nike Sneaker Keychain Set" onerror="this.outerHTML='🔑'"></div>
+                <div class="product-info"><div class="p-brand">Nike</div><div class="p-name">Sneaker Keychain Set</div><div class="p-price"><span class="p-now">₱450</span><span class="p-old">₱800</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/carekit.jpg' %}" alt="Vans Sneaker Care Kit" onerror="this.outerHTML='🧴'"></div>
+                <div class="product-info"><div class="p-brand">Vans</div><div class="p-name">Sneaker Care Kit</div><div class="p-price"><span class="p-now">₱780</span><span class="p-old">₱1,100</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
         </div>
+    </div>
+
+</div>
 {% endblock %}

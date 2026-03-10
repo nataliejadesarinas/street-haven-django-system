@@ -1,124 +1,86 @@
 {% extends "base.html" %}
-{% block content %}
 {% load static %}
-    <div class="main-content">
 
-        <div class="pg-header">
-            <div class="pg-title">APPAREL</div>
-            <div class="pg-desc">Hoodies, tees, joggers &amp; more — dress the culture</div>
-        </div>
+{% block title %}Apparel — Street.Haven{% endblock %}
+{% block nav_apparel %}active{% endblock %}
+{% block sb_apparel %}active{% endblock %}
 
-        <div class="toolbar">
-            <span class="toolbar-label">SORT BY</span>
-            <select class="sort-select">
-                <option value="default">Featured</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="name">Name A–Z</option>
-            </select>
-            <span class="result-count">7 items</span>
-        </div>
+{% block sidebar_sizes %}
+<div class="sb-section">
+    <div class="sb-title">SIZE</div>
+    <div class="size-grid">
+        <div class="sz-btn">XS</div><div class="sz-btn">S</div>
+        <div class="sz-btn">M</div><div class="sz-btn">L</div>
+        <div class="sz-btn">XL</div><div class="sz-btn">XXL</div>
+    </div>
+</div>
+{% endblock %}
 
-        <div class="section" style="padding-top:24px">
-            <div class="product-grid">
+{% block content %}
+<div class="main-content">
 
-                <!-- 1: Nike Graphic Tee -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img src="{% static 'images/graphicteev1.jpg' %}" alt="Nike Graphic Tee" onerror="this.outerHTML='👕'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Nike</div>
-                        <div class="p-name">Graphic Tee Vol.1</div>
-                        <div class="p-price"><span class="p-now">₱1,200</span><span class="p-old">₱1,800</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
+    <div class="pg-header">
+        <div class="pg-title">APPAREL</div>
+        <div class="pg-desc">Hoodies, tees, joggers &amp; more — dress the culture</div>
+    </div>
 
-                <!-- 2: Nike Fleece Hoodie -->
-                <div class="product-card">
-                    <div class="badge badge-new">NEW</div>
-                    <div class="product-thumb">
-                        <img src="{% static 'images/fleecehoddie.jpg' %}" alt="Nike Fleece Hoodie" onerror="this.outerHTML='🧥'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Nike</div>
-                        <div class="p-name">Fleece Hoodie</div>
-                        <div class="p-price"><span class="p-now">₱2,800</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
+    <div class="toolbar">
+        <span class="toolbar-label">SORT BY</span>
+        <select class="sort-select">
+            <option value="default">Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name">Name A–Z</option>
+        </select>
+        <span class="result-count">7 items</span>
+    </div>
 
-                <!-- 3: Adidas Track Jacket -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img src="{% static 'images/trackjacket.jpg' %}" alt="Adidas Track Jacket" onerror="this.outerHTML='🧥'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Adidas</div>
-                        <div class="p-name">Track Jacket</div>
-                        <div class="p-price"><span class="p-now">₱2,200</span><span class="p-old">₱3,000</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
+    <div class="section" style="padding-top:24px">
+        <div class="product-grid">
 
-                <!-- 4: Adidas Trefoil Tee -->
-                <div class="product-card">
-                    <div class="product-thumb">
-                        <img src="{% static 'images/trefoiltee.jpg' %}" alt="Adidas Trefoil Tee" onerror="this.outerHTML='👕'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Adidas</div>
-                        <div class="p-name">Trefoil Tee</div>
-                        <div class="p-price"><span class="p-now">₱1,100</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 5: Puma Essential Hoodie -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img src="{% static 'images/pumaessantialhoddie.jpg' %}" alt="Puma Essential Hoodie" onerror="this.outerHTML='🧥'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Puma</div>
-                        <div class="p-name">Puma Essential Hoodie</div>
-                        <div class="p-price"><span class="p-now">₱2,000</span><span class="p-old">₱2,800</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 6: Vans Checkerboard Tee -->
-                <div class="product-card">
-                    <div class="badge badge-new">NEW</div>
-                    <div class="product-thumb">
-                        <img src="{% static 'images/checkerboard.jpg' %}" alt="Vans Checkerboard Tee" onerror="this.outerHTML='👕'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Vans</div>
-                        <div class="p-name">Checkerboard Tee</div>
-                        <div class="p-price"><span class="p-now">₱900</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 7: New Balance Jogger Pants -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img src="{% static 'images/jaggerpants.jpg' %}" alt="New Balance Jogger Pants" onerror="this.outerHTML='👖'">
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">New Balance</div>
-                        <div class="p-name">Jogger Pants</div>
-                        <div class="p-price"><span class="p-now">₱1,800</span><span class="p-old">₱2,500</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/graphicteev1.jpg' %}" alt="Nike Graphic Tee" onerror="this.outerHTML='👕'"></div>
+                <div class="product-info"><div class="p-brand">Nike</div><div class="p-name">Graphic Tee Vol.1</div><div class="p-price"><span class="p-now">₱1,200</span><span class="p-old">₱1,800</span></div><button class="add-btn">+ ADD TO CART</button></div>
             </div>
+
+            <div class="product-card">
+                <div class="badge badge-new">NEW</div>
+                <div class="product-thumb"><img src="{% static 'images/fleecehoddie.jpg' %}" alt="Nike Fleece Hoodie" onerror="this.outerHTML='🧥'"></div>
+                <div class="product-info"><div class="p-brand">Nike</div><div class="p-name">Fleece Hoodie</div><div class="p-price"><span class="p-now">₱2,800</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/trackjacket.jpg' %}" alt="Adidas Track Jacket" onerror="this.outerHTML='🧥'"></div>
+                <div class="product-info"><div class="p-brand">Adidas</div><div class="p-name">Track Jacket</div><div class="p-price"><span class="p-now">₱2,200</span><span class="p-old">₱3,000</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-thumb"><img src="{% static 'images/trefoiltee.jpg' %}" alt="Adidas Trefoil Tee" onerror="this.outerHTML='👕'"></div>
+                <div class="product-info"><div class="p-brand">Adidas</div><div class="p-name">Trefoil Tee</div><div class="p-price"><span class="p-now">₱1,100</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/pumaessantialhoddie.jpg' %}" alt="Puma Essential Hoodie" onerror="this.outerHTML='🧥'"></div>
+                <div class="product-info"><div class="p-brand">Puma</div><div class="p-name">Puma Essential Hoodie</div><div class="p-price"><span class="p-now">₱2,000</span><span class="p-old">₱2,800</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-new">NEW</div>
+                <div class="product-thumb"><img src="{% static 'images/checkerboard.jpg' %}" alt="Vans Checkerboard Tee" onerror="this.outerHTML='👕'"></div>
+                <div class="product-info"><div class="p-brand">Vans</div><div class="p-name">Checkerboard Tee</div><div class="p-price"><span class="p-now">₱900</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/jaggerpants.jpg' %}" alt="New Balance Jogger Pants" onerror="this.outerHTML='👖'"></div>
+                <div class="product-info"><div class="p-brand">New Balance</div><div class="p-name">Jogger Pants</div><div class="p-price"><span class="p-now">₱1,800</span><span class="p-old">₱2,500</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
         </div>
+    </div>
+
+</div>
 {% endblock %}

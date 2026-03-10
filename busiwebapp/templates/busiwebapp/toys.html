@@ -1,110 +1,69 @@
 {% extends "base.html" %}
-{% block content %}
 {% load static %}
-    <div class="main-content">
 
-        <div class="pg-header">
-            <div class="pg-title">TOYS</div>
-            <div class="pg-desc">Collectibles, action figures &amp; kids gear</div>
-        </div>
+{% block title %}Toys — Street.Haven{% endblock %}
+{% block nav_toys %}active{% endblock %}
+{% block sb_toys %}active{% endblock %}
 
-        <div class="toolbar">
-            <span class="toolbar-label">SORT BY</span>
-            <select class="sort-select">
-                <option value="default">Featured</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="name">Name A–Z</option>
-            </select>
-            <span class="result-count">4 items</span>
-        </div>
+{% block content %}
+<div class="main-content">
 
-        <div class="section" style="padding-top:24px">
-            <div class="product-grid">
+    <div class="pg-header">
+        <div class="pg-title">TOYS</div>
+        <div class="pg-desc">Collectibles, action figures &amp; kids gear</div>
+    </div>
 
-                <!-- 1: Jordan Dunks Action Figure -->
-                <div class="product-card">
-                    <div class="badge badge-new">NEW</div>
-                    <div class="product-thumb">
-                        <img
-                            src="https://images.stockx.com/images/Air-Jordan-1-Retro-High-OG-Chicago-Lost-Found-Product.jpg?fit=fill&bg=FFFFFF&w=700&h=500&fm=webp&auto=compress&q=90&dpr=2&trim=color&updated_at=1677262707"
-                            alt="Jordan Dunks Action Figure"
-                            onerror="this.outerHTML='🧸'"
-                        >
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Jordan</div>
-                        <div class="p-name">Dunks Action Figure</div>
-                        <div class="p-price"><span class="p-now">₱3,500</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
+    <div class="toolbar">
+        <span class="toolbar-label">SORT BY</span>
+        <select class="sort-select">
+            <option value="default">Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name">Name A–Z</option>
+        </select>
+        <span class="result-count">4 items</span>
+    </div>
 
-                <!-- 2: Nike Sneaker Keychain Set -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img
-                            src="https://images.stockx.com/images/Nike-Air-Force-1-Low-White-07-Product.jpg?fit=fill&bg=FFFFFF&w=700&h=500&fm=webp&auto=compress&q=90&dpr=2&trim=color&updated_at=1635259529"
-                            alt="Nike Sneaker Keychain Set"
-                            onerror="this.outerHTML='🔑'"
-                        >
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Nike</div>
-                        <div class="p-name">Sneaker Keychain Set</div>
-                        <div class="p-price"><span class="p-now">₱450</span><span class="p-old">₱800</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
+    <div class="section" style="padding-top:24px">
+        <div class="product-grid">
 
-                <!-- 3: Adidas Mini Kicks Box -->
-                <div class="product-card">
-                    <div class="badge badge-new">NEW</div>
-                    <div class="product-thumb">
-                        <img
-                            src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/60db7d9955e44d0d8f39ac9200d2973f_9366/Stan_Smith_Shoes_White_FX5502_01_standard.jpg"
-                            alt="Adidas Mini Kicks Box"
-                            onerror="this.outerHTML='📦'"
-                        >
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Adidas</div>
-                        <div class="p-name">Mini Kicks Box</div>
-                        <div class="p-price"><span class="p-now">₱2,200</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
-                <!-- 4: Vans Sneaker Care Kit -->
-                <div class="product-card">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        <img
-                            src="https://images.vans.com/is/image/VansUS/VN000D3HY28-HERO?$583x583$"
-                            alt="Vans Sneaker Care Kit"
-                            onerror="this.outerHTML='🧴'"
-                        >
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Vans</div>
-                        <div class="p-name">Sneaker Care Kit</div>
-                        <div class="p-price"><span class="p-now">₱780</span><span class="p-old">₱1,100</span></div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
-                </div>
-
+            <div class="product-card">
+                <div class="badge badge-new">NEW</div>
+                <div class="product-thumb"><img src="{% static 'images/dunks.jpg' %}" alt="Jordan Dunks Action Figure" onerror="this.outerHTML='🧸'"></div>
+                <div class="product-info"><div class="p-brand">Jordan</div><div class="p-name">Dunks Action Figure</div><div class="p-price"><span class="p-now">₱3,500</span></div><button class="add-btn">+ ADD TO CART</button></div>
             </div>
-        </div>
 
-        <!-- PROMO BANNER -->
-        <div class="section" style="padding-top:0">
-            <div class="sale-hero" style="margin:0">
-                <div>
-                    <div class="s-big">COLLECT 'EM ALL!</div>
-                    <div class="s-sm">New sneaker collectibles &amp; accessories added every week — check back soon</div>
-                </div>
-                <div class="sale-tag" style="font-size:28px; padding:10px 20px">🧸 MORE COMING</div>
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/keychainset.jpg' %}" alt="Nike Sneaker Keychain Set" onerror="this.outerHTML='🔑'"></div>
+                <div class="product-info"><div class="p-brand">Nike</div><div class="p-name">Sneaker Keychain Set</div><div class="p-price"><span class="p-now">₱450</span><span class="p-old">₱800</span></div><button class="add-btn">+ ADD TO CART</button></div>
             </div>
+
+            <div class="product-card">
+                <div class="badge badge-new">NEW</div>
+                <div class="product-thumb"><img src="{% static 'images/minishoebox.jpg' %}" alt="Adidas Mini Kicks Box" onerror="this.outerHTML='📦'"></div>
+                <div class="product-info"><div class="p-brand">Adidas</div><div class="p-name">Mini Kicks Box</div><div class="p-price"><span class="p-now">₱2,200</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
+            <div class="product-card">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb"><img src="{% static 'images/carekit.jpg' %}" alt="Vans Sneaker Care Kit" onerror="this.outerHTML='🧴'"></div>
+                <div class="product-info"><div class="p-brand">Vans</div><div class="p-name">Sneaker Care Kit</div><div class="p-price"><span class="p-now">₱780</span><span class="p-old">₱1,100</span></div><button class="add-btn">+ ADD TO CART</button></div>
+            </div>
+
         </div>
+    </div>
+
+    <div class="section" style="padding-top:0">
+        <div class="sale-hero" style="margin:0">
+            <div>
+                <div class="s-big">COLLECT 'EM ALL!</div>
+                <div class="s-sm">New sneaker collectibles &amp; accessories added every week — check back soon</div>
+            </div>
+            <div class="sale-tag" style="font-size:28px; padding:10px 20px">🧸 MORE COMING</div>
+        </div>
+    </div>
+
+</div>
 {% endblock %}
+
