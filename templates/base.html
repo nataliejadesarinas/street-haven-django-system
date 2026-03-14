@@ -182,23 +182,66 @@
         <div class="form-group"><label>EMAIL</label><input type="email" placeholder="you@email.com"></div>
         <div class="form-group"><label>PASSWORD</label><input type="password" placeholder="••••••••"></div>
         <button class="modal-btn">LOGIN</button>
+        <div class="modal-divider">— OR —</div>
+        <button class="modal-btn-outline" onclick="openSignupModal()">REGISTER</button>
         <div class="modal-switch">No account? <a href="#" onclick="openSignupModal()">Sign Up</a></div>
     </div>
 </div>
 
-<!-- SIGNUP MODAL -->
+<!-- SIGNUP / REGISTER MODAL -->
 <div class="modal-overlay" id="signupModal">
-    <div class="modal">
+    <div class="modal modal-register">
         <button class="modal-close">✕</button>
         <div class="modal-title">JOIN THE<br><span style="color:var(--red)">HAVEN</span></div>
         <div class="modal-sub">Create your Street.Haven account</div>
-        <div class="form-group"><label>FULL NAME</label><input type="text" placeholder="Your name"></div>
-        <div class="form-group"><label>EMAIL</label><input type="email" placeholder="you@email.com"></div>
+        <div class="form-group"><label>FULL NAME</label><input type="text" placeholder="Juan dela Cruz"></div>
+        <div class="form-group"><label>USERNAME</label><input type="text" placeholder="juandc_haven"></div>
         <div class="form-group"><label>PASSWORD</label><input type="password" placeholder="••••••••"></div>
+        <div class="form-group">
+            <label>DATE OF BIRTH</label>
+            <div class="dob-row">
+                <select class="dob-select" id="dobMonth">
+                    <option value="">Month</option>
+                    <option>January</option><option>February</option><option>March</option>
+                    <option>April</option><option>May</option><option>June</option>
+                    <option>July</option><option>August</option><option>September</option>
+                    <option>October</option><option>November</option><option>December</option>
+                </select>
+                <select class="dob-select" id="dobDay">
+                    <option value="">Day</option>
+                </select>
+                <select class="dob-select" id="dobYear">
+                    <option value="">Year</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group"><label>CONTACT NUMBER</label><input type="tel" placeholder="+63 9XX XXX XXXX"></div>
+        <div class="form-group"><label>ADDRESS</label><input type="text" placeholder="Street, City, Province"></div>
         <button class="modal-btn">CREATE ACCOUNT</button>
         <div class="modal-switch">Already have one? <a href="#" onclick="openLoginModal()">Login</a></div>
     </div>
 </div>
+
+<script>
+// Populate day and year dropdowns
+(function() {
+    var daySelect = document.getElementById('dobDay');
+    if (daySelect) {
+        daySelect.innerHTML = '<option value="">Day</option>';
+        for (var d = 1; d <= 31; d++) {
+            daySelect.innerHTML += '<option>' + (d < 10 ? '0' + d : d) + '</option>';
+        }
+    }
+    var yearSelect = document.getElementById('dobYear');
+    if (yearSelect) {
+        yearSelect.innerHTML = '<option value="">Year</option>';
+        var currentYear = new Date().getFullYear();
+        for (var y = currentYear; y >= 1920; y--) {
+            yearSelect.innerHTML += '<option>' + y + '</option>';
+        }
+    }
+})();
+</script>
 
 <!-- CART OVERLAY -->
 <div class="cart-overlay" id="cartOverlay" onclick="closeCartSidebar()"></div>
@@ -259,6 +302,6 @@
 <!-- NOTIFICATION -->
 <div class="notif" id="notif"></div>
 
-<script src="{% static 'js/try.js' %}"></script>
+<script src="{% static 'js/gg.js' %}"></script>
 </body>
 </html>
