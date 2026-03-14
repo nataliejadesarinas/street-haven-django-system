@@ -32,7 +32,7 @@
             <option value="price-desc">Price: High to Low</option>
             <option value="name">Name A–Z</option>
         </select>
-        <span class="result-count">7 items</span>
+        <span class="result-count">{{ apparel.count }} items</span>
     </div>
 
     <div class="section" style="padding-top:24px">
@@ -78,6 +78,35 @@
                 <div class="product-thumb"><img src="{% static 'images/jaggerpants.jpg' %}" alt="New Balance Jogger Pants" onerror="this.outerHTML='👖'"></div>
                 <div class="product-info"><div class="p-brand">New Balance</div><div class="p-name">Jogger Pants</div><div class="p-price"><span class="p-now">₱1,800</span><span class="p-old">₱2,500</span></div><button class="add-btn">+ ADD TO CART</button></div>
             </div>
+
+            {% for product in apparel %}
+        <div class="product-card" onclick="openProductModal(this)"
+            data-name="{{ product.name }}"
+            data-brand="{{ product.brand.name }}"
+            data-price="{{ product.price }}"
+            data-desc="{{ product.description }}"
+            data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
+            <div class="product-thumb">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    👕
+                {% endif %}
+                <div class="product-thumb-overlay">👁 QUICK VIEW</div>
+                {% if product.stock == 0 %}
+                    <span class="badge badge-hot">SOLD OUT</span>
+                {% endif %}
+            </div>
+            <div class="product-info">
+                <div class="p-brand">{{ product.brand.name }}</div>
+                <div class="p-name">{{ product.name }}</div>
+                <div class="p-price"><span class="p-now">₱{{ product.price }}</span></div>
+                <button class="add-btn">+ ADD TO CART</button>
+            </div>
+        </div>
+        {% empty %}
+            <p style="color:var(--muted)">No apparel available.</p>
+        {% endfor %}
 
         </div>
     </div>

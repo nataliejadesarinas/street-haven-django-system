@@ -19,7 +19,7 @@
             <option value="price-desc">Price: High to Low</option>
             <option value="name">Name A–Z</option>
         </select>
-        <span class="result-count">24 items</span>
+        <span class="result-count">{{ shoes.count|add:apparel.count|add:toys.count }} items</span>
     </div>
 
     <div class="section" style="padding-top:24px">
@@ -165,6 +165,73 @@
                 <div class="product-thumb"><img src="{% static 'images/carekit.jpg' %}" alt="Vans Sneaker Care Kit" onerror="this.outerHTML='🧸'"></div>
                 <div class="product-info"><div class="p-brand">Vans</div><div class="p-name">Sneaker Care Kit</div><div class="p-price"><span class="p-now">₱780</span><span class="p-old">₱1,100</span></div><button class="add-btn">+ ADD TO CART</button></div>
             </div>
+
+            {% for product in shoes %}
+        <div class="product-card" onclick="openProductModal(this)"
+            data-name="{{ product.name }}"
+            data-brand="{{ product.brand.name }}"
+            data-price="{{ product.price }}"
+            data-desc="{{ product.description }}"
+            data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
+            <div class="product-thumb">
+                {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">{% else %}👟{% endif %}
+                <div class="product-thumb-overlay">👁 QUICK VIEW</div>
+                {% if product.stock == 0 %}<span class="badge badge-hot">SOLD OUT</span>{% endif %}
+            </div>
+            <div class="product-info">
+                <div class="p-brand">{{ product.brand.name }}</div>
+                <div class="p-name">{{ product.name }}</div>
+                <div class="p-price"><span class="p-now">₱{{ product.price }}</span></div>
+                <button class="add-btn">+ ADD TO CART</button>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% for product in apparel %}
+        <div class="product-card" onclick="openProductModal(this)"
+            data-name="{{ product.name }}"
+            data-brand="{{ product.brand.name }}"
+            data-price="{{ product.price }}"
+            data-desc="{{ product.description }}"
+            data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
+            <div class="product-thumb">
+                {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">{% else %}👕{% endif %}
+                <div class="product-thumb-overlay">👁 QUICK VIEW</div>
+                {% if product.stock == 0 %}<span class="badge badge-hot">SOLD OUT</span>{% endif %}
+            </div>
+            <div class="product-info">
+                <div class="p-brand">{{ product.brand.name }}</div>
+                <div class="p-name">{{ product.name }}</div>
+                <div class="p-price"><span class="p-now">₱{{ product.price }}</span></div>
+                <button class="add-btn">+ ADD TO CART</button>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% for product in toys %}
+        <div class="product-card" onclick="openProductModal(this)"
+            data-name="{{ product.name }}"
+            data-brand=""
+            data-price="{{ product.price }}"
+            data-desc="{{ product.description }}"
+            data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
+            <div class="product-thumb">
+                {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">{% else %}🧸{% endif %}
+                <div class="product-thumb-overlay">👁 QUICK VIEW</div>
+                {% if product.stock == 0 %}<span class="badge badge-hot">SOLD OUT</span>{% endif %}
+            </div>
+            <div class="product-info">
+                <div class="p-brand">Collectible</div>
+                <div class="p-name">{{ product.name }}</div>
+                <div class="p-price"><span class="p-now">₱{{ product.price }}</span></div>
+                <button class="add-btn">+ ADD TO CART</button>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% if not shoes and not apparel and not toys %}
+            <p style="color:var(--muted)">No products found.</p>
+        {% endif %}
 
         </div>
     </div>

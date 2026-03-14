@@ -33,7 +33,7 @@
             <option value="price-desc">Price: High to Low</option>
             <option value="name">Name A–Z</option>
         </select>
-        <span class="result-count">13 items</span>
+        <span class="result-count">{{ shoes.count }} items</span>
     </div>
 
     <div class="section" style="padding-top:24px">
@@ -114,8 +114,36 @@
                 <div class="product-thumb"><img src="{% static 'images/clubc85.jpg' %}" alt="Reebok Club C 85" onerror="this.outerHTML='👟'"></div>
                 <div class="product-info"><div class="p-brand">Reebok</div><div class="p-name">Club C 85</div><div class="p-price"><span class="p-now">₱3,600</span></div><button class="add-btn">+ ADD TO CART</button></div>
             </div>
-
+            {% for product in shoes %}
+                <div class="product-card" onclick="openProductModal(this)"
+                    data-name="{{ product.name }}"
+                    data-brand="{{ product.brand.name }}"
+                    data-price="{{ product.price }}"
+                    data-desc="{{ product.description }}"
+                    data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
+                    <div class="product-thumb">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            👟
+                        {% endif %}
+                        <div class="product-thumb-overlay">👁 QUICK VIEW</div>
+                        {% if product.stock == 0 %}
+                            <span class="badge badge-hot">SOLD OUT</span>
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <div class="p-brand">{{ product.brand.name }}</div>
+                        <div class="p-name">{{ product.name }}</div>
+                        <div class="p-price"><span class="p-now">₱{{ product.price }}</span></div>
+                        <button class="add-btn">+ ADD TO CART</button>
+                    </div>
+                </div>
+                {% empty %}
+                    <p style="color:var(--muted)">No shoes available.</p>
+                {% endfor %}
         </div>
+     
     </div>
 
 </div>
