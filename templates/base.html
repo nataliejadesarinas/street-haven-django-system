@@ -69,18 +69,32 @@
         </div>
 
         {% block sidebar_sizes %}
+        {% if request.resolver_match.view_name == 'shoes' %}
         <div class="sb-section">
             <div class="sb-title">SHOE SIZE (US)</div>
             <div class="size-grid">
-                <div class="sz-btn">6</div><div class="sz-btn">7</div>
-                <div class="sz-btn">8</div><div class="sz-btn">9</div>
-                <div class="sz-btn">10</div><div class="sz-btn">11</div>
+                <div class="sz-btn">6</div><div class="sz-btn">6.5</div>
+                <div class="sz-btn">7</div><div class="sz-btn">7.5</div>
+                <div class="sz-btn">8</div><div class="sz-btn">8.5</div>
+                <div class="sz-btn">9</div><div class="sz-btn">9.5</div>
+                <div class="sz-btn">10</div><div class="sz-btn">10.5</div>
+                <div class="sz-btn">11</div><div class="sz-btn">11.5</div>
                 <div class="sz-btn">12</div><div class="sz-btn">13</div>
-                <div class="sz-btn">XS</div><div class="sz-btn">S</div>
-                <div class="sz-btn">M</div><div class="sz-btn">L</div>
-                <div class="sz-btn">XL</div><div class="sz-btn">XXL</div>
             </div>
         </div>
+        {% elif request.resolver_match.view_name == 'apparel' %}
+        <div class="sb-section">
+            <div class="sb-title">CLOTHING SIZE</div>
+            <div class="size-grid">
+                <div class="sz-btn">XXS</div><div class="sz-btn">XS</div>
+                <div class="sz-btn">S</div><div class="sz-btn">M</div>
+                <div class="sz-btn">L</div><div class="sz-btn">XL</div>
+                <div class="sz-btn">XXL</div><div class="sz-btn">3XL</div>
+            </div>
+        </div>
+        {% else %}
+        {# Default or toys: no sizes #}
+        {% endif %}
         {% endblock %}
 
         <div class="sb-section">
