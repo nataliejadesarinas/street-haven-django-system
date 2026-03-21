@@ -1,28 +1,5 @@
-from django.http import HttpResponse
 from django.shortcuts import render
-from .models import Admin, Brand, Category, Shoes, Apparels, Toys
-
-def home(request):
-    return render(request, 'busiwebapp/home.html')
-
-def sale(request):
-    return render(request, 'busiwebapp/sale.html')
-
-def all(request):
-    return render(request, 'busiwebapp/all.html')
-
-def apparel(request):
-    return render(request, 'busiwebapp/apparel.html')
-
-def shoes(request):
-    return render(request, 'busiwebapp/shoes.html')
-
-def toys(request):
-    return render(request, 'busiwebapp/toys.html')
-
-def new(request):
-    return render(request, 'busiwebapp/new.html')
-
+from .models import Brand, Category, Shoes, Apparels, Toys
 
 def home(request):
     featured_shoes = Shoes.objects.filter(is_available=True)[:8]
@@ -35,7 +12,6 @@ def home(request):
     })
 
 def sale(request):
-    # Assuming "sale" means items under a certain price — adjust as needed
     shoes = Shoes.objects.filter(is_available=True)
     apparel = Apparels.objects.filter(is_available=True)
     toys = Toys.objects.filter(is_available=True)
@@ -43,15 +19,15 @@ def sale(request):
         'shoes': shoes, 'apparel': apparel, 'toys': toys
     })
 
-def all(request):
-    brand = request.GET.get('brand')  # handles ?brand=Nike from sidebar links
+def all_products(request):
+    brand = request.GET.get('brand')
     shoes = Shoes.objects.filter(is_available=True)
     apparel = Apparels.objects.filter(is_available=True)
     toys = Toys.objects.filter(is_available=True)
     if brand:
         shoes = shoes.filter(brand__name=brand)
         apparel = apparel.filter(brand__name=brand)
-    return render(request, 'busiwebapp/all.html', {
+    return render(request, 'busiwebapp/all_products.html', {
         'shoes': shoes, 'apparel': apparel, 'toys': toys
     })
 
