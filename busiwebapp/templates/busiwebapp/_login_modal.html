@@ -1,0 +1,46 @@
+{% load static %}
+<div class="modal-overlay" id="loginModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeAllModals()">✕</button>
+        <div class="modal-title">WELCOME BACK</div>
+        <div class="modal-sub">Sign in to your Street.Haven account</div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>EMAIL</label>
+                <input type="email" name="email" placeholder="you@email.com" required>
+            </div>
+            <div class="form-group">
+                <label>PASSWORD</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="modal-btn">LOGIN</button>
+        </form>
+        <div class="modal-divider">— OR —</div>
+        <button class="modal-btn-outline" onclick="openSignupModal()">CREATE ACCOUNT</button>
+        <div class="modal-switch">No account? <a onclick="openSignupModal()">Sign up here</a></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="signupModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeAllModals()">✕</button>
+        <div class="modal-title">JOIN THE HAVEN</div>
+        <div class="modal-sub">Create your Street.Haven account</div>
+        <form id="signupForm">
+            <div class="form-group">
+                <label>FULL NAME</label>
+                <input type="text" name="full_name" placeholder="Juan dela Cruz" required>
+            </div>
+            <div class="form-group">
+                <label>EMAIL</label>
+                <input type="email" name="email" placeholder="you@email.com" required>
+            </div>
+            <div class="form-group">
+                <label>PASSWORD</label>
+                <input type="password" name="password" placeholder="••••••••" required minlength="6">
+            </div>
+            <button type="submit" class="modal-btn">CREATE ACCOUNT</button>
+        </form>
+        <div class="modal-switch">Already have one? <a onclick="openLoginModal()">Login here</a></div>
+    </div>
+</div>
