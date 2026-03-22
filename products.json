@@ -98,6 +98,55 @@
   }
 },
 {
+  "model": "busiwebapp.brand",
+  "pk": 15,
+  "fields": {
+    "name": "Nike"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 16,
+  "fields": {
+    "name": "Nike"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 17,
+  "fields": {
+    "name": "Adidas"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 18,
+  "fields": {
+    "name": "Puma"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 19,
+  "fields": {
+    "name": "Vans"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 20,
+  "fields": {
+    "name": "New Balance"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 21,
+  "fields": {
+    "name": "Adidas"
+  }
+},
+{
   "model": "busiwebapp.category",
   "pk": 1,
   "fields": {
@@ -186,6 +235,55 @@
   "pk": 13,
   "fields": {
     "name": "Sneakers"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 14,
+  "fields": {
+    "name": "T-Shirts"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 15,
+  "fields": {
+    "name": "Hoodies"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 16,
+  "fields": {
+    "name": "Jackets"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 17,
+  "fields": {
+    "name": "Hoodies"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 18,
+  "fields": {
+    "name": "T-Shirts"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 19,
+  "fields": {
+    "name": "Pants"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 20,
+  "fields": {
+    "name": "T-Shirts"
   }
 },
 {
@@ -377,6 +475,157 @@
     "gender": "Unisex",
     "category": 13,
     "brand": 14,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.apparels",
+  "pk": 1,
+  "fields": {
+    "name": "Graphic Tee Vol.1",
+    "price": 1200.0,
+    "stock": 10,
+    "description": "Nike graphic printed tee",
+    "image": "apparels/graphicteev1.jpg",
+    "color": "Black",
+    "gender": "Unisex",
+    "category": 14,
+    "brand": 15,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.apparels",
+  "pk": 2,
+  "fields": {
+    "name": "Fleece Hoodie",
+    "price": 2800.0,
+    "stock": 10,
+    "description": "Nike fleece pullover hoodie",
+    "image": "apparels/fleecehoddie.jpg",
+    "color": "Mauve",
+    "gender": "Unisex",
+    "category": 15,
+    "brand": 16,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.apparels",
+  "pk": 3,
+  "fields": {
+    "name": "Track Jacket",
+    "price": 2200.0,
+    "stock": 10,
+    "description": "Adidas classic track jacket",
+    "image": "apparels/trackjacket.jpg",
+    "color": "Black",
+    "gender": "Unisex",
+    "category": 16,
+    "brand": 17,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.apparels",
+  "pk": 4,
+  "fields": {
+    "name": "Puma Essential Hoodie",
+    "price": 2000.0,
+    "stock": 10,
+    "description": "Puma essential fleece hoodie",
+    "image": "apparels/pumaessantialhoddie.jpg",
+    "color": "Black",
+    "gender": "Unisex",
+    "category": 17,
+    "brand": 18,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.apparels",
+  "pk": 5,
+  "fields": {
+    "name": "Checkerboard Tee",
+    "price": 900.0,
+    "stock": 10,
+    "description": "Vans checkerboard graphic tee",
+    "image": "apparels/checkerboard.jpg",
+    "color": "Black & White",
+    "gender": "Unisex",
+    "category": 18,
+    "brand": 19,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.apparels",
+  "pk": 6,
+  "fields": {
+    "name": "Jogger Pants",
+    "price": 1800.0,
+    "stock": 10,
+    "description": "New Balance fleece jogger pants",
+    "image": "apparels/jaggerpants.jpg",
+    "color": "Black",
+    "gender": "Unisex",
+    "category": 19,
+    "brand": 20,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.apparels",
+  "pk": 7,
+  "fields": {
+    "name": "Trefoil Tee",
+    "price": 1100.0,
+    "stock": 10,
+    "description": "Adidas trefoil logo tee",
+    "image": "apparels/trefoiltee.jpg",
+    "color": "Green",
+    "gender": "Unisex",
+    "category": 20,
+    "brand": 21,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.toys",
+  "pk": 1,
+  "fields": {
+    "name": "Dunks Action Figure",
+    "price": 3500.0,
+    "stock": 10,
+    "description": "Jordan Dunks collectible action figure",
+    "image": "toys/dunks.jpg",
+    "color": "Multi",
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.toys",
+  "pk": 2,
+  "fields": {
+    "name": "Mini Kicks Box",
+    "price": 2200.0,
+    "stock": 10,
+    "description": "Adidas mini kicks collectible shoe box",
+    "image": "toys/minishoebox.jpg",
+    "color": "Multi",
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.toys",
+  "pk": 3,
+  "fields": {
+    "name": "Sneaker Care Kit",
+    "price": 780.0,
+    "stock": 10,
+    "description": "Vans sneaker cleaning and care kit",
+    "image": "toys/carekit.jpg",
+    "color": "White",
     "is_available": true
   }
 }
