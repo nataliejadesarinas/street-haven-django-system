@@ -464,3 +464,98 @@ window.deleteAccount = function() {
         });
     });
 });
+
+// Profile JavaScript - Standalone
+const _user = JSON.parse(localStorage.getItem('sh-user') || 'null');
+if (!_user) window.location.href = '/';
+else loadUserData();
+
+function loadUserData() {
+    document.getElementById('profileUsername').textContent = _user.username || 'User';
+    document.getElementById('profileEmail').textContent = _user.email || '';
+    document.getElementById('avatarInitial').textContent = _user.username ? _user.username[0].toUpperCase() : 'U';
+    
+    ['Name', 'Username', 'Email', 'Contact', 'Dob', 'Address'].forEach(field => {
+        const el = document.getElementById('settings' + field);
+        if (el && _user[field.toLowerCase()]) el.value = _user[field.toLowerCase()];
+    });
+    
+    document.getElementById('settingsAvatar').textContent = _user.username ? _user.username[0].toUpperCase() : 'U';
+    document.getElementById('settingsAvatarName').textContent = _user.username || 'User';
+    
+    document.getElementById('orderCount').textContent = _user.orders || 0;
+    document.getElementById('favCount').textContent = _user.favorites || 0;
+    
+    if (_user.avatar) {
+        const img = document.getElementById('avatarImg');
+        img.src = _user.avatar;
+        img.style.display = 'block';
+        document.getElementById('avatarInitial').style.display = 'none';
+    }
+}
+
+function switchTab(tab, btn) {
+    document.querySelectorAll('.profile-nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.profile-section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('section-' + tab).classList.add('active');
+    
+    document.getElementById('settingsSuccess')?.classList.remove('show');
+    document.getElementById('passwordSuccess')?.classList.remove('show');
+}
+
+function uploadAvatar(event) {
+    const file = event.target.files[0];
+    if (!file || file.size > 2*1024*1024) return alert('Max 2MB image');
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        _user.avatar = e.target.result;
+        localStorage.setItem('sh-user', JSON.stringify(_user));
+        
+        const img = document.getElementById('avatarImg');
+        img.src = _user.avatar;
+        img.style.display = 'block';
+        document.getElementById('avatarInitial').style.display = 'none';
+        
+        alert('Avatar updated!');
+        loadUserData();
+    };
+    reader.readAsDataURL(file);
+}
+
+function saveSettings() {
+    const fields = {
+        name: document.getElementById('settingsName').value,
+        username: document.getElementById('settingsUsername').value,
+        email: document.getElementById('settingsEmail').value,
+        contact: document.getElementById('settingsContact').value,
+        dob: document.getElementById('settingsDob').value,
+        address: document.getElementById('settingsAddress').value
+    };
+    
+    Object.assign(_user, fields);
+    localStorage.setItem('sh-user', JSON.stringify(_user));
+    
+    loadUserData();
+    document.getElementById('settingsSuccess').style.display = 'block';
+    setTimeout(() => document.getElementById('settingsSuccess').style.display = 'none', 3000);
+}
+
+function changePassword() {
+    const newP = document.getElementById('newPassword').value;
+    const confirm = document.getElementById('confirmPassword').value;
+    
+    if (newP !== confirm || newP.length < 6) return alert('Password mismatch or too short');
+    
+    alert('Password changed!');
+    ['currentPassword', 'newPassword', 'confirmPassword'].forEach(id => document.getElementById(id).value = '');
+}
+
+function doLogout() {
+    if (confirm('Logout?')) {
+        localStorage.removeItem('sh-user');
+        window.location.href = '/';
+    }
+}
+

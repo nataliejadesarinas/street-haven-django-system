@@ -154,12 +154,4 @@
     </div>
 </div>
 
-<div class="notif" id="notif"></div>
-<script>
-    const savedTheme = localStorage.getItem('sh-theme');
-    if (savedTheme === 'light') document.body.classList.add('light');
-    const _user = JSON.parse(localStorage.getItem('sh-user') || 'null');
-    if (!_user) window.location.href = '/';
-    else loadUserData();
-</script>
-{% endblock %}
+    <div class="notif" id="notif"></div>\n    <link rel="stylesheet" href="{% static 'css/gg.css' %}">\n    <script src="{% static 'js/gg.js' %}"></script>\n{% endblock %}
