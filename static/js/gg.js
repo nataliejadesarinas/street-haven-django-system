@@ -466,9 +466,11 @@ window.deleteAccount = function() {
 });
 
 // Profile JavaScript - Standalone
-const _user = JSON.parse(localStorage.getItem('sh-user') || 'null');
-if (!_user) window.location.href = '/';
-else loadUserData();
+if (document.querySelector('.profile-page')) {
+    const _user = JSON.parse(localStorage.getItem('sh-user') || 'null');
+    if (!_user) window.location.href = '/';
+    else loadUserData();
+}
 
 function loadUserData() {
     document.getElementById('profileUsername').textContent = _user.username || 'User';
