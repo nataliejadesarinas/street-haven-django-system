@@ -25,8 +25,8 @@
     --surface2: #f8f9fa;
     --surface3: #e9ecef;
     --border: rgba(0,0,0,0.12);
-    --text: #212529;
-    --muted: #6c757d;
+    --text: #000000;
+    --muted: #000000;
 }
 
 /* ── LIGHT MODE via body.light ── */
