@@ -9,5 +9,6 @@ urlpatterns = [
     path('toys/', views.toys, name='toys'),
     path('all/', views.all_products, name='all_products'),
     path('new/', views.new, name='new'),
-    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),  # add this
+    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('profile/', views.profile, name='profile'),
 ]

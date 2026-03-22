@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}My Profile — Street.Haven{% endblock %}
+
+{% block nav_profile %}active{% endblock %}
+
+{% block content %}
+<div class="profile-layout">
+
+    <!-- SIDEBAR CARD -->
+    <div>
+        <div class="profile-card">
+            <div class="profile-cover"></div>
+            <div class="profile-avatar-wrap">
+                <div class="profile-avatar" onclick="document.getElementById('avatarFileInput').click()">
+                    <span id="avatarInitial">U</span>
+                    <img id="avatarImg" src="" alt="" style="display:none">
+                    <div class="avatar-overlay">📷</div>
+                </div>
+                <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="uploadAvatar(event)">
+                <div class="profile-username" id="profileUsername">Username</div>
+                <div class="profile-email" id="profileEmail">user@email.com</div>
+                <div class="profile-joined">📅 Member since 2025</div>
+            </div>
+            <div class="profile-stats">
+                <div class="pstat"><div class="pstat-num" id="orderCount">0</div><div class="pstat-lbl">ORDERS</div></div>
+                <div class="pstat"><div class="pstat-num" id="favCount">0</div><div class="pstat-lbl">FAVES</div></div>
+                <div class="pstat"><div class="pstat-num">30</div><div class="pstat-lbl">DAYS RTN</div></div>
+            </div>
+            <nav class="profile-nav">
+                <button class="profile-nav-item active" onclick="switchTab('orders', this)"><span class="pnav-icon">📦</span> Order History</button>
+                <button class="profile-nav-item" onclick="switchTab('favorites', this)"><span class="pnav-icon">❤️</span> Favorites</button>
+                <button class="profile-nav-item" onclick="switchTab('settings', this)"><span class="pnav-icon">⚙️</span> Settings</button>
+                <button class="profile-nav-item" onclick="switchTab('password', this)"><span class="pnav-icon">🔒</span> Change Password</button>
+            </nav>
+            <button class="logout-profile-btn" onclick="doLogout()">⏻ LOGOUT</button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="profile-main">
+
+        <!-- ORDER HISTORY -->
+        <div class="profile-section active" id="section-orders">
+            <div class="section-panel">
+                <div class="section-panel-header">
+                    <div class="section-panel-title">ORDER HISTORY</div>
+                </div>
+                <div class="section-panel-body" id="ordersList">
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <div class="empty-text">NO ORDERS YET</div>
+                        <div class="empty-sub">Your purchase history will appear here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAVORITES -->
+        <div class="profile-section" id="section-favorites">
+            <div class="section-panel">
+                <div class="section-panel-header">
+                    <div class="section-panel-title">MY FAVORITES</div>
+                </div>
+                <div class="section-panel-body" id="favoritesList">
+                    <div class="empty-state">
+                        <div class="empty-icon">❤️</div>
+                        <div class="empty-text">NO FAVORITES YET</div>
+                        <div class="empty-sub">Save items you love and find them here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div class="profile-section" id="section-settings">
+            <div class="section-panel">
+                <div class="section-panel-header">
+                    <div class="section-panel-title">PROFILE SETTINGS</div>
+                </div>
+                <div class="section-panel-body">
+                    <div class="success-msg" id="settingsSuccess">✓ SETTINGS SAVED SUCCESSFULLY</div>
+                    <div class="avatar-upload-row">
+                        <div class="avatar-big" id="settingsAvatar">U</div>
+                        <div class="avatar-upload-info">
+                            <div class="avatar-name" id="settingsAvatarName">Username</div>
+                            <div class="avatar-sub">JPG or PNG, max 2MB</div>
+                            <button class="btn-upload-pic" onclick="document.getElementById('avatarFileInput').click()">📷 CHANGE PHOTO</button>
+                        </div>
+                    </div>
+                    <div class="settings-grid">
+                        <div class="settings-group">
+                            <label>FULL NAME</label>
+                            <input type="text" id="settingsName" placeholder="Your full name">
+                        </div>
+                        <div class="settings-group">
+                            <label>USERNAME</label>
+                            <input type="text" id="settingsUsername" placeholder="username">
+                        </div>
+                        <div class="settings-group full">
+                            <label>EMAIL ADDRESS</label>
+                            <input type="email" id="settingsEmail" placeholder="you@email.com">
+                        </div>
+                        <div class="settings-group">
+                            <label>CONTACT NUMBER</label>
+                            <input type="tel" id="settingsContact" placeholder="+63 9XX XXX XXXX">
+                        </div>
+                        <div class="settings-group">
+                            <label>DATE OF BIRTH</label>
+                            <input type="date" id="settingsDob">
+                        </div>
+                        <div class="settings-group full">
+                            <label>DELIVERY ADDRESS</label>
+                            <input type="text" id="settingsAddress" placeholder="Street, City, Province">
+                        </div>
+                    </div>
+                    <button class="btn-save-settings" onclick="saveSettings()">SAVE CHANGES</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHANGE PASSWORD -->
+        <div class="profile-section" id="section-password">
+            <div class="section-panel">
+                <div class="section-panel-header">
+                    <div class="section-panel-title">CHANGE PASSWORD</div>
+                </div>
+                <div class="section-panel-body">
+                    <div class="success-msg" id="passwordSuccess">✓ PASSWORD UPDATED SUCCESSFULLY</div>
+                    <div class="settings-grid">
+                        <div class="settings-group full">
+                            <label>CURRENT PASSWORD</label>
+                            <input type="password" id="currentPassword" placeholder="••••••••">
+                        </div>
+                        <div class="settings-group">
+                            <label>NEW PASSWORD</label>
+                            <input type="password" id="newPassword" placeholder="••••••••">
+                        </div>
+                        <div class="settings-group">
+                            <label>CONFIRM NEW PASSWORD</label>
+                            <input type="password" id="confirmPassword" placeholder="••••••••">
+                        </div>
+                    </div>
+                    <button class="btn-save-settings" onclick="changePassword()">UPDATE PASSWORD</button>
+                    <div class="danger-zone">
+                        <div class="danger-title">⚠ DANGER ZONE</div>
+                        <div class="danger-sub">Once you delete your account, there is no going back. Please be certain.</div>
+                        <button class="btn-danger" onclick="if(confirm('Are you sure?')) deleteAccount()">DELETE MY ACCOUNT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <div class="notif" id="notif"></div>\n    <link rel="stylesheet" href="{% static 'css/gg.css' %}">\n    <script src="{% static 'js/gg.js' %}"></script>\n{% endblock %}

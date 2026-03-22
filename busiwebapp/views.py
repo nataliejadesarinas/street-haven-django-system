@@ -49,3 +49,6 @@ def new(request):
 
 def admin_dashboard(request):
     return render(request, 'busiwebapp/admin_dashboard.html')
+
+def profile(request):
+    return render(request, 'busiwebapp/profile.html')
