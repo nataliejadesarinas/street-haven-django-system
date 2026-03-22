@@ -22,7 +22,7 @@
     <nav>
         <ul>
             <li><a class="sale-link {% block nav_sale %}{% endblock %}" href="{% url 'sale' %}">SALE</a></li>
-            <li><a class="{% block nav_all %}{% endblock %}" href="{% url 'all_products' %}">ALL PRODUCTS</a></li>
+            <li><a class="{% block nav_all %}{% endblock %}" href="{% url 'all' %}">ALL PRODUCTS</a></li>
             <li><a class="{% block nav_apparel %}{% endblock %}" href="{% url 'apparel' %}">APPAREL</a></li>
             <li><a class="{% block nav_shoes %}{% endblock %}" href="{% url 'shoes' %}">SHOES</a></li>
             <li><a class="{% block nav_toys %}{% endblock %}" href="{% url 'toys' %}">TOYS</a></li>
@@ -57,14 +57,14 @@
         <div class="brands-strip">
             <div class="brands-label">— OUR BRANDS —</div>
             <div class="brands-row">
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Nike"><img src="{% static 'images/nikelogo.jpg' %}" alt="Nike Logo" class="brand-svg-lg"><span>NIKE</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Jordan"><img src="{% static 'images/jordanlogo.png' %}" alt="Jordan Logo" class="brand-svg-lg"><span>JORDAN</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Adidas"><img src="{% static 'images/adidaslogo.png' %}" alt="Adidas Logo" class="brand-svg-lg"><span>ADIDAS</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=NewBalance"><img src="{% static 'images/newbalancelogo.png' %}" alt="New Balance Logo" class="brand-svg-lg"><span>NEW BALANCE</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Puma"><img src="{% static 'images/pumalogo.png' %}" alt="Puma Logo" class="brand-svg-lg"><span>PUMA</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Vans"><img src="{% static 'images/vanslogo.png' %}" alt="Vans Logo" class="brand-svg-lg"><span>VANS</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Converse"><img src="{% static 'images/converselogo.png' %}" alt="Converse Logo" class="brand-svg-lg"><span>CONVERSE</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Reebok"><img src="{% static 'images/reeboklogo.png' %}" alt="Reebok Logo" class="brand-svg-lg"><span>REEBOK</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=Nike"><img src="{% static 'images/nikelogo.jpg' %}" alt="Nike Logo" class="brand-svg-lg"><span>NIKE</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=Jordan"><img src="{% static 'images/jordanlogo.png' %}" alt="Jordan Logo" class="brand-svg-lg"><span>JORDAN</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=Adidas"><img src="{% static 'images/adidaslogo.png' %}" alt="Adidas Logo" class="brand-svg-lg"><span>ADIDAS</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=NewBalance"><img src="{% static 'images/newbalancelogo.png' %}" alt="New Balance Logo" class="brand-svg-lg"><span>NEW BALANCE</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=Puma"><img src="{% static 'images/pumalogo.png' %}" alt="Puma Logo" class="brand-svg-lg"><span>PUMA</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=Vans"><img src="{% static 'images/vanslogo.png' %}" alt="Vans Logo" class="brand-svg-lg"><span>VANS</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=Converse"><img src="{% static 'images/converselogo.png' %}" alt="Converse Logo" class="brand-svg-lg"><span>CONVERSE</span></a>
+                <a class="brand-item" href="{% url 'all' %}?brand=Reebok"><img src="{% static 'images/reeboklogo.png' %}" alt="Reebok Logo" class="brand-svg-lg"><span>REEBOK</span></a>
             </div>
         </div>
 
