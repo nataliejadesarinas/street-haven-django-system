@@ -216,6 +216,55 @@ function closeProductModal() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Profile page functions
+    function loadUserData() {
+        const user = JSON.parse(localStorage.getItem('sh-user') || '{}');
+        if (!user.id) return;
+        
+        document.getElementById('profileUsername').textContent = user.username || 'User';
+        document.getElementById('profileEmail').textContent = user.email || '';
+        document.getElementById('avatarInitial').textContent = user.username ? user.username[0].toUpperCase() : 'U';
+        
+        // Settings form
+        ['Name', 'Username', 'Email', 'Contact', 'Dob', 'Address'].forEach(field => {
+            const el = document.getElementById('settings' + field);
+            if (el && user[field.toLowerCase()]) el.value = user[field.toLowerCase()];
+        });
+        
+        document.getElementById('settingsAvatar').textContent = user.username ? user.username[0].toUpperCase() : 'U';
+        document.getElementById('settingsAvatarName').textContent = user.username || 'User';
+        if (user.avatar) {
+            document.getElementById('avatarImg').src = user.avatar;
+            document.getElementById('avatarImg').style.display = 'block';
+            document.getElementById('avatarInitial').style.display = 'none';
+        }
+        
+        document.getElementById('orderCount').textContent = user.orders || 0;
+        document.getElementById('favCount').textContent = user.favorites || 0;
+        document.getElementById('profileHeaderName').textContent = user.username || 'User';
+        document.getElementById('profileHeaderAvatar').textContent = user.username ? user.username[0].toUpperCase() : 'U';
+    }
+    
+    function switchTab(tab, btn) {
+        document.querySelectorAll('.profile-nav-item').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.profile-section').forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('section-' + tab).classList.add('active');
+        
+        // Hide success messages
+        document.getElementById('settingsSuccess')?.classList.remove('show');
+        document.getElementById('passwordSuccess')?.classList.remove('show');
+    }
+    
+    window.switchTab = switchTab;
+    window.loadUserData = loadUserData;
+    
+    // Profile-specific
+    const profileElements = document.querySelectorAll('.profile-page, .profile-layout');
+    if (profileElements.length > 0) {
+        loadUserData();
+    }
+
     updateCartCount();
     document.querySelectorAll('.cart-btn').forEach(btn => btn.addEventListener('click', openCartSidebar));
     document.querySelectorAll('.add-btn').forEach(btn => {
@@ -227,6 +276,181 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => addToCart(name, imgSrc));
     });
     document.querySelectorAll('.product-card').forEach(card => {
+    
+    // Profile functions
+    window.uploadAvatar = function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        if (file.size > 2*1024*1024) { showNotif('File too large (max 2MB)'); return; }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const user = JSON.parse(localStorage.getItem('sh-user') || '{}');
+            user.avatar = e.target.result;
+            localStorage.setItem('sh-user', JSON.stringify(user));
+            
+            const img = document.getElementById('avatarImg');
+            img.src = user.avatar;
+            img.style.display = 'block';
+            document.getElementById('avatarInitial').style.display = 'none';
+            
+            document.querySelectorAll('.avatar-big, #settingsAvatar, #profileHeaderAvatar').forEach(el => {
+                el.innerHTML = '<img src="' + user.avatar + '" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">';
+            });
+            document.getElementById('settingsAvatarName').textContent = user.username || 'User';
+            showNotif('Profile picture updated!');
+        };
+        reader.readAsDataURL(file);
+    };
+    
+    window.saveSettings = function() {
+        const user = JSON.parse(localStorage.getItem('sh-user') || '{}');
+        const fields = {
+            name: document.getElementById('settingsName').value,
+            username: document.getElementById('settingsUsername').value,
+            email: document.getElementById('settingsEmail').value,
+            contact: document.getElementById('settingsContact').value,
+            dob: document.getElementById('settingsDob').value,
+            address: document.getElementById('settingsAddress').value
+        };
+        
+        Object.assign(user, fields);
+        localStorage.setItem('sh-user', JSON.stringify(user));
+        
+        loadUserData();
+        document.getElementById('settingsSuccess').classList.add('show');
+        setTimeout(() => document.getElementById('settingsSuccess').classList.remove('show'), 4000);
+        showNotif('Settings saved!');
+    };
+    
+    window.changePassword = function() {
+        const curr = document.getElementById('currentPassword').value;
+        const newP = document.getElementById('newPassword').value;
+        const confirm = document.getElementById('confirmPassword').value;
+        
+        if (newP !== confirm) { showNotif('Passwords do not match'); return; }
+        if (newP.length < 6) { showNotif('Password must be at least 6 characters'); return; }
+        
+        showNotif('Password updated! (Demo)');
+        document.getElementById('passwordSuccess').classList.add('show');
+        setTimeout(() => document.getElementById('passwordSuccess').classList.remove('show'), 4000);
+        
+        // Clear fields
+        ['currentPassword', 'newPassword', 'confirmPassword'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+    };
+    
+    window.doLogout = function() {
+        if (confirm('Logout?')) {
+            localStorage.removeItem('sh-user');
+            window.location.href = '/';
+        }
+    };
+    
+window.deleteAccount = function() {
+        if (confirm('Delete account PERMANENTLY? All data will be lost.')) {
+            localStorage.removeItem('sh-user');
+            fetch('/login/', {method: 'POST', body: JSON.stringify({logout: true})});
+            showNotif('Account deleted');
+            setTimeout(() => window.location.href = '/', 1500);
+        }
+    };
+    
+    // Modal functions
+    window.openLoginModal = function() {
+        document.getElementById('loginModal').classList.add('open');
+        document.getElementById('signupModal').classList.remove('open');
+        document.body.style.overflow = 'hidden';
+    };
+    
+    // Close modal overlay click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', e => {
+            if (e.target === overlay) closeAllModals();
+        });
+    });
+    
+    window.closeAllModals = function() {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+        document.body.style.overflow = '';
+    };
+    
+    window.openSignupModal = function() {
+        document.getElementById('signupModal').classList.add('open');
+        document.getElementById('loginModal').classList.remove('open');
+    };
+    
+    window.doLogin = async function() {
+        const email = document.querySelector('#loginModal input[type="email"]').value;
+        const password = document.querySelector('#loginModal input[type="password"]').value;
+        if (!email || !password) return showNotif('Please fill all fields');
+        
+        try {
+            const res = await fetch('/login/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({email, password})
+            });
+            const data = await res.json();
+            if (data.success) {
+                localStorage.setItem('sh-user', JSON.stringify(data.user));
+                document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+                showNotif(`Welcome back, ${data.user.username}!`);
+                setTimeout(() => location.reload(), 500);
+            } else {
+                showNotif(data.error || 'Login failed');
+            }
+        } catch(e) {
+            showNotif('Network error');
+        }
+    };
+    
+    window.doRegister = async function() {
+        const formData = {
+            name: document.querySelector('#signupModal input[placeholder*="Juan"]').value,
+            username: document.querySelector('#signupModal input[placeholder*="juandc"]').value,
+            password: document.querySelector('#signupModal input[type="password"]').value,
+            email: document.querySelector('#signupModal input[type="tel"]').closest('.form-group').previousElementSibling.querySelector('input')?.value || '',
+            contact: document.querySelector('#signupModal input[type="tel"]').value,
+            address: document.querySelector('#signupModal input[placeholder*="Street"]').value,
+            dob: getDOBString()
+        };
+        if (!formData.name || !formData.username || !formData.password || !formData.email) return showNotif('Please fill required fields');
+        
+        try {
+            const res = await fetch('/register/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(formData)
+            });
+            const data = await res.json();
+            if (data.success) {
+                localStorage.setItem('sh-user', JSON.stringify(data.user));
+                document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+                showNotif(`Welcome to Haven, ${data.user.username}!`);
+                setTimeout(() => location.reload(), 500);
+            } else {
+                showNotif(data.error || 'Registration failed');
+            }
+        } catch(e) {
+            showNotif('Network error');
+        }
+    };
+    
+    function getDOBString() {
+        const month = document.getElementById('dobMonth')?.selectedIndex;
+        const day = document.getElementById('dobDay')?.value;
+        const year = document.getElementById('dobYear')?.value;
+        if (month && day && year) return `${year}-${String(day).padStart(2,'0')}-${String(month).padStart(2,'0')}`;
+        return '';
+    }
+    
+    // Modal close handlers
+    document.querySelectorAll('.modal-close').forEach(btn => {
+        btn.onclick = () => btn.closest('.modal-overlay').classList.remove('open');
+    });
+    
         const thumb = card.querySelector('.product-thumb');
         if (thumb && !thumb.querySelector('.product-thumb-overlay')) {
             const overlay = document.createElement('div');
