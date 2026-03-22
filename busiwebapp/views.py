@@ -50,3 +50,5 @@ def new(request):
     return render(request, 'busiwebapp/new.html', {
         'shoes': shoes, 'apparel': apparel, 'toys': toys
     })
+def admin_dashboard(request):
+    return render(request, 'admin_dashboard.html')
