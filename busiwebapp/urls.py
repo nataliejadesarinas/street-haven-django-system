@@ -7,7 +7,7 @@ urlpatterns = [
     path('shoes/', views.shoes, name='shoes'),
     path('apparel/', views.apparel, name='apparel'),
     path('toys/', views.toys, name='toys'),
-    path('all/', views.all, name='all'),
+    path('all/', views.all_products, name='all_products'),
     path('new/', views.new, name='new'),
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),  # add this
 ]
