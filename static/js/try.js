@@ -34,6 +34,10 @@ function toggleTheme() {
     const isLight = document.body.classList.contains('light');
     localStorage.setItem('sh-theme', isLight ? 'light' : 'dark');
     updateThemeBtn();
+    // Apply theme to admin dashboard too
+    if (document.querySelector('.admin-main')) {
+        document.querySelector('.admin-main').classList.toggle('light-theme', isLight);
+    }
     showNotif(isLight ? '☀️ Light mode activated' : '🌙 Dark mode activated');
 }
 
