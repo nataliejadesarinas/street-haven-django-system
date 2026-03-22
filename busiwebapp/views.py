@@ -19,6 +19,19 @@ def sale(request):
         'shoes': shoes, 'apparel': apparel, 'toys': toys
     })
 
+def all(request):
+    brand = request.GET.get('brand')
+    shoes = Shoes.objects.filter(is_available=True)
+    apparel = Apparels.objects.filter(is_available=True)
+    toys = Toys.objects.filter(is_available=True)
+    if brand:
+        shoes = shoes.filter(brand__name=brand)
+        apparel = apparel.filter(brand__name=brand)
+    return render(request, 'busiwebapp/all_products.html', {
+        'shoes': shoes, 'apparel': apparel, 'toys': toys
+    })
+
+
 def all_products(request):
     brand = request.GET.get('brand')
     shoes = Shoes.objects.filter(is_available=True)
