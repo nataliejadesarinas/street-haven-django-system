@@ -7,6 +7,16 @@
     <link rel="icon" href="{% static 'images/logohaven.png' %}" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
     <title>Admin — Street.Haven</title>
+    
+    <script>function switchType(type) {
+    ['shoes', 'apparels', 'toys'].forEach(t => {
+        document.getElementById('form-' + t).style.display = t === type ? 'block' : 'none';
+    });
+    document.querySelectorAll('.type-tab').forEach((btn, i) => {
+        btn.classList.toggle('active', ['shoes','apparels','toys'][i] === type);
+    });
+}</script>
+
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -484,6 +494,25 @@ body {
     flex-shrink: 0;
 }
 
+.type-tab {
+    background: var(--surface3);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 8px 18px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+}
+.type-tab.active {
+    background: var(--red);
+    color: #fff;
+    border-color: var(--red);
+}
+
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--surface); }
@@ -644,66 +673,173 @@ body {
         <div id="section-products" style="display:none">
 
             <!-- ADD PRODUCT FORM -->
-            <div class="panel" style="margin-bottom:24px" id="addProductPanel" style="display:none">
-                <div class="panel-header">
-                    <div class="panel-title">ADD NEW PRODUCT</div>
-                    <button class="panel-action" onclick="toggleAddForm()">✕ CLOSE</button>
+            <div class="panel" style="margin-bottom:24px" id="addProductPanel">
+    <div class="panel-header">
+        <div class="panel-title">ADD NEW PRODUCT</div>
+        <button class="panel-action" onclick="toggleAddForm()">✕ CLOSE</button>
+    </div>
+    <div class="add-form" id="addForm">
+
+        <!-- TYPE SWITCHER -->
+        <div style="display:flex;gap:10px;margin-bottom:24px">
+            <button type="button" class="type-tab active" onclick="switchType('shoes')">👟 SHOES</button>
+            <button type="button" class="type-tab" onclick="switchType('apparels')">👕 APPAREL</button>
+            <button type="button" class="type-tab" onclick="switchType('toys')">🧸 TOYS</button>
+        </div>
+
+        <!-- SHOES FORM -->
+        <form id="form-shoes" method="POST" enctype="multipart/form-data"
+              action="{% url 'admin_dashboard' %}">
+            {% csrf_token %}
+            <input type="hidden" name="product_type" value="shoes">
+            <div class="form-grid">
+                <div class="form-group-admin">
+                    <label>PRODUCT NAME</label>
+                    {{ shoes_form.name }}
                 </div>
-                <div class="add-form" id="addForm">
-                    <div class="form-grid">
-                        <div class="form-group-admin">
-                            <label>PRODUCT NAME</label>
-                            <input type="text" placeholder="e.g. Air Force 1 Low">
-                        </div>
-                        <div class="form-group-admin">
-                            <label>BRAND</label>
-                            <select>
-                                <option>Nike</option><option>Jordan</option><option>Adidas</option>
-                                <option>New Balance</option><option>Puma</option><option>Vans</option>
-                                <option>Converse</option><option>Reebok</option>
-                            </select>
-                        </div>
-                        <div class="form-group-admin">
-                            <label>PRICE (₱)</label>
-                            <input type="number" placeholder="0">
-                        </div>
-                        <div class="form-group-admin">
-                            <label>ORIGINAL PRICE (₱) — OPTIONAL</label>
-                            <input type="number" placeholder="0">
-                        </div>
-                        <div class="form-group-admin">
-                            <label>CATEGORY</label>
-                            <select>
-                                <option>Shoes</option><option>Apparel</option><option>Toys</option>
-                            </select>
-                        </div>
-                        <div class="form-group-admin">
-                            <label>BADGE</label>
-                            <select>
-                                <option value="">None</option>
-                                <option>SALE</option><option>NEW</option><option>HOT</option>
-                            </select>
-                        </div>
-                        <div class="form-group-admin form-full">
-                            <label>DESCRIPTION</label>
-                            <textarea placeholder="Product description..."></textarea>
-                        </div>
-                        <div class="form-group-admin form-full">
-                            <label>IMAGE FILENAME (from static/images/)</label>
-                            <input type="text" placeholder="e.g. air_forcelow1.jpg">
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <button class="btn-save">SAVE PRODUCT</button>
-                        <button class="btn-cancel" onclick="toggleAddForm()">CANCEL</button>
-                    </div>
+                <div class="form-group-admin">
+                    <label>BRAND</label>
+                    {{ shoes_form.brand }}
+                </div>
+                <div class="form-group-admin">
+                    <label>PRICE (₱)</label>
+                    {{ shoes_form.price }}
+                </div>
+                <div class="form-group-admin">
+                    <label>STOCK</label>
+                    {{ shoes_form.stock }}
+                </div>
+                <div class="form-group-admin">
+                    <label>COLOR</label>
+                    {{ shoes_form.color }}
+                </div>
+                <div class="form-group-admin">
+                    <label>GENDER</label>
+                    {{ shoes_form.gender }}
+                </div>
+                <div class="form-group-admin">
+                    <label>CATEGORY</label>
+                    {{ shoes_form.category }}
+                </div>
+                <div class="form-group-admin">
+                    <label>AVAILABLE</label>
+                    {{ shoes_form.is_available }}
+                </div>
+                <div class="form-group-admin form-full">
+                    <label>DESCRIPTION</label>
+                    {{ shoes_form.description }}
+                </div>
+                <div class="form-group-admin form-full">
+                    <label>IMAGE</label>
+                    {{ shoes_form.image }}
                 </div>
             </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-save">SAVE SHOES</button>
+                <button type="button" class="btn-cancel" onclick="toggleAddForm()">CANCEL</button>
+            </div>
+        </form>
 
+        <!-- APPARELS FORM -->
+        <form id="form-apparels" method="POST" enctype="multipart/form-data"
+              action="{% url 'admin_dashboard' %}" style="display:none">
+            {% csrf_token %}
+            <input type="hidden" name="product_type" value="apparels">
+            <div class="form-grid">
+                <div class="form-group-admin">
+                    <label>PRODUCT NAME</label>
+                    {{ apparels_form.name }}
+                </div>
+                <div class="form-group-admin">
+                    <label>BRAND</label>
+                    {{ apparels_form.brand }}
+                </div>
+                <div class="form-group-admin">
+                    <label>PRICE (₱)</label>
+                    {{ apparels_form.price }}
+                </div>
+                <div class="form-group-admin">
+                    <label>STOCK</label>
+                    {{ apparels_form.stock }}
+                </div>
+                <div class="form-group-admin">
+                    <label>COLOR</label>
+                    {{ apparels_form.color }}
+                </div>
+                <div class="form-group-admin">
+                    <label>GENDER</label>
+                    {{ apparels_form.gender }}
+                </div>
+                <div class="form-group-admin">
+                    <label>CATEGORY</label>
+                    {{ apparels_form.category }}
+                </div>
+                <div class="form-group-admin">
+                    <label>AVAILABLE</label>
+                    {{ apparels_form.is_available }}
+                </div>
+                <div class="form-group-admin form-full">
+                    <label>DESCRIPTION</label>
+                    {{ apparels_form.description }}
+                </div>
+                <div class="form-group-admin form-full">
+                    <label>IMAGE</label>
+                    {{ apparels_form.image }}
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-save">SAVE APPAREL</button>
+                <button type="button" class="btn-cancel" onclick="toggleAddForm()">CANCEL</button>
+            </div>
+        </form>
+
+        <!-- TOYS FORM -->
+        <form id="form-toys" method="POST" enctype="multipart/form-data"
+              action="{% url 'admin_dashboard' %}" style="display:none">
+            {% csrf_token %}
+            <input type="hidden" name="product_type" value="toys">
+            <div class="form-grid">
+                <div class="form-group-admin">
+                    <label>PRODUCT NAME</label>
+                    {{ toys_form.name }}
+                </div>
+                <div class="form-group-admin">
+                    <label>PRICE (₱)</label>
+                    {{ toys_form.price }}
+                </div>
+                <div class="form-group-admin">
+                    <label>STOCK</label>
+                    {{ toys_form.stock }}
+                </div>
+                <div class="form-group-admin">
+                    <label>COLOR</label>
+                    {{ toys_form.color }}
+                </div>
+                <div class="form-group-admin">
+                    <label>AVAILABLE</label>
+                    {{ toys_form.is_available }}
+                </div>
+                <div class="form-group-admin form-full">
+                    <label>DESCRIPTION</label>
+                    {{ toys_form.description }}
+                </div>
+                <div class="form-group-admin form-full">
+                    <label>IMAGE</label>
+                    {{ toys_form.image }}
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-save">SAVE TOY</button>
+                <button type="button" class="btn-cancel" onclick="toggleAddForm()">CANCEL</button>
+            </div>
+        </form>
+
+    </div>
+</div>
             <!-- PRODUCTS TABLE -->
-            <div class="panel">
+           <div class="panel">
                 <div class="panel-header">
-                    <div class="panel-title">ALL PRODUCTS (24)</div>
+                    <div class="panel-title">ALL PRODUCTS ({{ shoes_count|add:apparel_count|add:toys_count }})</div>
                     <button class="panel-action" onclick="toggleAddForm()">+ ADD NEW</button>
                 </div>
                 <table class="admin-table">
@@ -712,28 +848,100 @@ body {
                             <th>PRODUCT</th>
                             <th>CATEGORY</th>
                             <th>PRICE</th>
-                            <th>BADGE</th>
+                            <th>COLOR</th>
                             <th>ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td><div class="product-cell"><div class="product-thumb-sm">👟</div><div><div class="product-name-sm">Air Force 1 Low</div><div class="product-brand-sm">Nike</div></div></div></td><td>Shoes</td><td>₱4,200</td><td><span class="badge-sm badge-sale">SALE</span></td><td><div class="action-btns"><button class="btn-edit">EDIT</button><button class="btn-delete">DELETE</button></div></td></tr>
-                        <tr><td><div class="product-cell"><div class="product-thumb-sm">👟</div><div><div class="product-name-sm">Air Max 90</div><div class="product-brand-sm">Nike</div></div></div></td><td>Shoes</td><td>₱5,500</td><td><span class="badge-sm badge-sale">SALE</span></td><td><div class="action-btns"><button class="btn-edit">EDIT</button><button class="btn-delete">DELETE</button></div></td></tr>
-                        <tr><td><div class="product-cell"><div class="product-thumb-sm">👟</div><div><div class="product-name-sm">Dunk Low Retro</div><div class="product-brand-sm">Nike</div></div></div></td><td>Shoes</td><td>₱6,800</td><td><span class="badge-sm badge-new">NEW</span></td><td><div class="action-btns"><button class="btn-edit">EDIT</button><button class="btn-delete">DELETE</button></div></td></tr>
-                        <tr><td><div class="product-cell"><div class="product-thumb-sm">👟</div><div><div class="product-name-sm">Jordan 1 Mid</div><div class="product-brand-sm">Jordan</div></div></div></td><td>Shoes</td><td>₱8,900</td><td><span class="badge-sm badge-hot">HOT</span></td><td><div class="action-btns"><button class="btn-edit">EDIT</button><button class="btn-delete">DELETE</button></div></td></tr>
-                        <tr><td><div class="product-cell"><div class="product-thumb-sm">👟</div><div><div class="product-name-sm">Jordan 4 Retro</div><div class="product-brand-sm">Jordan</div></div></div></td><td>Shoes</td><td>₱12,000</td><td><span class="badge-sm badge-new">NEW</span></td><td><div class="action-btns"><button class="btn-edit">EDIT</button><button class="btn-delete">DELETE</button></div></td></tr>
-                        <tr><td><div class="product-cell"><div class="product-thumb-sm">👟</div><div><div class="product-name-sm">Ultraboost 22</div><div class="product-brand-sm">Adidas</div></div></div></td><td>Shoes</td><td>₱7,200</td><td><span class="badge-sm badge-sale">SALE</span></td><td><div class="action-btns"><button class="btn-edit">EDIT</button><button class="btn-delete">DELETE</button></div></td></tr>
-                        <tr><td><div class="product-cell"><div class="product-thumb-sm">👟</div><div><div class="product-name-sm">Stan Smith</div><div class="product-brand-sm">Adidas</div></div></div></td><td>Shoes</td><td>₱3,800</td><td>—</td><td><div class="action-btns"><button class="btn-edit">EDIT</button><button class="btn-delete">DELETE</button></div></td></tr>
-                        <tr><td><div class="product-cell"><div class="product-thumb-sm">👟</div><div><div class="product-name-sm">990v5</div><div class="product-brand-sm">New Balance</div></div></div></td><td>Shoes</td><td>₱8,500</td><td><span class="badge-sm badge-sale">SALE</span></td><td><div class="action-btns"><button class="btn-edit">EDIT</button><button class="btn-delete">DELETE</button></div></td></tr>
-                        <tr><td><div class="product-cell"><div class="product-thumb-sm">👕</div><div><div class="product-name-sm">Graphic Tee Vol.1</div><div class="product-brand-sm">Nike</div></div></div></td><td>Apparel</td><td>₱1,200</td><td><span class="badge-sm badge-sale">SALE</span></td><td><div class="action-btns"><button class="btn-edit">EDIT</button><button class="btn-delete">DELETE</button></div></td></tr>
-                        <tr><td><div class="product-cell"><div class="product-thumb-sm">🧥</div><div><div class="product-name-sm">Fleece Hoodie</div><div class="product-brand-sm">Nike</div></div></div></td><td>Apparel</td><td>₱2,800</td><td><span class="badge-sm badge-new">NEW</span></td><td><div class="action-btns"><button class="btn-edit">EDIT</button><button class="btn-delete">DELETE</button></div></td></tr>
-                        <tr><td><div class="product-cell"><div class="product-thumb-sm">🧸</div><div><div class="product-name-sm">Dunks Action Figure</div><div class="product-brand-sm">Jordan</div></div></div></td><td>Toys</td><td>₱3,500</td><td><span class="badge-sm badge-new">NEW</span></td><td><div class="action-btns"><button class="btn-edit">EDIT</button><button class="btn-delete">DELETE</button></div></td></tr>
-                        <tr><td><div class="product-cell"><div class="product-thumb-sm">🔑</div><div><div class="product-name-sm">Sneaker Keychain Set</div><div class="product-brand-sm">Nike</div></div></div></td><td>Toys</td><td>₱450</td><td><span class="badge-sm badge-sale">SALE</span></td><td><div class="action-btns"><button class="btn-edit">EDIT</button><button class="btn-delete">DELETE</button></div></td></tr>
+                        {% for shoe in shoes %}
+                        <tr>
+                            <td><div class="product-cell">
+                                <div class="product-thumb-sm">
+                                    {% if shoe.image %}<img src="{{ shoe.image.url }}" alt="">{% else %}👟{% endif %}
+                                </div>
+                                <div>
+                                    <div class="product-name-sm">{{ shoe.name }}</div>
+                                    <div class="product-brand-sm">{{ shoe.brand }}</div>
+                                </div>
+                            </div></td>
+                            <td>Shoes</td>
+                            <td>₱{{ shoe.price }}</td>
+                            <td>{{ shoe.color }}</td>
+                            <td>
+                                <form method="POST" action="{% url 'delete_product' 'shoes' shoe.pk %}" style="display:inline">
+                                    {% csrf_token %}
+                                    <div class="action-btns">
+                                        <button class="btn-edit" type="button">EDIT</button>
+                                        <button class="btn-delete" type="submit"
+                                            onclick="return confirm('Delete {{ shoe.name }}?')">DELETE</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        {% for apparel in apparels %}
+                        <tr>
+                            <td><div class="product-cell">
+                                <div class="product-thumb-sm">
+                                    {% if apparel.image %}<img src="{{ apparel.image.url }}" alt="">{% else %}👕{% endif %}
+                                </div>
+                                <div>
+                                    <div class="product-name-sm">{{ apparel.name }}</div>
+                                    <div class="product-brand-sm">{{ apparel.brand }}</div>
+                                </div>
+                            </div></td>
+                            <td>Apparel</td>
+                            <td>₱{{ apparel.price }}</td>
+                            <td>{{ apparel.color }}</td>
+                            <td>
+                                <form method="POST" action="{% url 'delete_product' 'apparels' apparel.pk %}" style="display:inline">
+                                    {% csrf_token %}
+                                    <div class="action-btns">
+                                        <button class="btn-edit" type="button">EDIT</button>
+                                        <button class="btn-delete" type="submit"
+                                            onclick="return confirm('Delete {{ apparel.name }}?')">DELETE</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        {% for toy in toys %}
+                        <tr>
+                            <td><div class="product-cell">
+                                <div class="product-thumb-sm">
+                                    {% if toy.image %}<img src="{{ toy.image.url }}" alt="">{% else %}🧸{% endif %}
+                                </div>
+                                <div>
+                                    <div class="product-name-sm">{{ toy.name }}</div>
+                                    <div class="product-brand-sm">Toy</div>
+                                </div>
+                            </div></td>
+                            <td>Toys</td>
+                            <td>₱{{ toy.price }}</td>
+                            <td>{{ toy.color }}</td>
+                            <td>
+                                <form method="POST" action="{% url 'delete_product' 'toys' toy.pk %}" style="display:inline">
+                                    {% csrf_token %}
+                                    <div class="action-btns">
+                                        <button class="btn-edit" type="button">EDIT</button>
+                                        <button class="btn-delete" type="submit"
+                                            onclick="return confirm('Delete {{ toy.name }}?')">DELETE</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        {% if not shoes and not apparels and not toys %}
+                        <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:40px">
+                            No products yet. Add one above!
+                        </td></tr>
+                        {% endif %}
                     </tbody>
                 </table>
             </div>
-        </div>
-
         <!-- ══ ORDERS ══ -->
         <div id="section-orders" style="display:none">
             <div class="panel">

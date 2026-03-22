@@ -1,0 +1,29 @@
+# store/forms.py
+from django import forms
+from .models import Shoes, Apparels, Toys
+
+GENDER_CHOICES = [
+    ('Male', 'Male'),
+    ('Female', 'Female'),
+    ('Unisex', 'Unisex'),
+]
+
+class ShoesForm(forms.ModelForm):
+    gender = forms.ChoiceField(choices=GENDER_CHOICES)
+    class Meta:
+        model = Shoes
+        fields = ['name', 'brand', 'category', 'price', 'stock',
+                  'description', 'image', 'color', 'gender', 'is_available']
+
+class ApparelsForm(forms.ModelForm):
+    gender = forms.ChoiceField(choices=GENDER_CHOICES)
+    class Meta:
+        model = Apparels
+        fields = ['name', 'brand', 'category', 'price', 'stock',
+                  'description', 'image', 'color', 'gender', 'is_available']
+
+class ToysForm(forms.ModelForm):
+    class Meta:
+        model = Toys
+        fields = ['name', 'price', 'stock', 'description',
+                  'image', 'color', 'is_available']
