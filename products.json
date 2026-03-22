@@ -1,0 +1,383 @@
+[
+{
+  "model": "busiwebapp.brand",
+  "pk": 1,
+  "fields": {
+    "name": "Nike"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 2,
+  "fields": {
+    "name": "Nike"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 3,
+  "fields": {
+    "name": "Nike"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 4,
+  "fields": {
+    "name": "Nike"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 5,
+  "fields": {
+    "name": "Jordan"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 6,
+  "fields": {
+    "name": "Jordan"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 7,
+  "fields": {
+    "name": "Adidas"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 8,
+  "fields": {
+    "name": "Adidas"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 9,
+  "fields": {
+    "name": "New Balance"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 10,
+  "fields": {
+    "name": "New Balance"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 11,
+  "fields": {
+    "name": "Puma"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 12,
+  "fields": {
+    "name": "Vans"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 13,
+  "fields": {
+    "name": "Converse"
+  }
+},
+{
+  "model": "busiwebapp.brand",
+  "pk": 14,
+  "fields": {
+    "name": "Reebok"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 1,
+  "fields": {
+    "name": "Sneakers"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 2,
+  "fields": {
+    "name": "Sneakers"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 3,
+  "fields": {
+    "name": "Sneakers"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 4,
+  "fields": {
+    "name": "Sneakers"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 5,
+  "fields": {
+    "name": "Sneakers"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 6,
+  "fields": {
+    "name": "Sneakers"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 7,
+  "fields": {
+    "name": "Sneakers"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 8,
+  "fields": {
+    "name": "Sneakers"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 9,
+  "fields": {
+    "name": "Sneakers"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 10,
+  "fields": {
+    "name": "Sneakers"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 11,
+  "fields": {
+    "name": "Sneakers"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 12,
+  "fields": {
+    "name": "Sneakers"
+  }
+},
+{
+  "model": "busiwebapp.category",
+  "pk": 13,
+  "fields": {
+    "name": "Sneakers"
+  }
+},
+{
+  "model": "busiwebapp.shoes",
+  "pk": 2,
+  "fields": {
+    "name": "Air Force 1 Low",
+    "price": 4200.0,
+    "stock": 10,
+    "description": "Classic Nike low-top sneaker",
+    "image": "shoes/air_forcelow1_WhQA0Mg.jpg",
+    "color": "White",
+    "gender": "Unisex",
+    "category": 2,
+    "brand": 2,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.shoes",
+  "pk": 3,
+  "fields": {
+    "name": "Air Max 90",
+    "price": 5500.0,
+    "stock": 10,
+    "description": "Iconic Nike Air Max cushioning",
+    "image": "shoes/air_max90.jpg",
+    "color": "Black",
+    "gender": "Unisex",
+    "category": 3,
+    "brand": 3,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.shoes",
+  "pk": 4,
+  "fields": {
+    "name": "Dunk Low Retro",
+    "price": 6800.0,
+    "stock": 10,
+    "description": "Retro-style Nike Dunk Low",
+    "image": "shoes/dunk_lowretro.jpg",
+    "color": "Navy Blue & White",
+    "gender": "Unisex",
+    "category": 4,
+    "brand": 4,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.shoes",
+  "pk": 5,
+  "fields": {
+    "name": "Jordan 1 Mid",
+    "price": 8900.0,
+    "stock": 10,
+    "description": "Classic Jordan 1 Mid silhouette",
+    "image": "shoes/jordan1mid.jpg",
+    "color": "Blue, White, & Black",
+    "gender": "Unisex",
+    "category": 5,
+    "brand": 5,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.shoes",
+  "pk": 6,
+  "fields": {
+    "name": "Jordan 4 Retro",
+    "price": 12000.0,
+    "stock": 10,
+    "description": "Premium Jordan 4 Retro design",
+    "image": "shoes/jordan4retro.jpg",
+    "color": "Yellow, White, & Black",
+    "gender": "Unisex",
+    "category": 6,
+    "brand": 6,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.shoes",
+  "pk": 7,
+  "fields": {
+    "name": "Ultraboost 22",
+    "price": 7200.0,
+    "stock": 10,
+    "description": "High-performance Adidas running shoe",
+    "image": "shoes/ultraboost22.jpg",
+    "color": "Dirty Green",
+    "gender": "Unisex",
+    "category": 7,
+    "brand": 7,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.shoes",
+  "pk": 8,
+  "fields": {
+    "name": "Stan Smith",
+    "price": 3800.0,
+    "stock": 10,
+    "description": "Iconic Adidas tennis classic",
+    "image": "shoes/stansmith.jpg",
+    "color": "White",
+    "gender": "Unisex",
+    "category": 8,
+    "brand": 8,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.shoes",
+  "pk": 9,
+  "fields": {
+    "name": "990v5",
+    "price": 8500.0,
+    "stock": 10,
+    "description": "Premium New Balance lifestyle runner",
+    "image": "shoes/990v5.jpg",
+    "color": "Brown",
+    "gender": "Unisex",
+    "category": 9,
+    "brand": 9,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.shoes",
+  "pk": 10,
+  "fields": {
+    "name": "574 Classic",
+    "price": 4500.0,
+    "stock": 10,
+    "description": "Everyday New Balance classic",
+    "image": "shoes/574classic.jpg",
+    "color": "Grey",
+    "gender": "Unisex",
+    "category": 10,
+    "brand": 10,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.shoes",
+  "pk": 11,
+  "fields": {
+    "name": "Old School",
+    "price": 2800.0,
+    "stock": 10,
+    "description": "Iconic Vans skate shoe",
+    "image": "shoes/oldskool.jpg",
+    "color": "Black",
+    "gender": "Unisex",
+    "category": 11,
+    "brand": 12,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.shoes",
+  "pk": 12,
+  "fields": {
+    "name": "Chuck Taylor All Star",
+    "price": 2500.0,
+    "stock": 10,
+    "description": "Timeless Converse canvas hi-top",
+    "image": "shoes/chucktalyor.jpg",
+    "color": "Black",
+    "gender": "Unisex",
+    "category": 12,
+    "brand": 13,
+    "is_available": true
+  }
+},
+{
+  "model": "busiwebapp.shoes",
+  "pk": 13,
+  "fields": {
+    "name": "Club C 85",
+    "price": 3600.0,
+    "stock": 10,
+    "description": "Clean Reebok court classic",
+    "image": "shoes/clubc85.jpg",
+    "color": "Cream",
+    "gender": "Unisex",
+    "category": 13,
+    "brand": 14,
+    "is_available": true
+  }
+}
+]
