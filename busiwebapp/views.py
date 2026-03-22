@@ -64,4 +64,4 @@ def new(request):
         'shoes': shoes, 'apparel': apparel, 'toys': toys
     })
 def admin_dashboard(request):
-    return render(request, 'admin_dashboard.html')
+    return render(request, 'busiwebapp/admin_dashboard.html')
