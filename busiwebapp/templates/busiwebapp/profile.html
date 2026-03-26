@@ -5,120 +5,196 @@
 {% block nav_profile %}active{% endblock %}
 
 {% block content %}
+<div class="message {% if message.level_tag == 'success' %}success{% else %}error{% endif %}"></div>
 <div class="profile-layout">
-
-    <!-- SIDEBAR CARD -->
+ 
+    <!-- ── SIDEBAR ── -->
     <div>
         <div class="profile-card">
             <div class="profile-cover"></div>
             <div class="profile-avatar-wrap">
-                <div class="profile-avatar" onclick="document.getElementById('avatarFileInput').click()">
-                    <span id="avatarInitial">U</span>
-                    <img id="avatarImg" src="" alt="" style="display:none">
-                    <div class="avatar-overlay">📷</div>
-                </div>
-                <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="uploadAvatar(event)">
-                <div class="profile-username" id="profileUsername">Username</div>
-                <div class="profile-email" id="profileEmail">user@email.com</div>
-                <div class="profile-joined">📅 Member since 2025</div>
+                <form method="POST" action="{% url 'profile' %}" enctype="multipart/form-data" id="avatarForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="upload_avatar">
+                    <div class="profile-avatar" onclick="document.getElementById('avatarFileInput').click()" title="Change profile photo">
+                        {% if user_profile.avatar %}
+                            <img src="{{ user_profile.avatar.url }}" alt="Profile Photo">
+                        {% else %}
+                            {{ user.username.0|upper }}
+                        {% endif %}
+                        <div class="avatar-overlay">📷</div>
+                    </div>
+                    <input type="file" id="avatarFileInput" name="avatar" accept="image/*" style="display:none"
+                        onchange="document.getElementById('avatarForm').submit()">
+                </form>
+                <div class="profile-username">{{ user.username }}</div>
+                <div class="profile-email">{{ user.email }}</div>
+                <div class="profile-joined">📅 Joined {{ user.date_joined|date:"F Y" }}</div>
             </div>
+ 
             <div class="profile-stats">
-                <div class="pstat"><div class="pstat-num" id="orderCount">0</div><div class="pstat-lbl">ORDERS</div></div>
-                <div class="pstat"><div class="pstat-num" id="favCount">0</div><div class="pstat-lbl">FAVES</div></div>
-                <div class="pstat"><div class="pstat-num">30</div><div class="pstat-lbl">DAYS RTN</div></div>
+                <div class="pstat">
+                    <div class="pstat-num">{{ order_count }}</div>
+                    <div class="pstat-lbl">ORDERS</div>
+                </div>
+                <div class="pstat">
+                    <div class="pstat-num">0</div>
+                    <div class="pstat-lbl">FAVES</div>
+                </div>
+                <div class="pstat">
+                    <div class="pstat-num">30</div>
+                    <div class="pstat-lbl">DAY RTN</div>
+                </div>
             </div>
+ 
             <nav class="profile-nav">
                 <button class="profile-nav-item active" onclick="switchTab('orders', this)"><span class="pnav-icon">📦</span> Order History</button>
                 <button class="profile-nav-item" onclick="switchTab('favorites', this)"><span class="pnav-icon">❤️</span> Favorites</button>
-                <button class="profile-nav-item" onclick="switchTab('settings', this)"><span class="pnav-icon">⚙️</span> Settings</button>
+                <button class="profile-nav-item" onclick="switchTab('settings', this)"><span class="pnav-icon">⚙️</span> Profile Settings</button>
+                <button class="profile-nav-item" onclick="switchTab('username', this)"><span class="pnav-icon">✏️</span> Change Username</button>
                 <button class="profile-nav-item" onclick="switchTab('password', this)"><span class="pnav-icon">🔒</span> Change Password</button>
             </nav>
-            <button class="logout-profile-btn" onclick="doLogout()">⏻ LOGOUT</button>
+ 
+            <a href="{% url 'logout' %}" class="logout-profile-btn">⏻ &nbsp;LOGOUT</a>
         </div>
     </div>
-
-    <!-- MAIN CONTENT -->
+ 
+    <!-- ── MAIN CONTENT ── -->
     <div class="profile-main">
-
+ 
         <!-- ORDER HISTORY -->
         <div class="profile-section active" id="section-orders">
             <div class="section-panel">
                 <div class="section-panel-header">
                     <div class="section-panel-title">ORDER HISTORY</div>
                 </div>
-                <div class="section-panel-body" id="ordersList">
-                    <div class="empty-state">
-                        <div class="empty-icon">📦</div>
-                        <div class="empty-text">NO ORDERS YET</div>
-                        <div class="empty-sub">Your purchase history will appear here</div>
-                    </div>
+                <div class="section-panel-body">
+                    {% if orders %}
+                        {% for order in orders %}
+                        <div class="order-item">
+                            <div class="order-thumb">👟</div>
+                            <div class="order-info">
+                                <div class="order-name">{{ order.product_name }}</div>
+                                <div class="order-meta">{{ order.date|date:"F d, Y" }}</div>
+                            </div>
+                            <div class="order-price">₱{{ order.price }}</div>
+                            <span class="order-status status-{{ order.status }}">{{ order.status|upper }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">📦</div>
+                            <div class="empty-text">NO ORDERS YET</div>
+                            <div class="empty-sub">Your purchase history will appear here once you place an order.</div>
+                            <a href="{% url 'all' %}" class="empty-btn">SHOP NOW</a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
-
+ 
         <!-- FAVORITES -->
         <div class="profile-section" id="section-favorites">
             <div class="section-panel">
                 <div class="section-panel-header">
                     <div class="section-panel-title">MY FAVORITES</div>
                 </div>
-                <div class="section-panel-body" id="favoritesList">
+                <div class="section-panel-body">
                     <div class="empty-state">
                         <div class="empty-icon">❤️</div>
                         <div class="empty-text">NO FAVORITES YET</div>
-                        <div class="empty-sub">Save items you love and find them here</div>
+                        <div class="empty-sub">Save items you love and find them here.</div>
+                        <a href="{% url 'all' %}" class="empty-btn">BROWSE PRODUCTS</a>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- SETTINGS -->
+ 
+        <!-- PROFILE SETTINGS -->
         <div class="profile-section" id="section-settings">
             <div class="section-panel">
                 <div class="section-panel-header">
                     <div class="section-panel-title">PROFILE SETTINGS</div>
                 </div>
                 <div class="section-panel-body">
-                    <div class="success-msg" id="settingsSuccess">✓ SETTINGS SAVED SUCCESSFULLY</div>
+ 
+                    <!-- AVATAR UPLOAD -->
                     <div class="avatar-upload-row">
-                        <div class="avatar-big" id="settingsAvatar">U</div>
+                        <div class="avatar-big">
+                            {% if user_profile.avatar %}
+                                <img src="{{ user_profile.avatar.url }}" alt="">
+                            {% else %}
+                                {{ user.username.0|upper }}
+                            {% endif %}
+                        </div>
                         <div class="avatar-upload-info">
-                            <div class="avatar-name" id="settingsAvatarName">Username</div>
-                            <div class="avatar-sub">JPG or PNG, max 2MB</div>
-                            <button class="btn-upload-pic" onclick="document.getElementById('avatarFileInput').click()">📷 CHANGE PHOTO</button>
+                            <div class="avatar-name">{{ user.get_full_name|default:user.username }}</div>
+                            <div class="avatar-sub">JPG or PNG — max 2MB</div>
+                            <button class="btn-upload-pic" type="button" onclick="document.getElementById('avatarFileInput').click()">📷 &nbsp;CHANGE PHOTO</button>
                         </div>
                     </div>
-                    <div class="settings-grid">
-                        <div class="settings-group">
-                            <label>FULL NAME</label>
-                            <input type="text" id="settingsName" placeholder="Your full name">
+ 
+                    <form method="POST" action="{% url 'profile' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="update_profile">
+                        <div class="settings-grid">
+                            <div class="settings-group">
+                                <label>FIRST NAME</label>
+                                <input type="text" name="first_name" value="{{ user.first_name }}" placeholder="Juan">
+                            </div>
+                            <div class="settings-group">
+                                <label>LAST NAME</label>
+                                <input type="text" name="last_name" value="{{ user.last_name }}" placeholder="dela Cruz">
+                            </div>
+                            <div class="settings-group full">
+                                <label>EMAIL ADDRESS</label>
+                                <input type="email" name="email" value="{{ user.email }}" placeholder="you@email.com">
+                            </div>
+                            <div class="settings-group">
+                                <label>CONTACT NUMBER</label>
+                                <input type="tel" name="contact" value="{{ user_profile.contact }}" placeholder="+63 9XX XXX XXXX">
+                            </div>
+                            <div class="settings-group">
+                                <label>DATE OF BIRTH</label>
+                                <input type="text" value="{{ user_profile.dob }}" readonly>
+                            </div>
+                            <div class="settings-group full">
+                                <label>DELIVERY ADDRESS</label>
+                                <input type="text" name="address" value="{{ user_profile.address }}" placeholder="Street, City, Province">
+                            </div>
                         </div>
-                        <div class="settings-group">
-                            <label>USERNAME</label>
-                            <input type="text" id="settingsUsername" placeholder="username">
-                        </div>
-                        <div class="settings-group full">
-                            <label>EMAIL ADDRESS</label>
-                            <input type="email" id="settingsEmail" placeholder="you@email.com">
-                        </div>
-                        <div class="settings-group">
-                            <label>CONTACT NUMBER</label>
-                            <input type="tel" id="settingsContact" placeholder="+63 9XX XXX XXXX">
-                        </div>
-                        <div class="settings-group">
-                            <label>DATE OF BIRTH</label>
-                            <input type="date" id="settingsDob">
-                        </div>
-                        <div class="settings-group full">
-                            <label>DELIVERY ADDRESS</label>
-                            <input type="text" id="settingsAddress" placeholder="Street, City, Province">
-                        </div>
-                    </div>
-                    <button class="btn-save-settings" onclick="saveSettings()">SAVE CHANGES</button>
+                        <button type="submit" class="btn-save-settings">SAVE CHANGES</button>
+                    </form>
                 </div>
             </div>
         </div>
-
+ 
+        <!-- CHANGE USERNAME -->
+        <div class="profile-section" id="section-username">
+            <div class="section-panel">
+                <div class="section-panel-header">
+                    <div class="section-panel-title">CHANGE USERNAME</div>
+                </div>
+                <div class="section-panel-body">
+                    <form method="POST" action="{% url 'profile' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="change_username">
+                        <div class="settings-grid">
+                            <div class="settings-group">
+                                <label>CURRENT USERNAME</label>
+                                <input type="text" value="{{ user.username }}" readonly>
+                            </div>
+                            <div class="settings-group">
+                                <label>NEW USERNAME</label>
+                                <input type="text" name="username" placeholder="new_username" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-save-settings">UPDATE USERNAME</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+ 
         <!-- CHANGE PASSWORD -->
         <div class="profile-section" id="section-password">
             <div class="section-panel">
@@ -126,32 +202,48 @@
                     <div class="section-panel-title">CHANGE PASSWORD</div>
                 </div>
                 <div class="section-panel-body">
-                    <div class="success-msg" id="passwordSuccess">✓ PASSWORD UPDATED SUCCESSFULLY</div>
-                    <div class="settings-grid">
-                        <div class="settings-group full">
-                            <label>CURRENT PASSWORD</label>
-                            <input type="password" id="currentPassword" placeholder="••••••••">
+                    <form method="POST" action="{% url 'profile' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="change_password">
+                        <div class="settings-grid">
+                            <div class="settings-group full">
+                                <label>CURRENT PASSWORD</label>
+                                <input type="password" name="current_password" placeholder="••••••••" required>
+                            </div>
+                            <div class="settings-group">
+                                <label>NEW PASSWORD</label>
+                                <input type="password" name="new_password" placeholder="••••••••" required minlength="6">
+                            </div>
+                            <div class="settings-group">
+                                <label>CONFIRM NEW PASSWORD</label>
+                                <input type="password" name="confirm_password" placeholder="••••••••" required>
+                            </div>
                         </div>
-                        <div class="settings-group">
-                            <label>NEW PASSWORD</label>
-                            <input type="password" id="newPassword" placeholder="••••••••">
-                        </div>
-                        <div class="settings-group">
-                            <label>CONFIRM NEW PASSWORD</label>
-                            <input type="password" id="confirmPassword" placeholder="••••••••">
-                        </div>
-                    </div>
-                    <button class="btn-save-settings" onclick="changePassword()">UPDATE PASSWORD</button>
+                        <button type="submit" class="btn-save-settings">UPDATE PASSWORD</button>
+                    </form>
+ 
+                    <hr class="form-divider">
+ 
                     <div class="danger-zone">
-                        <div class="danger-title">⚠ DANGER ZONE</div>
-                        <div class="danger-sub">Once you delete your account, there is no going back. Please be certain.</div>
-                        <button class="btn-danger" onclick="if(confirm('Are you sure?')) deleteAccount()">DELETE MY ACCOUNT</button>
+                        <div class="danger-title">⚠ &nbsp;DANGER ZONE</div>
+                        <div class="danger-sub">Deleting your account is permanent and cannot be undone. All your orders and data will be erased.</div>
+                        <button class="btn-danger" onclick="if(confirm('Are you absolutely sure? This cannot be undone.')) window.location.href='{% url 'logout' %}'">
+                            🗑 &nbsp;DELETE MY ACCOUNT
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-
+ 
     </div>
 </div>
+</div>
+
+{% if 'username' in message.tags %}
+    window.tabToOpen = 'username';
+{% endif %}
+
+<script src="{% static 'js/profile.js' %}"></script>
+
 
     <div class="notif" id="notif"></div>\n    <link rel="stylesheet" href="{% static 'css/gg.css' %}">\n    <script src="{% static 'js/gg.js' %}"></script>\n{% endblock %}
