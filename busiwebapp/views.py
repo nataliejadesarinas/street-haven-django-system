@@ -1,8 +1,18 @@
+<<<<<<< HEAD
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse, Http404
 from .models import Brand, Category, Shoes, Apparels, Toys
 from .search_utils import combined_search_querysets, serialize_product
+=======
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from .models import Brand, Category, Shoes, Apparels, Toys, UserProfile, Order
+>>>>>>> d999fbf1a079da2684ba093f4fc45315a23cf793
 from .forms import ShoesForm, ApparelsForm, ToysForm
 
 def home(request):
@@ -44,15 +54,31 @@ def toys(request):
     return render(request, 'busiwebapp/toys.html', {'toys': toys})
 
 def new(request):
-    shoes = Shoes.objects.filter(is_available=True).order_by('-id')[:8]
-    apparel = Apparels.objects.filter(is_available=True).order_by('-id')[:8]
-    toys = Toys.objects.filter(is_available=True).order_by('-id')[:8]
+    latest_shoes = Shoes.objects.filter(is_available=True).order_by('-id')[:12]
     return render(request, 'busiwebapp/new.html', {
-        'shoes': shoes, 'apparel': apparel, 'toys': toys
+        'latest_shoes': latest_shoes
     })
 
+@login_required
 def profile(request):
-    return render(request, 'busiwebapp/profile.html')
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    orders = Order.objects.filter(user=request.user).order_by('-date')[:10]
+    order_count = orders.count()
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'upload_avatar' and 'avatar' in request.FILES:
+            user_profile.avatar = request.FILES['avatar']
+            user_profile.save()
+            messages.success(request, 'Profile photo updated!')
+            return redirect('profile')
+
+    context = {
+        'user_profile': user_profile,
+        'orders': orders,
+        'order_count': order_count,
+    }
+    return render(request, 'busiwebapp/profile.html', context)
 
 
 def _safe_image_url(fieldfile):

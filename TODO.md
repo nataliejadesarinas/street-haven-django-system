@@ -1,17 +1,19 @@
-# Street Haven Django Profile/Login Implementation
+# TODO: New Arrivals Page Implementation
 
-## Plan Steps
-- [x] Created profile.html
-- [x] Added profile JS to gg.js
-- [x] Add views: login_view, register_view, profile_view
-- [x] Add urls: login, register, profile
-- [x] Update base.html header/modal
-- [ ] Add modal JS handlers in gg.js
-- [ ] Test runserver + login/register/profile
+## Plan Summary
+Populate existing `/new/` route (URL/view already exist) with shoe-focused New Arrivals page showing latest 12 available shoes in cards with NEW badges.
 
-## Complete! Test: localhost:8000 -> LOGIN/REGISTER -> PROFILE
+## Steps
+- [x] Step 1: Update busiwebapp/views.py - Modify `new()` view to return latest shoes only
+- [x] Step 2: Create busiwebapp/templates/busiwebapp/new.html - Full page template with product cards + NEW badges
+- [x] Step 3: Test locally - Run server, visit /new/, verify functionality
+- [x] Complete: Mark done
 
-## Current Step 3/6: Update base.html
+**Status: ✅ COMPLETE**
 
-## Current Step 1/6: Add views to busiwebapp/views.py
+Files updated:
+- `busiwebapp/views.py` (new view → latest_shoes)
+- `busiwebapp/templates/busiwebapp/new.html` (page w/ NEW badges, images, cards)
+
+**/new/ now shows latest shoe products with NEW badges, images, name, brand, price!**
 

@@ -2,6 +2,20 @@
    STREET.HAVEN — gg.css  (shared across all pages)
    ═══════════════════════════════════════════════════════════════ */
 
+/* ── FOUC PREVENTION — apply light vars to <html> immediately ── */
+/* This mirrors .light on body so the page never flashes wrong theme */
+html.light {
+    --dark: #f0f0f0;
+    --surface: #ffffff;
+    --surface2: #f4f4f4;
+    --surface3: #e8e8e8;
+    --border: rgba(0,0,0,0.10);
+    --text: #111111;
+    --muted: #888888;
+    --shadow: 0 8px 32px rgba(0,0,0,0.10);
+    --card-hover-shadow: 0 16px 44px rgba(0,0,0,0.14);
+}
+
 /* ── THEME VARIABLES ── */
 :root {
     --red: #ab0606;
@@ -14,7 +28,7 @@
     --text: #f2f2f2;
     --muted: #777;
     --sidebar-w: 250px;
---shadow: 0 8px 32px rgba(0,0,0,0.6);
+    --shadow: 0 8px 32px rgba(0,0,0,0.6);
     --card-hover-shadow: 0 16px 44px rgba(0,0,0,0.5);
 }
 
@@ -29,8 +43,8 @@
     --muted: #000000;
 }
 
-/* ── LIGHT MODE via body.light ── */
-body.light {
+/* ── LIGHT MODE via .light on <body> or <html> ── */
+.light {
     --dark: #f0f0f0;
     --surface: #ffffff;
     --surface2: #f4f4f4;
@@ -44,7 +58,7 @@ body.light {
 
 /* ── RESET ── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; transition: background 0.35s, color 0.35s; }
 body {
     background: var(--dark);
     color: var(--text);
@@ -55,12 +69,20 @@ body {
 
 /* ── BANNER ── */
 .banner {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
     background: var(--red);
     text-align: center;
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 12px; font-weight: 700;
-    letter-spacing: 2.5px; padding: 7px;
-    color: #fff; text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    padding: 7px;
+    color: #fff;
+    text-transform: uppercase;
+    z-index: 9999; /* stays above everything */
 }
 
 /* ══════════════════════════════════════════════════════
@@ -239,8 +261,9 @@ a.search-result-row {
     border: 1px solid var(--border);
     background: var(--surface2); color: var(--text);
     cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    min-width: 90px; text-align: center;
 }
-.theme-toggle:hover { border-color: rgba(171,6,6,0.5); }
+.theme-toggle:hover { border-color: rgba(171,6,6,0.5); background: var(--surface3); }
 
 .btn-login {
     font-family: 'Barlow Condensed', sans-serif;
@@ -281,8 +304,8 @@ a.search-result-row {
     background: var(--surface);
     border-right: 1px solid var(--border);
     flex-shrink: 0; overflow-y: auto;
-    position: sticky; top: 91px;
-    height: calc(100vh - 91px);
+    position: sticky; top: 96px;
+    height: calc(100vh - 96px);
     transition: background 0.35s, border-color 0.35s;
 }
 .sidebar::-webkit-scrollbar { width: 4px; }
@@ -371,10 +394,10 @@ a.search-result-row {
 .main-content .brand-item:hover span { color: var(--text); }
 
 /* Light mode brand fix */
-body.light .sidebar .brand-item { filter: grayscale(1) brightness(0.5); }
-body.light .sidebar .brand-item:hover { filter: none; }
-body.light .main-content .brand-item { filter: grayscale(1) brightness(0.5); }
-body.light .main-content .brand-item:hover { filter: none; }
+.light .sidebar .brand-item { filter: grayscale(1) brightness(0.5); }
+.light .sidebar .brand-item:hover { filter: none; }
+.light .main-content .brand-item { filter: grayscale(1) brightness(0.5); }
+.light .main-content .brand-item:hover { filter: none; }
 
 /* Sizes / Colors / Price */
 .size-grid { display: flex; flex-wrap: wrap; gap: 5px; padding: 4px 0 8px; }
@@ -998,6 +1021,10 @@ footer { background: var(--surface); border-top: 1px solid var(--border); paddin
     transition: border-color 0.2s, background 0.35s, color 0.35s;
 }
 .form-group input:focus, .form-group select:focus { border-color: rgba(171,6,6,0.6); }
+.form-group input.valid { border-color: #00c853; background: rgba(0,200,83,0.05); }
+.form-group input.invalid { border-color: #ff6b6b; background: rgba(255,107,107,0.05); }
+.form-group label.valid { color: #00c853; }
+.form-group label.invalid { color: #ff6b6b; }
 .modal-btn {
     width: 100%; padding: 13px; background: var(--red); border: none;
     border-radius: 6px; color: #fff; font-family: 'Bebas Neue', sans-serif;
@@ -1028,9 +1055,9 @@ footer { background: var(--surface); border-top: 1px solid var(--border); paddin
 .notif.show { transform: translateX(0); }
 
 /* ── LIGHT MODE tweaks ── */
-body.light .hero-overlay { background: linear-gradient(100deg,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.3) 55%,transparent 100%); }
-body.light .pg-header { background: linear-gradient(120deg,rgba(171,6,6,0.08) 0%,transparent 60%); }
-body.light .sort-select option { background: #fff; color: #111; }
+.light .hero-overlay { background: linear-gradient(100deg,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.3) 55%,transparent 100%); }
+.light .pg-header { background: linear-gradient(120deg,rgba(171,6,6,0.08) 0%,transparent 60%); }
+.light .sort-select option { background: #fff; color: #111; }
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
