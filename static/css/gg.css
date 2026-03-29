@@ -69,12 +69,20 @@ body {
 
 /* ── BANNER ── */
 .banner {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
     background: var(--red);
     text-align: center;
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 12px; font-weight: 700;
-    letter-spacing: 2.5px; padding: 7px;
-    color: #fff; text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    padding: 7px;
+    color: #fff;
+    text-transform: uppercase;
+    z-index: 9999; /* stays above everything */
 }
 
 /* ══════════════════════════════════════════════════════
@@ -183,8 +191,8 @@ nav ul li a.sale-link:hover { color: #ff5555; background: rgba(171,6,6,0.18); }
     background: var(--surface);
     border-right: 1px solid var(--border);
     flex-shrink: 0; overflow-y: auto;
-    position: sticky; top: 91px;
-    height: calc(100vh - 91px);
+    position: sticky; top: 96px;
+    height: calc(100vh - 96px);
     transition: background 0.35s, border-color 0.35s;
 }
 .sidebar::-webkit-scrollbar { width: 4px; }
