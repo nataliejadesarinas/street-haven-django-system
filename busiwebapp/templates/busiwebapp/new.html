@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}New Arrivals — Street.Haven{% endblock %}
+{% block sb_new %}active{% endblock %}
+
+{% block sidebar_sizes %}
+<div class="sb-section">
+    <div class="sb-title">SHOE SIZE (US)</div>
+    <div class="size-grid">
+        <div class="sz-btn">6</div><div class="sz-btn">7</div>
+        <div class="sz-btn">8</div><div class="sz-btn">9</div>
+        <div class="sz-btn">10</div><div class="sz-btn">11</div>
+        <div class="sz-btn">12</div><div class="sz-btn">13</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+
+    <div class="pg-header">
+        <div class="pg-title">NEW ARRIVALS</div>
+        <div class="pg-desc">Fresh drops straight from the latest collections</div>
+    </div>
+
+    <div class="toolbar">
+        <span class="toolbar-label">SORT BY</span>
+        <select class="sort-select">
+            <option value="default">Newest First</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name">Name A–Z</option>
+        </select>
+        <span class="result-count">{{ latest_shoes.count }} items</span>
+    </div>
+
+    <div class="section" style="padding-top:24px">
+        <div class="product-grid">
+
+            {% for product in latest_shoes %}
+                <div class="product-card" onclick="openProductModal(this)"
+                    data-name="{{ product.name }}"
+                    data-brand="{% if product.brand %}{{ product.brand.name }}{% endif %}"
+                    data-price="{{ product.price }}"
+                    data-desc="{{ product.description }}"
+                    data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
+
+                    <div class="product-thumb">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            👟
+                        {% endif %}
+                        <div class="product-thumb-overlay">👁 QUICK VIEW</div>
+                        {% if product.stock == 0 %}
+                            <span class="badge badge-hot">SOLD OUT</span>
+                        {% endif %}
+                        <!-- NEW BADGE as requested (shortened) -->
+                        <div class="badge badge-new">NEW</div>
+                    </div>
+
+                    <div class="product-info">
+                        <div class="p-brand">
+                            {% if product.brand %}{{ product.brand.name }}{% endif %}
+                        </div>
+                        <div class="p-name">{{ product.name }}</div>
+                        <div class="p-price">
+                            <span class="p-now">₱{{ product.price }}</span>
+                        </div>
+                        <button class="add-btn">+ ADD TO CART</button>
+                    </div>
+
+                </div>
+            {% empty %}
+                <p style="color:var(--muted)">No new arrivals available.</p>
+            {% endfor %}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -3,6 +3,16 @@
    ═══════════════════════════════════════════════════════════════ */
 
 /* ══════════════════════════════════════════════════════
+   THEME — Apply IMMEDIATELY to prevent flash (FOUC fix)
+══════════════════════════════════════════════════════ */
+(function () {
+    if (localStorage.getItem('sh-theme') === 'light') {
+        document.documentElement.classList.add('light');
+        document.body && document.body.classList.add('light');
+    }
+})();
+
+/* ══════════════════════════════════════════════════════
    PRODUCT DATA
 ══════════════════════════════════════════════════════ */
 const PRODUCT_DATA = {
@@ -314,7 +324,7 @@ function validateField(el) {
     const formGroup = el.closest('.form-group');
     if (!formGroup) return;
     const val = el.value.trim();
-    const isValid = val.length > 0 && (el.type === 'email' ? /\\S+@\\S+\\.\\S+/.test(val) : el.type === 'password' ? val.length >= 6 : true);
+    const isValid = val.length > 0 && (el.type === 'email' ? /\S+@\S+\.\S+/.test(val) : el.type === 'password' ? val.length >= 6 : true);
     el.classList.toggle('valid', isValid);
     el.classList.toggle('invalid', !isValid);
     formGroup.querySelector('label').classList.toggle('valid', isValid);
@@ -548,16 +558,29 @@ function deleteAccount() {
 }
 
 /* ══════════════════════════════════════════════════════
-   THEME TOGGLE
+   THEME TOGGLE (FIXED)
 ══════════════════════════════════════════════════════ */
+
 function initTheme() {
-    const saved = localStorage.getItem('sh-theme');
-    if (saved === 'light') document.body.classList.add('light');
+    const isLight = localStorage.getItem('sh-theme') === 'light';
+    // Apply to both <html> and <body> for full coverage
+    document.documentElement.classList.toggle('light', isLight);
+    document.body.classList.toggle('light', isLight);
+    updateThemeButtons();
 }
 
 function toggleTheme() {
-    document.body.classList.toggle('light');
-    localStorage.setItem('sh-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    const isLight = document.body.classList.toggle('light');
+    document.documentElement.classList.toggle('light', isLight);
+    localStorage.setItem('sh-theme', isLight ? 'light' : 'dark');
+    updateThemeButtons();
+}
+
+function updateThemeButtons() {
+    const isLight = document.body.classList.contains('light');
+    document.querySelectorAll('.theme-toggle').forEach(btn => {
+        btn.textContent = isLight ? '🌙 DARK' : '☀️ LIGHT';
+    });
 }
 
 /* ══════════════════════════════════════════════════════
@@ -565,9 +588,11 @@ function toggleTheme() {
 ══════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Theme
+    // Theme — init state + wire all toggle buttons
     initTheme();
-    document.querySelectorAll('.theme-toggle').forEach(btn => btn.addEventListener('click', toggleTheme));
+    document.querySelectorAll('.theme-toggle').forEach(btn => {
+        btn.addEventListener('click', toggleTheme);
+    });
 
     // Cart
     updateCartCount();

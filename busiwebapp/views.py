@@ -46,11 +46,9 @@ def toys(request):
     return render(request, 'busiwebapp/toys.html', {'toys': toys})
 
 def new(request):
-    shoes = Shoes.objects.filter(is_available=True).order_by('-id')[:8]
-    apparel = Apparels.objects.filter(is_available=True).order_by('-id')[:8]
-    toys = Toys.objects.filter(is_available=True).order_by('-id')[:8]
+    latest_shoes = Shoes.objects.filter(is_available=True).order_by('-id')[:12]
     return render(request, 'busiwebapp/new.html', {
-        'shoes': shoes, 'apparel': apparel, 'toys': toys
+        'latest_shoes': latest_shoes
     })
 
 @login_required

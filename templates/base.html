@@ -7,12 +7,19 @@
     <link rel="icon" href="{% static 'images/logohaven.png' %}" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/gg.css' %}">
-    <script src="{% static 'js/try.js' %}"></script>
-    <script src="{% static 'js/gg.js' %}"></script>
+
+    <!-- FOUC fix: apply saved theme BEFORE page renders, inline so it runs instantly -->
+    <script>
+        (function () {
+            if (localStorage.getItem('sh-theme') === 'light') {
+                document.documentElement.classList.add('light');
+            }
+        })();
+    </script>
+
     <title>{% block title %}Street.Haven{% endblock %}</title>
 </head>
 <body>
-    <!-- Add this inside your <body>, ideally near the top of your main content -->
 
 <div class="banner">🔥 FREE SHIPPING ON ORDERS OVER ₱500 &nbsp;|&nbsp; 30-DAY RETURNS &nbsp;|&nbsp; NEW DROPS EVERY WEEK 🔥</div>
 
@@ -44,7 +51,8 @@
         <button class="btn-login" onclick="openLoginModal()">LOGIN</button>
         {% endif %}
         <button class="cart-btn">🛒<span class="cart-count">0</span></button>
-        <button class="theme-toggle" onclick="toggleTheme()">☀️ Light</button>
+        <!-- No inline onclick — wired via addEventListener in gg.js -->
+        <button class="theme-toggle">☀️ LIGHT</button>
     </div>
 </header>
 
@@ -284,35 +292,9 @@
     <div class="modal-switch">Already have one? <a href="#" onclick="openLoginModal()">Login</a></div>
   </div>
 </div>
-        </div>
-        <button class="modal-btn" onclick="doRegister()">CREATE ACCOUNT</button>
-        <div class="modal-switch">Already have one? <a href="#" onclick="openLoginModal()">Login</a></div>
-    </div>
-</div>
-
-<script>
-// Populate day and year dropdowns
-(function() {
-    var daySelect = document.getElementById('dobDay');
-    if (daySelect) {
-        daySelect.innerHTML = '<option value="">Day</option>';
-        for (var d = 1; d <= 31; d++) {
-            daySelect.innerHTML += '<option>' + (d < 10 ? '0' + d : d) + '</option>';
-        }
-    }
-    var yearSelect = document.getElementById('dobYear');
-    if (yearSelect) {
-        yearSelect.innerHTML = '<option value="">Year</option>';
-        var currentYear = new Date().getFullYear();
-        for (var y = currentYear; y >= 1920; y--) {
-            yearSelect.innerHTML += '<option>' + y + '</option>';
-        }
-    }
-})();
-</script>
 
 <!-- CART OVERLAY -->
-<div class="cart-overlay" id="cartOverlay" onclick="closeCartSidebar()"></div>
+<div class="cart-overlay" id="cartOverlay"></div>
 
 <!-- CART SIDEBAR -->
 <div class="cart-sidebar" id="cartSidebar">
@@ -370,6 +352,9 @@
 <!-- NOTIFICATION -->
 <div class="notif" id="notif"></div>
 
-<script src="{% static 'js/gg.js' %}"></script>
+<!-- SCRIPTS — loaded ONCE, at end of body, with defer -->
+<script src="{% static 'js/try.js' %}" defer></script>
+<script src="{% static 'js/gg.js' %}" defer></script>
+
 </body>
 </html>
