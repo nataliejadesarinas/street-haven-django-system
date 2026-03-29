@@ -7,6 +7,33 @@ class Admin(models.Model):
 
     def __str__(self):
         return self.name
+
+from django.contrib.auth.models import User
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    avatar = models.ImageField(upload_to='profiles/', blank=True, null=True)
+    contact = models.CharField(max_length=20, blank=True)
+    dob = models.DateField(blank=True, null=True)
+    address = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
+
+class Order(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('delivered', 'Delivered'),
+        ('cancelled', 'Cancelled'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product_name = models.CharField(max_length=200)
+    price = models.FloatField()
+    date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+
+    def __str__(self):
+        return f"Order {self.id} - {self.product_name}"
     
 class Brand(models.Model):
     name = models.CharField(max_length=100)

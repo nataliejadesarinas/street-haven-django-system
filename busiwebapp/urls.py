@@ -11,7 +11,6 @@ urlpatterns = [
     path('new/', views.new, name='new'),
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('profile/', views.profile, name='profile'),
-    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('admin-dashboard/delete/<str:product_type>/<int:pk>/',
          views.delete_product, name='delete_product'),
 ]

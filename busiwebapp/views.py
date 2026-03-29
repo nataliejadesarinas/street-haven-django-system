@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from .models import Brand, Category, Shoes, Apparels, Toys
+from .models import Brand, Category, Shoes, Apparels, Toys, UserProfile, Order
 from .forms import ShoesForm, ApparelsForm, ToysForm
 
 def home(request):
@@ -49,8 +53,26 @@ def new(request):
         'shoes': shoes, 'apparel': apparel, 'toys': toys
     })
 
+@login_required
 def profile(request):
-    return render(request, 'busiwebapp/profile.html')
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    orders = Order.objects.filter(user=request.user).order_by('-date')[:10]
+    order_count = orders.count()
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'upload_avatar' and 'avatar' in request.FILES:
+            user_profile.avatar = request.FILES['avatar']
+            user_profile.save()
+            messages.success(request, 'Profile photo updated!')
+            return redirect('profile')
+
+    context = {
+        'user_profile': user_profile,
+        'orders': orders,
+        'order_count': order_count,
+    }
+    return render(request, 'busiwebapp/profile.html', context)
 
 @staff_member_required
 def admin_dashboard(request):

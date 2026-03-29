@@ -795,6 +795,10 @@ footer { background: var(--surface); border-top: 1px solid var(--border); paddin
     transition: border-color 0.2s, background 0.35s, color 0.35s;
 }
 .form-group input:focus, .form-group select:focus { border-color: rgba(171,6,6,0.6); }
+.form-group input.valid { border-color: #00c853; background: rgba(0,200,83,0.05); }
+.form-group input.invalid { border-color: #ff6b6b; background: rgba(255,107,107,0.05); }
+.form-group label.valid { color: #00c853; }
+.form-group label.invalid { color: #ff6b6b; }
 .modal-btn {
     width: 100%; padding: 13px; background: var(--red); border: none;
     border-radius: 6px; color: #fff; font-family: 'Bebas Neue', sans-serif;

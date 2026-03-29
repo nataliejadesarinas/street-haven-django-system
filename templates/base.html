@@ -13,7 +13,6 @@
 </head>
 <body>
     <!-- Add this inside your <body>, ideally near the top of your main content -->
-<h1 id="main-heading">Welcome to My Site!</h1>
 
 <div class="banner">🔥 FREE SHIPPING ON ORDERS OVER ₱500 &nbsp;|&nbsp; 30-DAY RETURNS &nbsp;|&nbsp; NEW DROPS EVERY WEEK 🔥</div>
 
@@ -214,33 +213,78 @@
 
 <!-- SIGNUP / REGISTER MODAL -->
 <div class="modal-overlay" id="signupModal">
-    <div class="modal modal-register">
-        <button class="modal-close">✕</button>
-        <div class="modal-title">JOIN THE<br><span style="color:var(--red)">HAVEN</span></div>
-        <div class="modal-sub">Create your Street.Haven account</div>
-        <div class="form-group"><label>FULL NAME</label><input type="text" placeholder="Juan dela Cruz"></div>
-        <div class="form-group"><label>USERNAME</label><input type="text" placeholder="juandc_haven"></div>
-        <div class="form-group"><label>PASSWORD</label><input type="password" placeholder="••••••••"></div>
-        <div class="form-group">
-            <label>DATE OF BIRTH</label>
-            <div class="dob-row">
-                <select class="dob-select" id="dobMonth">
-                    <option value="">Month</option>
-                    <option>January</option><option>February</option><option>March</option>
-                    <option>April</option><option>May</option><option>June</option>
-                    <option>July</option><option>August</option><option>September</option>
-                    <option>October</option><option>November</option><option>December</option>
-                </select>
-                <select class="dob-select" id="dobDay">
-                    <option value="">Day</option>
-                </select>
-                <select class="dob-select" id="dobYear">
-                    <option value="">Year</option>
-                </select>
-            </div>
+  <div class="modal modal-register">
+    <button class="modal-close">&#10005;</button>
+    <div class="modal-title">JOIN THE<br><span style="color:var(--red)">HAVEN</span></div>
+    <div class="modal-sub">Create your Street.Haven account</div>
+
+    <div class="form-group"><label>Full Name</label><input type="text" placeholder="Juan dela Cruz" id="signupName" oninput="validateField(this)"></div>
+    <div class="form-group"><label>Email</label><input type="email" placeholder="you@email.com" id="signupEmail" oninput="validateField(this)"></div>
+    <div class="form-group"><label>Username</label><input type="text" placeholder="juandc_haven" id="signupUsername" oninput="validateField(this)"></div>
+    <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••" id="signupPassword" oninput="validateField(this)"></div>
+
+    <div class="form-group">
+      <label>Date of Birth</label>
+      <div class="dob-row">
+        <select class="dob-select" id="dobMonth">
+          <option value="">Month</option>
+          <option>January</option><option>February</option><option>March</option>
+          <option>April</option><option>May</option><option>June</option>
+          <option>July</option><option>August</option><option>September</option>
+          <option>October</option><option>November</option><option>December</option>
+        </select>
+        <select class="dob-select" id="dobDay"><option value="">Day</option></select>
+        <select class="dob-select" id="dobYear"><option value="">Year</option></select>
+      </div>
+    </div>
+
+    <div class="form-group"><label>Contact Number</label><input type="tel" placeholder="+63 9XX XXX XXXX" id="signupContact" oninput="validateField(this)"></div>
+
+    <div class="modal-divider" style="display:flex;align-items:center;gap:10px;margin:14px 0 16px;">
+      <span style="flex:1;height:1px;background:var(--border);display:block"></span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;">Delivery Address</span>
+      <span style="flex:1;height:1px;background:var(--border);display:block"></span>
+    </div>
+
+    <div class="form-group">
+      <label>Address</label>
+      <div style="display:grid;gap:8px">
+        <input type="text" placeholder="Street address, house no., barangay" id="signupStreet">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <input type="text" placeholder="City / Municipality" id="signupCityMun">
+          <select id="signupProvince" class="dob-select">
+            <option value="">Province</option>
+            <option>Metro Manila</option><option>Bulacan</option><option>Rizal</option>
+            <option>Cavite</option><option>Laguna</option><option>Batangas</option>
+            <option>Pampanga</option><option>Bataan</option><option>Zambales</option>
+            <option>Nueva Ecija</option>
+          </select>
         </div>
-        <div class="form-group"><label>CONTACT NUMBER</label><input type="tel" placeholder="+63 9XX XXX XXXX"></div>
-        <div class="form-group"><label>ADDRESS</label><input type="text" placeholder="Street, City, Province"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <select id="signupRegion" class="dob-select">
+            <option value="">Region</option>
+            <option value="NCR">NCR</option>
+            <option value="CALABARZON">CALABARZON</option>
+            <option value="Central Luzon">Central Luzon</option>
+            <option value="MIMAROPA">MIMAROPA</option>
+            <option value="Ilocos">Ilocos Region</option>
+            <option value="Bicol">Bicol Region</option>
+            <option value="Western Visayas">Western Visayas</option>
+            <option value="Central Visayas">Central Visayas</option>
+            <option value="Davao">Davao Region</option>
+            <option value="BARMM">BARMM</option>
+            <option value="CAR">CAR</option>
+          </select>
+          <input type="text" placeholder="ZIP Code" id="signupZip">
+        </div>
+      </div>
+    </div>
+
+    <button class="modal-btn" onclick="doRegister()">CREATE ACCOUNT</button>
+    <div class="modal-switch">Already have one? <a href="#" onclick="openLoginModal()">Login</a></div>
+  </div>
+</div>
+        </div>
         <button class="modal-btn" onclick="doRegister()">CREATE ACCOUNT</button>
         <div class="modal-switch">Already have one? <a href="#" onclick="openLoginModal()">Login</a></div>
     </div>
