@@ -225,7 +225,6 @@ function closeProductModal() {
     document.body.style.overflow = '';
 }
 
-<<<<<<< HEAD
 /** Open product modal from API search result object */
 function openProductModalFromData(item) {
     const card = document.createElement('div');
@@ -256,17 +255,6 @@ function openProductModalFromData(item) {
 
 window.openProductModalFromData = openProductModalFromData;
 
-document.addEventListener('DOMContentLoaded', () => {
-    function loadUserData() {
-        const user = JSON.parse(localStorage.getItem('sh-user') || '{}');
-        if (!user.id) return;
-
-        const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-
-        setText('profileUsername', user.username || 'User');
-        setText('profileEmail', user.email || '');
-        setText('avatarInitial', user.username ? user.username[0].toUpperCase() : 'U');
-=======
 function selectPmSize(el) {
     document.querySelectorAll('.pm-sz').forEach(s => s.classList.remove('active'));
     el.classList.add('active');
@@ -277,7 +265,6 @@ function switchAngle(thumb, src, label, prefix) {
     thumb.classList.add('active');
     document.getElementById('pmMainImg').innerHTML = `<img src="${src}" alt="${label}" onerror="this.style.display='none'">`;
 }
->>>>>>> d999fbf1a079da2684ba093f4fc45315a23cf793
 
 /* ══════════════════════════════════════════════════════
    NOTIFICATION
@@ -295,18 +282,6 @@ function showNotif(msg) {
     notif._t = setTimeout(() => notif.classList.remove('show'), 3000);
 }
 
-<<<<<<< HEAD
-        setText('settingsAvatar', user.username ? user.username[0].toUpperCase() : 'U');
-        setText('settingsAvatarName', user.username || 'User');
-        if (user.avatar) {
-            const avatarImg = document.getElementById('avatarImg');
-            const avatarInitial = document.getElementById('avatarInitial');
-            if (avatarImg) {
-                avatarImg.src = user.avatar;
-                avatarImg.style.display = 'block';
-            }
-            if (avatarInitial) avatarInitial.style.display = 'none';
-=======
 /* ══════════════════════════════════════════════════════
    DOB DROPDOWNS  (auto-populate Day & Year)
 ══════════════════════════════════════════════════════ */
@@ -339,19 +314,12 @@ function initDOBDropdowns() {
             o.value = d; o.textContent = d;
             if (d === cur) o.selected = true;
             dayEl.appendChild(o);
->>>>>>> d999fbf1a079da2684ba093f4fc45315a23cf793
         }
     }
     monthEl.addEventListener('change', refreshDays);
     yearEl.addEventListener('change',  refreshDays);
 }
 
-<<<<<<< HEAD
-        setText('orderCount', user.orders || 0);
-        setText('favCount', user.favorites || 0);
-        setText('profileHeaderName', user.username || 'User');
-        setText('profileHeaderAvatar', user.username ? user.username[0].toUpperCase() : 'U');
-=======
 function getDOBString() {
     const month = document.getElementById('dobMonth')?.selectedIndex;
     const day   = document.getElementById('dobDay')?.value;
@@ -439,7 +407,6 @@ async function doRegister() {
     if (!allValid) {
         showNotif('Please fill all required fields correctly');
         return;
->>>>>>> d999fbf1a079da2684ba093f4fc45315a23cf793
     }
 
     // Collect all fields
@@ -659,7 +626,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Cart
     updateCartCount();
-<<<<<<< HEAD
 
     (function initGlobalSearch() {
         const wrap = document.querySelector('.search-wrap');
@@ -869,15 +835,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     })();
 
-=======
->>>>>>> d999fbf1a079da2684ba093f4fc45315a23cf793
     document.querySelectorAll('.cart-btn').forEach(btn => btn.addEventListener('click', openCartSidebar));
     const cartOverlay = document.getElementById('cartOverlay');
     if (cartOverlay) cartOverlay.addEventListener('click', closeCartSidebar);
 
     // Add-to-cart buttons on product cards
     document.querySelectorAll('.add-btn').forEach(btn => {
-<<<<<<< HEAD
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (btn.dataset.pdCart !== undefined) {
@@ -891,11 +854,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const card   = btn.closest('.product-card');
             if (!card) return;
-=======
-        btn.addEventListener('click', e => {
-            e.stopPropagation();
-            const card   = btn.closest('.product-card');
->>>>>>> d999fbf1a079da2684ba093f4fc45315a23cf793
             const nameEl = card.querySelector('.p-name');
             const imgEl  = card.querySelector('.product-thumb img');
             const name   = nameEl ? nameEl.textContent.trim() : '';
@@ -906,12 +864,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-<<<<<<< HEAD
     document.querySelectorAll('.product-card:not(.search-result-card)').forEach(card => {
-=======
-    // Product card click → modal
-    document.querySelectorAll('.product-card').forEach(card => {
->>>>>>> d999fbf1a079da2684ba093f4fc45315a23cf793
         const thumb = card.querySelector('.product-thumb');
         if (thumb && !thumb.querySelector('.product-thumb-overlay')) {
             const overlay = document.createElement('div');

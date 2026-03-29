@@ -1,18 +1,10 @@
-<<<<<<< HEAD
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.admin.views.decorators import staff_member_required
-from django.http import JsonResponse, Http404
-from .models import Brand, Category, Shoes, Apparels, Toys
-from .search_utils import combined_search_querysets, serialize_product
-=======
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.http import JsonResponse, Http404
 from .models import Brand, Category, Shoes, Apparels, Toys, UserProfile, Order
->>>>>>> d999fbf1a079da2684ba093f4fc45315a23cf793
+from .search_utils import combined_search_querysets, serialize_product
 from .forms import ShoesForm, ApparelsForm, ToysForm
 
 def home(request):

@@ -7,13 +7,7 @@
     <link rel="icon" href="{% static 'images/logohaven.png' %}" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/gg.css' %}">
-<<<<<<< HEAD
-    <title>{% block title %}Street.Haven{% endblock %}</title>
-</head>
-<body>
-=======
-
-    <!-- FOUC fix: apply saved theme BEFORE page renders, inline so it runs instantly -->
+    <!-- FOUC fix: apply saved theme before paint -->
     <script>
         (function () {
             if (localStorage.getItem('sh-theme') === 'light') {
@@ -21,12 +15,9 @@
             }
         })();
     </script>
-
     <title>{% block title %}Street.Haven{% endblock %}</title>
 </head>
 <body>
-
->>>>>>> d999fbf1a079da2684ba093f4fc45315a23cf793
 <div class="banner">🔥 FREE SHIPPING ON ORDERS OVER ₱500 &nbsp;|&nbsp; 30-DAY RETURNS &nbsp;|&nbsp; NEW DROPS EVERY WEEK 🔥</div>
 
 <header>
@@ -361,14 +352,7 @@
 <!-- NOTIFICATION -->
 <div class="notif" id="notif"></div>
 
-<<<<<<< HEAD
-<script src="{% static 'js/try.js' %}"></script>
-<script src="{% static 'js/gg.js' %}"></script>
-=======
-<!-- SCRIPTS — loaded ONCE, at end of body, with defer -->
 <script src="{% static 'js/try.js' %}" defer></script>
 <script src="{% static 'js/gg.js' %}" defer></script>
-
->>>>>>> d999fbf1a079da2684ba093f4fc45315a23cf793
 </body>
 </html>
