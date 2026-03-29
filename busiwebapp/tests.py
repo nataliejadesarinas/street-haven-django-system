@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 class HomePageTest(LiveServerTestCase):
     """
     This test class checks the Django homepage using Selenium.
-    It verifies that the main heading exists and contains the correct text.
+    It verifies that the site header shows the brand identity.
     """
 
     def setUp(self):
@@ -35,19 +35,15 @@ class HomePageTest(LiveServerTestCase):
         """
         self.browser.quit()
 
-    def test_main_heading_text(self):
+    def test_home_shows_brand_logo(self):
         """
         Test case:
         1. Navigate to the homepage
-        2. Find the <h1> element with id="main-heading"
-        3. Check if its text matches the expected value
+        2. Confirm the header shows the Street.Haven brand
         """
 
-        # Step 1: Open the Django live server URL
         self.browser.get(self.live_server_url)
 
-        # Step 2: Locate the <h1 id="main-heading"> element
-        heading = self.browser.find_element(By.ID, "main-heading")
-
-        # Step 3: Assert that the text is exactly correct
-        self.assertEqual(heading.text, "Welcome to My Site!")
+        logo = self.browser.find_element(By.CLASS_NAME, "logo-text")
+        self.assertIn("STREET", logo.text)
+        self.assertIn("HAVEN", logo.text)

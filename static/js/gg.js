@@ -229,32 +229,68 @@ function closeProductModal() {
     document.body.style.overflow = '';
 }
 
+/** Open product modal from API search result object */
+function openProductModalFromData(item) {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.dataset.price = String(item.price ?? '');
+    card.dataset.brand = item.brand ?? '';
+    card.dataset.desc = item.description ?? '';
+    card.dataset.img = item.image ?? '';
+
+    const thumb = document.createElement('div');
+    thumb.className = 'product-thumb';
+    const img = document.createElement('img');
+    img.src = item.image || '';
+    img.alt = item.name || '';
+    thumb.appendChild(img);
+
+    const info = document.createElement('div');
+    info.className = 'product-info';
+    const nameEl = document.createElement('div');
+    nameEl.className = 'p-name';
+    nameEl.textContent = item.name || '';
+    info.appendChild(nameEl);
+
+    card.appendChild(thumb);
+    card.appendChild(info);
+    openProductModal(card);
+}
+
+window.openProductModalFromData = openProductModalFromData;
+
 document.addEventListener('DOMContentLoaded', () => {
     function loadUserData() {
         const user = JSON.parse(localStorage.getItem('sh-user') || '{}');
         if (!user.id) return;
 
-        document.getElementById('profileUsername').textContent = user.username || 'User';
-        document.getElementById('profileEmail').textContent = user.email || '';
-        document.getElementById('avatarInitial').textContent = user.username ? user.username[0].toUpperCase() : 'U';
+        const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+        setText('profileUsername', user.username || 'User');
+        setText('profileEmail', user.email || '');
+        setText('avatarInitial', user.username ? user.username[0].toUpperCase() : 'U');
 
         ['Name', 'Username', 'Email', 'Contact', 'Dob', 'Address'].forEach(field => {
             const el = document.getElementById('settings' + field);
             if (el && user[field.toLowerCase()]) el.value = user[field.toLowerCase()];
         });
 
-        document.getElementById('settingsAvatar').textContent = user.username ? user.username[0].toUpperCase() : 'U';
-        document.getElementById('settingsAvatarName').textContent = user.username || 'User';
+        setText('settingsAvatar', user.username ? user.username[0].toUpperCase() : 'U');
+        setText('settingsAvatarName', user.username || 'User');
         if (user.avatar) {
-            document.getElementById('avatarImg').src = user.avatar;
-            document.getElementById('avatarImg').style.display = 'block';
-            document.getElementById('avatarInitial').style.display = 'none';
+            const avatarImg = document.getElementById('avatarImg');
+            const avatarInitial = document.getElementById('avatarInitial');
+            if (avatarImg) {
+                avatarImg.src = user.avatar;
+                avatarImg.style.display = 'block';
+            }
+            if (avatarInitial) avatarInitial.style.display = 'none';
         }
 
-        document.getElementById('orderCount').textContent = user.orders || 0;
-        document.getElementById('favCount').textContent = user.favorites || 0;
-        document.getElementById('profileHeaderName').textContent = user.username || 'User';
-        document.getElementById('profileHeaderAvatar').textContent = user.username ? user.username[0].toUpperCase() : 'U';
+        setText('orderCount', user.orders || 0);
+        setText('favCount', user.favorites || 0);
+        setText('profileHeaderName', user.username || 'User');
+        setText('profileHeaderAvatar', user.username ? user.username[0].toUpperCase() : 'U');
     }
 
     function switchTab(tab, btn) {
@@ -276,23 +312,241 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateCartCount();
 
+    (function initGlobalSearch() {
+        const wrap = document.querySelector('.search-wrap');
+        const input = document.getElementById('globalSearchInput');
+        const btn = document.getElementById('globalSearchBtn');
+        const dd = document.getElementById('searchDropdown');
+        if (!wrap || !input || !dd) return;
+
+        let path = wrap.getAttribute('data-search-url') || wrap.dataset.searchUrl || '/api/search/';
+        if (!path.startsWith('/')) path = '/' + path.replace(/^\/+/, '');
+        let searchPage = wrap.getAttribute('data-search-page-url') || '/search/';
+        if (!searchPage.startsWith('/')) searchPage = '/' + searchPage.replace(/^\/+/, '');
+
+        function goToSearchPage() {
+            const q = input.value.trim();
+            if (!q) {
+                window.location.href = new URL(searchPage, window.location.origin).toString();
+                return;
+            }
+            const u = new URL(searchPage, window.location.origin);
+            u.searchParams.set('q', q);
+            window.location.href = u.toString();
+        }
+
+        let seq = 0;
+
+        function syncDropdownPosition() {
+            if (dd.hidden) return;
+            const r = input.getBoundingClientRect();
+            dd.style.left = r.left + 'px';
+            dd.style.top = r.bottom + 6 + 'px';
+            dd.style.width = Math.max(r.width, 200) + 'px';
+        }
+
+        function hideDropdown() {
+            dd.hidden = true;
+            dd.innerHTML = '';
+            dd.style.left = '';
+            dd.style.top = '';
+            dd.style.width = '';
+        }
+
+        function showLoading() {
+            dd.hidden = false;
+            dd.innerHTML = '<div class="search-loading" role="status">Searching…</div>';
+            syncDropdownPosition();
+        }
+
+        window.addEventListener('scroll', syncDropdownPosition, true);
+        window.addEventListener('resize', syncDropdownPosition);
+
+        function renderResults(query, results) {
+            dd.innerHTML = '';
+            if (!query.trim()) {
+                hideDropdown();
+                return;
+            }
+            if (!results.length) {
+                dd.hidden = false;
+                const empty = document.createElement('div');
+                empty.className = 'search-empty';
+                empty.setAttribute('role', 'status');
+                empty.textContent = 'No products match your search. Try a different name, brand, or category.';
+                dd.appendChild(empty);
+                syncDropdownPosition();
+                return;
+            }
+            dd.hidden = false;
+            results.forEach((item) => {
+                const row = document.createElement('a');
+                row.className = 'search-result-row';
+                row.href = '#';
+                row.setAttribute('role', 'option');
+
+                const thumb = document.createElement('span');
+                thumb.className = 'search-result-thumb';
+                if (item.image) {
+                    const im = document.createElement('img');
+                    im.src = item.image;
+                    im.alt = '';
+                    thumb.appendChild(im);
+                } else {
+                    thumb.textContent = '🛍';
+                }
+
+                const meta = document.createElement('span');
+                meta.className = 'search-result-meta';
+                const name = document.createElement('span');
+                name.className = 'search-result-name';
+                name.textContent = item.name || '';
+                const sub = document.createElement('span');
+                sub.className = 'search-result-sub';
+                sub.textContent = [item.brand, item.category].filter(Boolean).join(' · ');
+                meta.appendChild(name);
+                meta.appendChild(sub);
+
+                const price = document.createElement('span');
+                price.className = 'search-result-price';
+                price.textContent = '₱' + Number(item.price || 0).toLocaleString();
+
+                row.appendChild(thumb);
+                row.appendChild(meta);
+                row.appendChild(price);
+                row.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hideDropdown();
+                    input.blur();
+                    goToSearchPage();
+                });
+                dd.appendChild(row);
+            });
+
+            const seeAll = document.createElement('a');
+            seeAll.className = 'search-see-all';
+            seeAll.href = '#';
+            seeAll.textContent = 'View all results →';
+            seeAll.addEventListener('click', (e) => {
+                e.preventDefault();
+                hideDropdown();
+                goToSearchPage();
+            });
+            dd.appendChild(seeAll);
+
+            syncDropdownPosition();
+        }
+
+        function runSearch() {
+            const q = input.value.trim();
+            if (!q) {
+                hideDropdown();
+                return;
+            }
+            const my = ++seq;
+            showLoading();
+            let fetchUrl;
+            try {
+                const u = new URL(path, window.location.origin);
+                u.searchParams.set('q', q);
+                fetchUrl = u.toString();
+            } catch (e) {
+                fetchUrl = path + (path.includes('?') ? '&' : '?') + 'q=' + encodeURIComponent(q);
+            }
+            fetch(fetchUrl, { credentials: 'same-origin' })
+                .then((res) => {
+                    if (!res.ok) throw new Error('bad status');
+                    return res.json();
+                })
+                .then((data) => {
+                    if (my !== seq) return;
+                    renderResults(data.query || q, data.results || []);
+                })
+                .catch(() => {
+                    if (my !== seq) return;
+                    dd.hidden = false;
+                    dd.innerHTML = '';
+                    const err = document.createElement('div');
+                    err.className = 'search-empty';
+                    err.setAttribute('role', 'alert');
+                    err.textContent = 'Search is temporarily unavailable. Please try again.';
+                    dd.appendChild(err);
+                    syncDropdownPosition();
+                });
+        }
+
+        const debounced = (function () {
+            let t;
+            return function () {
+                clearTimeout(t);
+                t = setTimeout(runSearch, 280);
+            };
+        })();
+
+        input.addEventListener('input', () => {
+            if (!input.value.trim()) {
+                seq += 1;
+                hideDropdown();
+                return;
+            }
+            debounced();
+        });
+
+        input.addEventListener('focus', () => {
+            if (input.value.trim()) debounced();
+        });
+
+        const searchForm = input.closest('form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', (e) => {
+                if (!input.value.trim()) {
+                    e.preventDefault();
+                    window.location.href = new URL(searchPage, window.location.origin).toString();
+                    return;
+                }
+                hideDropdown();
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!wrap.contains(e.target)) hideDropdown();
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                hideDropdown();
+                input.blur();
+            }
+        });
+    })();
+
     document.querySelectorAll('.cart-btn').forEach(btn => btn.addEventListener('click', openCartSidebar));
 
     document.querySelectorAll('.add-btn').forEach(btn => {
-        const card    = btn.closest('.product-card');
-        const nameEl  = card.querySelector('.p-name');
-        const imgEl   = card.querySelector('.product-thumb img');
-        const name    = nameEl ? nameEl.textContent.trim() : '';
-        const imgSrc  = card.dataset.img || (imgEl ? imgEl.src : '');
-        const price   = card.dataset.price || 0;
-        const brand   = card.dataset.brand || '';
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
+            if (btn.dataset.pdCart !== undefined) {
+                addToCart(
+                    btn.dataset.name || '',
+                    btn.dataset.img || '',
+                    btn.dataset.price || 0,
+                    btn.dataset.brand || ''
+                );
+                return;
+            }
+            const card   = btn.closest('.product-card');
+            if (!card) return;
+            const nameEl = card.querySelector('.p-name');
+            const imgEl  = card.querySelector('.product-thumb img');
+            const name   = nameEl ? nameEl.textContent.trim() : '';
+            const imgSrc = card.dataset.img || (imgEl ? imgEl.src : '');
+            const price  = card.dataset.price || 0;
+            const brand  = card.dataset.brand || '';
             addToCart(name, imgSrc, price, brand);
         });
     });
 
-    document.querySelectorAll('.product-card').forEach(card => {
+    document.querySelectorAll('.product-card:not(.search-result-card)').forEach(card => {
         const thumb = card.querySelector('.product-thumb');
         if (thumb && !thumb.querySelector('.product-thumb-overlay')) {
             const overlay = document.createElement('div');

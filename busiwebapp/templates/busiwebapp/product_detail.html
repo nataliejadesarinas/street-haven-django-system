@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }} — Street.Haven{% endblock %}
+
+{% block content %}
+<div class="main-content product-detail-page">
+
+    <div class="pd-breadcrumb">
+        <a href="{% url 'home' %}">Home</a>
+        <span class="pd-crumb-sep">/</span>
+        <a href="{% url 'search' %}">Search</a>
+        <span class="pd-crumb-sep">/</span>
+        <span class="pd-crumb-current">{{ product.name }}</span>
+    </div>
+
+    <div class="pd-layout">
+        <div class="pd-gallery">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="pd-main-img">
+            {% else %}
+                <div class="pd-main-ph">{% if product_type == 'shoes' %}👟{% elif product_type == 'apparel' %}👕{% else %}🧸{% endif %}</div>
+            {% endif %}
+        </div>
+        <div class="pd-info">
+            <div class="pd-brand">{{ brand_name }}</div>
+            <h1 class="pd-title">{{ product.name }}</h1>
+            <div class="pd-price">₱{{ product.price }}</div>
+            {% if product.stock == 0 %}
+                <p class="pd-stock-out">Currently out of stock</p>
+            {% else %}
+                <p class="pd-stock">In stock</p>
+            {% endif %}
+            <p class="pd-desc">{{ product.description }}</p>
+            <div class="pd-actions">
+                <button type="button" class="pd-add-cart add-btn"
+                    data-pd-cart="1"
+                    data-name="{{ product.name }}"
+                    data-brand="{{ brand_name }}"
+                    data-price="{{ product.price }}"
+                    data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
+                    + ADD TO CART
+                </button>
+                <a href="{% url 'search' %}" class="pd-back-search">← Back to search</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Search{% if query %}: {{ query }}{% endif %} — Street.Haven{% endblock %}
+
+{% block content %}
+<div class="main-content">
+
+    <div class="pg-header">
+        <div class="pg-title">SEARCH <span class="red">RESULTS</span></div>
+        {% if query %}
+        <div class="pg-desc">Showing matches for “{{ query }}” — {{ total }} item{{ total|pluralize }}</div>
+        {% else %}
+        <div class="pg-desc">Enter a search in the header to find products by name, brand, category, or keywords like shoes, apparel, or toys.</div>
+        {% endif %}
+    </div>
+
+    {% if query and total == 0 %}
+    <div class="section" style="padding:48px 36px">
+        <p style="color:var(--muted);font-size:16px;max-width:520px;line-height:1.7">
+            No products matched “{{ query }}”. Try a brand (e.g. Nike, Adidas), a product name, or category words like <strong>shoes</strong>, <strong>apparel</strong>, or <strong>toys</strong>.
+        </p>
+        <a href="{% url 'all_products' %}" class="btn-primary" style="display:inline-block;margin-top:20px;text-decoration:none">Browse all products</a>
+    </div>
+    {% elif combined %}
+    <div class="toolbar">
+        <span class="toolbar-label">SORT BY</span>
+        <select class="sort-select">
+            <option value="default">Relevance</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name">Name A–Z</option>
+        </select>
+        <span class="result-count">{{ total }} items</span>
+    </div>
+
+    <div class="section" style="padding-top:24px">
+        <div class="product-grid">
+            {% for kind, product in combined %}
+            <div class="product-card search-result-card"
+                 data-name="{{ product.name }}"
+                 data-brand="{% if kind == 'toys' %}Collectible{% else %}{{ product.brand.name }}{% endif %}"
+                 data-price="{{ product.price }}"
+                 data-desc="{{ product.description }}"
+                 data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
+                <a class="search-result-card-link" href="{% url 'product_detail' kind product.pk %}">
+                    <div class="product-thumb">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            {% if kind == 'shoes' %}👟{% elif kind == 'apparel' %}👕{% else %}🧸{% endif %}
+                        {% endif %}
+                        {% if product.stock == 0 %}
+                            <span class="badge badge-hot">SOLD OUT</span>
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <div class="p-brand">{% if kind == 'toys' %}Collectible{% else %}{{ product.brand.name }}{% endif %}</div>
+                        <div class="p-name">{{ product.name }}</div>
+                        <div class="p-price"><span class="p-now">₱{{ product.price }}</span></div>
+                    </div>
+                </a>
+                <div class="search-result-card-actions">
+                    <button type="button" class="add-btn">+ ADD TO CART</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

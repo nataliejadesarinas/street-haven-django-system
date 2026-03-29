@@ -1,6 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
+from django.http import JsonResponse, Http404
 from .models import Brand, Category, Shoes, Apparels, Toys
+from .search_utils import combined_search_querysets, serialize_product
 from .forms import ShoesForm, ApparelsForm, ToysForm
 
 def home(request):
@@ -51,6 +53,81 @@ def new(request):
 
 def profile(request):
     return render(request, 'busiwebapp/profile.html')
+
+
+def _safe_image_url(fieldfile):
+    if not fieldfile or not getattr(fieldfile, 'name', None):
+        return ''
+    try:
+        return fieldfile.url
+    except (ValueError, AttributeError):
+        return ''
+
+
+def search_api(request):
+    """Return matching products as JSON (same rules as full search page)."""
+    q = (request.GET.get('q') or '').strip()[:100]
+    if not q:
+        return JsonResponse({'query': '', 'results': []})
+
+    shoes_qs, apparel_qs, toys_qs = combined_search_querysets(q)
+    results = []
+
+    for p in shoes_qs[:8]:
+        d = serialize_product(p, 'shoes')
+        d['image'] = _safe_image_url(p.image)
+        results.append(d)
+    for p in apparel_qs[:8]:
+        d = serialize_product(p, 'apparel')
+        d['image'] = _safe_image_url(p.image)
+        results.append(d)
+    for p in toys_qs[:8]:
+        d = serialize_product(p, 'toys')
+        d['image'] = _safe_image_url(p.image)
+        results.append(d)
+
+    return JsonResponse({'query': q, 'results': results[:24]})
+
+
+def search_results(request):
+    """Full-page search results (brands, categories, product names, keywords like shoes/apparel/toys)."""
+    q = (request.GET.get('q') or '').strip()[:100]
+    combined = []
+    if q:
+        sq, aq, tq = combined_search_querysets(q)
+        for p in sq[:150]:
+            combined.append(('shoes', p))
+        for p in aq[:150]:
+            combined.append(('apparel', p))
+        for p in tq[:150]:
+            combined.append(('toys', p))
+
+    return render(request, 'busiwebapp/search_results.html', {
+        'query': q,
+        'combined': combined,
+        'total': len(combined),
+    })
+
+
+def product_detail(request, product_type, pk):
+    """Product page (opened from search results and can be bookmarked)."""
+    if product_type == 'shoes':
+        product = get_object_or_404(Shoes, pk=pk, is_available=True)
+        brand_name = product.brand.name
+    elif product_type == 'apparel':
+        product = get_object_or_404(Apparels, pk=pk, is_available=True)
+        brand_name = product.brand.name
+    elif product_type == 'toys':
+        product = get_object_or_404(Toys, pk=pk, is_available=True)
+        brand_name = 'Collectible'
+    else:
+        raise Http404
+
+    return render(request, 'busiwebapp/product_detail.html', {
+        'product': product,
+        'product_type': product_type,
+        'brand_name': brand_name,
+    })
 
 @staff_member_required
 def admin_dashboard(request):

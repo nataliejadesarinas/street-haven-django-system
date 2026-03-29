@@ -7,14 +7,9 @@
     <link rel="icon" href="{% static 'images/logohaven.png' %}" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/gg.css' %}">
-    <script src="{% static 'js/try.js' %}"></script>
-    <script src="{% static 'js/gg.js' %}"></script>
     <title>{% block title %}Street.Haven{% endblock %}</title>
 </head>
 <body>
-    <!-- Add this inside your <body>, ideally near the top of your main content -->
-<h1 id="main-heading">Welcome to My Site!</h1>
-
 <div class="banner">🔥 FREE SHIPPING ON ORDERS OVER ₱500 &nbsp;|&nbsp; 30-DAY RETURNS &nbsp;|&nbsp; NEW DROPS EVERY WEEK 🔥</div>
 
 <header>
@@ -31,9 +26,12 @@
             <li><a class="{% block nav_toys %}{% endblock %}" href="{% url 'toys' %}">TOYS</a></li>
         </ul>
     </nav>
-    <div class="search-bar">
-        <button type="button">🔍</button>
-        <input type="text" placeholder="Search sneakers, apparel, brands...">
+    <div class="search-wrap" data-search-url="{% url 'search_api' %}" data-search-page-url="{% url 'search' %}">
+        <form class="search-bar" action="{% url 'search' %}" method="get" role="search">
+            <button type="submit" id="globalSearchBtn" aria-label="Search">🔍</button>
+            <input type="search" id="globalSearchInput" name="q" value="{{ request.GET.q|default:'' }}" autocomplete="off" placeholder="Search sneakers, apparel, brands..." aria-autocomplete="list" aria-controls="searchDropdown" maxlength="100">
+        </form>
+        <div class="search-dropdown" id="searchDropdown" role="listbox" hidden></div>
     </div>
     <div class="header-right">
         {% if request.session.user %}
@@ -60,7 +58,7 @@
             <a class="sb-item {% block sb_shoes %}{% endblock %}" href="{% url 'shoes' %}"><span class="sb-icon">👟</span> Shoes</a>
             <a class="sb-item {% block sb_apparel %}{% endblock %}" href="{% url 'apparel' %}"><span class="sb-icon">👕</span> Apparel</a>
             <a class="sb-item {% block sb_toys %}{% endblock %}" href="{% url 'toys' %}"><span class="sb-icon">🧸</span> Toys</a>
-            <a class="sb-item" href="{% url 'new' %}"><span class="sb-icon">✨</span> New Arrivals <span class="sb-badge" style="background:#1a1aff">NEW</span></a>
+            <a class="sb-item {% block sb_new %}{% endblock %}" href="{% url 'new' %}"><span class="sb-icon">✨</span> New Arrivals <span class="sb-badge" style="background:#1a1aff">NEW</span></a>
         </div>
 
         <!-- BRANDS STRIP -->
@@ -326,6 +324,7 @@
 <!-- NOTIFICATION -->
 <div class="notif" id="notif"></div>
 
+<script src="{% static 'js/try.js' %}"></script>
 <script src="{% static 'js/gg.js' %}"></script>
 </body>
 </html>
