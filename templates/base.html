@@ -51,7 +51,6 @@
         <button class="btn-login" onclick="openLoginModal()">LOGIN</button>
         {% endif %}
         <button class="cart-btn">🛒<span class="cart-count">0</span></button>
-        <!-- No inline onclick — wired via addEventListener in gg.js -->
         <button class="theme-toggle">☀️ LIGHT</button>
     </div>
 </header>
@@ -70,18 +69,26 @@
             <a class="sb-item {% block sb_new %}{% endblock %}" href="{% url 'new' %}"><span class="sb-icon">✨</span> New Arrivals <span class="sb-badge" style="background:#1a1aff">NEW</span></a>
         </div>
 
-        <!-- BRANDS STRIP -->
+        <!-- BRANDS STRIP — data-brand drives the JS filter -->
         <div class="brands-strip">
             <div class="brands-label">— OUR BRANDS —</div>
             <div class="brands-row">
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Nike"><img src="{% static 'images/nikelogo.jpg' %}" alt="Nike Logo" class="brand-svg-lg"><span>NIKE</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Jordan"><img src="{% static 'images/jordanlogo.png' %}" alt="Jordan Logo" class="brand-svg-lg"><span>JORDAN</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Adidas"><img src="{% static 'images/adidaslogo.png' %}" alt="Adidas Logo" class="brand-svg-lg"><span>ADIDAS</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=NewBalance"><img src="{% static 'images/newbalancelogo.png' %}" alt="New Balance Logo" class="brand-svg-lg"><span>NEW BALANCE</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Puma"><img src="{% static 'images/pumalogo.png' %}" alt="Puma Logo" class="brand-svg-lg"><span>PUMA</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Vans"><img src="{% static 'images/vanslogo.png' %}" alt="Vans Logo" class="brand-svg-lg"><span>VANS</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Converse"><img src="{% static 'images/converselogo.png' %}" alt="Converse Logo" class="brand-svg-lg"><span>CONVERSE</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Reebok"><img src="{% static 'images/reeboklogo.png' %}" alt="Reebok Logo" class="brand-svg-lg"><span>REEBOK</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=Nike"       data-brand="Nike">
+                    <img src="{% static 'images/nikelogo.jpg' %}"       alt="Nike Logo"        class="brand-svg-lg"><span>NIKE</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=Jordan"     data-brand="Jordan">
+                    <img src="{% static 'images/jordanlogo.png' %}"     alt="Jordan Logo"      class="brand-svg-lg"><span>JORDAN</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=Adidas"     data-brand="Adidas">
+                    <img src="{% static 'images/adidaslogo.png' %}"     alt="Adidas Logo"      class="brand-svg-lg"><span>ADIDAS</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=New Balance" data-brand="New Balance">
+                    <img src="{% static 'images/newbalancelogo.png' %}" alt="New Balance Logo" class="brand-svg-lg"><span>NEW BALANCE</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=Puma"       data-brand="Puma">
+                    <img src="{% static 'images/pumalogo.png' %}"       alt="Puma Logo"        class="brand-svg-lg"><span>PUMA</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=Vans"       data-brand="Vans">
+                    <img src="{% static 'images/vanslogo.png' %}"       alt="Vans Logo"        class="brand-svg-lg"><span>VANS</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=Converse"   data-brand="Converse">
+                    <img src="{% static 'images/converselogo.png' %}"   alt="Converse Logo"    class="brand-svg-lg"><span>CONVERSE</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=Reebok"     data-brand="Reebok">
+                    <img src="{% static 'images/reeboklogo.png' %}"     alt="Reebok Logo"      class="brand-svg-lg"><span>REEBOK</span></a>
             </div>
         </div>
 
@@ -114,26 +121,28 @@
         {% endif %}
         {% endblock %}
 
+        <!-- COLOR — data-color is what the JS reads for the filter value -->
         <div class="sb-section">
             <div class="sb-title">COLOR</div>
             <div class="color-row">
-                <div class="clr-dot" style="background:#fff" title="White"></div>
-                <div class="clr-dot" style="background:#111;border-color:#555" title="Black"></div>
-                <div class="clr-dot" style="background:#cc0000" title="Red"></div>
-                <div class="clr-dot" style="background:#1a1aff" title="Blue"></div>
-                <div class="clr-dot" style="background:#00aa44" title="Green"></div>
-                <div class="clr-dot" style="background:#ffaa00" title="Yellow"></div>
-                <div class="clr-dot" style="background:#ff69b4" title="Pink"></div>
-                <div class="clr-dot" style="background:#888" title="Grey"></div>
+                <div class="clr-dot" style="background:#fff"                   data-color="White"  title="White"></div>
+                <div class="clr-dot" style="background:#111;border-color:#555" data-color="Black"  title="Black"></div>
+                <div class="clr-dot" style="background:#cc0000"                data-color="Red"    title="Red"></div>
+                <div class="clr-dot" style="background:#1a1aff"                data-color="Blue"   title="Blue"></div>
+                <div class="clr-dot" style="background:#00aa44"                data-color="Green"  title="Green"></div>
+                <div class="clr-dot" style="background:#ffaa00"                data-color="Yellow" title="Yellow"></div>
+                <div class="clr-dot" style="background:#ff69b4"                data-color="Pink"   title="Pink"></div>
+                <div class="clr-dot" style="background:#888"                   data-color="Grey"   title="Grey"></div>
             </div>
         </div>
 
+        <!-- PRICE RANGE -->
         <div class="sb-section" style="padding-bottom:28px">
             <div class="sb-title">PRICE RANGE (₱)</div>
             <div class="price-row">
-                <input type="number" placeholder="Min">
+                <input type="number" placeholder="Min" min="0">
                 <span class="price-sep">—</span>
-                <input type="number" placeholder="Max">
+                <input type="number" placeholder="Max" min="0">
             </div>
             <button class="apply-btn">APPLY FILTER</button>
         </div>
@@ -354,5 +363,6 @@
 
 <script src="{% static 'js/try.js' %}" defer></script>
 <script src="{% static 'js/gg.js' %}" defer></script>
+<script src="{% static 'js/sidebar_filters.js' %}" defer></script>
 </body>
 </html>
