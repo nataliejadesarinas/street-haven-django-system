@@ -198,3 +198,23 @@ def delete_product(request, product_type, pk):
         elif product_type == 'toys':
             Toys.objects.filter(pk=pk).delete()
     return redirect('admin_dashboard')
+
+def location_api(request):
+    """API for province → city/municipality dropdown"""
+    import json
+    import os
+    from django.templatetags.static import static
+    
+    locations_path = static('data/ph_locations.json')
+    
+    try:
+        with open(os.path.join('static', 'data', 'ph_locations.json'), 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return JsonResponse(data)
+    except FileNotFoundError:
+        # Fallback minimal data
+        data = {
+            "Metro Manila": ["Manila", "Quezon City"],
+            "Bulacan": ["Malolos", "San Jose del Monte"],
+        }
+        return JsonResponse(data)

@@ -1,19 +1,35 @@
-# TODO: New Arrivals Page Implementation
+# Street.Haven Register Modal Fix: Province → City Dropdown
+Minimal frontend-only implementation
 
 ## Plan Summary
-Populate existing `/new/` route (URL/view already exist) with shoe-focused New Arrivals page showing latest 12 available shoes in cards with NEW badges.
+- Change city input → select dropdown
+- JS: populate cities based on province selection  
+- Minimal hardcoded data (3-5 cities/province)
+- Update both modal templates for consistency
 
-## Steps
-- [x] Step 1: Update busiwebapp/views.py - Modify `new()` view to return latest shoes only
-- [x] Step 2: Create busiwebapp/templates/busiwebapp/new.html - Full page template with product cards + NEW badges
-- [x] Step 3: Test locally - Run server, visit /new/, verify functionality
-- [x] Complete: Mark done
+## Steps to Complete
 
-**Status: ✅ COMPLETE**
+### 1. ✅ Plan created & approved
+### 2. ✅ Update `templates/base.html` 
+   - Convert `#signupCityMun` input → empty select
+### 3. ✅ Update `static/js/gg.js`
+   - Add CITY_DATA object  
+   - Add updateCities() function
+   - Attach to province onchange
+### 4. ✅ Update `static/js/gg.js`
+   - Fixed city dropdown init for both modal templates (init on modal open)
+### 5. Update `busiwebapp/templates/busiwebapp/_login_modal.html`
+   - Added matching address section
+### 3. Update `static/js/gg.js`
+   - Add cityData object  
+   - Add updateCities() function
+   - Attach to province onchange
+### 4. Update `busiwebapp/templates/busiwebapp/_login_modal.html`
+   - Add full address section matching base.html
+### 5. Test modal
+   - Open register → select province → verify cities populate
+   - Submit → check console formData.cityMun
+### 6. Complete & demo
 
-Files updated:
-- `busiwebapp/views.py` (new view → latest_shoes)
-- `busiwebapp/templates/busiwebapp/new.html` (page w/ NEW badges, images, cards)
-
-**/new/ now shows latest shoe products with NEW badges, images, name, brand, price!**
+**Status: 1/6 done**
 

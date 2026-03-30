@@ -320,6 +320,76 @@ function initDOBDropdowns() {
     yearEl.addEventListener('change',  refreshDays);
 }
 
+/* ══════════════════════════════════════════════════════
+   CITY DATA — Minimal cities per province
+══════════════════════════════════════════════════════ */
+const CITY_DATA = {
+    'Metro Manila': ['Manila', 'Quezon City', 'Makati', 'Pasig', 'Taguig'],
+    'Bulacan': ['Malolos', 'San Jose del Monte', 'Meycauayan', 'Santa Maria'],
+    'Rizal': ['Antipolo', 'Taytay', 'Cainta', 'Rodriguez'],
+    'Cavite': ['Dasmariñas', 'Bacoor', 'Imus', 'Trece Martires'],
+    'Laguna': ['Santa Cruz', 'Calamba', 'San Pablo', 'Biñan'],
+    'Batangas': ['Batangas City', 'Lipa City', 'Tanjay', 'Balayan'],
+    'Pampanga': ['San Fernando', 'Angeles City', 'Mabalacat', 'Porac'],
+    'Bataan': ['Balanga', 'Dinalupihan', 'Mariveles', 'Orani'],
+    'Zambales': ['Olongapo City', 'Iba', 'Botolan', 'Candelaria'],
+    'Nueva Ecija': ['Cabanatuan City', 'Palayan City', 'Gapan City', 'Science City of Muñoz']
+};
+
+async function updateCities() {
+    const provinceEl = document.getElementById('signupProvince');
+    const cityEl = document.getElementById('signupCityMun');
+    if (!provinceEl || !cityEl) return;
+
+    const province = provinceEl.value;
+    cityEl.innerHTML = '<option value="">Loading cities...</option>';
+
+    try {
+        const res = await fetch('/api/locations/');
+        if (!res.ok) throw new Error('API failed');
+        const CITY_DATA = await res.json();
+        
+        cityEl.innerHTML = '<option value="">City / Municipality</option>';
+        if (province && CITY_DATA[province]) {
+            CITY_DATA[province].forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                cityEl.appendChild(option);
+            });
+        }
+    } catch(e) {
+        console.error('Location API error:', e);
+        cityEl.innerHTML = '<option value="">Error loading cities</option>';
+    }
+}
+
+// Auto-wire city updater to signupModal open (both templates)
+function initAddressDropdowns() {
+    const provinceEl = document.getElementById('signupProvince');
+    const cityEl = document.getElementById('signupCityMun');
+    if (provinceEl && cityEl) {
+        provinceEl.removeEventListener('change', updateCities); // Avoid duplicates
+        provinceEl.addEventListener('change', updateCities);
+        updateCities(); // Reset cities
+    }
+}
+
+// Original DOMContentLoaded city init (for static pages)
+document.addEventListener('DOMContentLoaded', function() {
+    const provinceEl = document.getElementById('signupProvince');
+    if (provinceEl) {
+        initAddressDropdowns();
+    }
+});
+
+// Also init when signup modal opens
+const origOpenSignup = openSignupModal;
+openSignupModal = function() {
+    origOpenSignup();
+    setTimeout(initAddressDropdowns, 50); // Small delay for modal animation
+};
+
 function getDOBString() {
     const month = document.getElementById('dobMonth')?.selectedIndex;
     const day   = document.getElementById('dobDay')?.value;

@@ -41,6 +41,43 @@
             </div>
             <button type="submit" class="modal-btn">CREATE ACCOUNT</button>
         </form>
+        
+        <!-- Delivery Address Section -->
+        <div class="modal-divider" style="display:flex;align-items:center;gap:10px;margin:14px 0 16px;">
+          <span style="flex:1;height:1px;background:var(--border);display:block"></span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;">Delivery Address</span>
+          <span style="flex:1;height:1px;background:var(--border);display:block"></span>
+        </div>
+        <div class="form-group">
+          <label>Street address, house no., barangay</label>
+          <input type="text" id="signupStreet" placeholder="Street address, house no., barangay">
+        </div>
+        <div class="form-group">
+          <label>City / Province</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <select id="signupCityMun" class="dob-select">
+              <option value="">City / Municipality</option>
+            </select>
+            <select id="signupProvince" class="dob-select">
+              <option value="">Province</option>
+              <option>Metro Manila</option><option>Bulacan</option><option>Rizal</option>
+              <option>Cavite</option><option>Laguna</option><option>Batangas</option>
+              <option>Pampanga</option><option>Bataan</option><option>Zambales</option>
+              <option>Nueva Ecija</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Region / ZIP</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <select id="signupRegion" class="dob-select">
+              <option value="">Region</option>
+              <option value="NCR">NCR</option><option value="CALABARZON">CALABARZON</option>
+            </select>
+            <input type="text" id="signupZip" placeholder="ZIP Code">
+          </div>
+        </div>
+        
         <div class="modal-switch">Already have one? <a onclick="openLoginModal()">Login here</a></div>
     </div>
 </div>
