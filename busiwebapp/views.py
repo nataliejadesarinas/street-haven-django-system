@@ -119,11 +119,11 @@ def toys(request):
 
 
 def new(request):
-    shoes   = Shoes.objects.filter(is_available=True).order_by('-id')[:8]
-    apparel = Apparels.objects.filter(is_available=True).order_by('-id')[:8]
-    toys    = Toys.objects.filter(is_available=True).order_by('-id')[:8]
+    # Change the dictionary key to 'latest_shoes' to match your template
+    latest_shoes = Shoes.objects.filter(is_available=True).order_by('-id')[:8]
+    
     return render(request, 'busiwebapp/new.html', {
-        'shoes': shoes, 'apparel': apparel, 'toys': toys,
+        'latest_shoes': latest_shoes, # Now this matches {% for product in latest_shoes %}
     })
 
 
