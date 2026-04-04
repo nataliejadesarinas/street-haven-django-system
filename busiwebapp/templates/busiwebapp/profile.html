@@ -18,7 +18,7 @@
                     <input type="hidden" name="action" value="upload_avatar">
                     <div class="profile-avatar" onclick="document.getElementById('avatarFileInput').click()" title="Change profile photo">
                         {% if user_profile.avatar %}
-                            <img src="{{ user_profile.avatar.url|default:'#' }}" alt="Profile Photo">
+                            <img src="{{ user_profile.avatar.url }}" alt="Profile Photo">
                         {% else %}
                             {{ user.username.0|upper }}
                         {% endif %}
@@ -34,7 +34,7 @@
  
             <div class="profile-stats">
                 <div class="pstat">
-{{ order_count|default:"0" }}
+                    <div class="pstat-num">{{ order_count }}</div>
                     <div class="pstat-lbl">ORDERS</div>
                 </div>
                 <div class="pstat">
@@ -122,7 +122,7 @@
                     <div class="avatar-upload-row">
                         <div class="avatar-big">
                             {% if user_profile.avatar %}
-                                <img src="{{ user_profile.avatar.url|default:'#' }}" alt="">
+                                <img src="{{ user_profile.avatar.url }}" alt="">
                             {% else %}
                                 {{ user.username.0|upper }}
                             {% endif %}
@@ -226,10 +226,10 @@
  
                     <div class="danger-zone">
                         <div class="danger-title">⚠ &nbsp;DANGER ZONE</div>
-        <div class="danger-sub">Deleting your account is permanent and cannot be undone. All your orders and data will be erased.</div>
-                        <a class="btn-danger" href="{% url 'logout' %}" onclick="return confirm('Are you absolutely sure? This cannot be undone.')">
+                        <div class="danger-sub">Deleting your account is permanent and cannot be undone. All your orders and data will be erased.</div>
+                        <button class="btn-danger" onclick="if(confirm('Are you absolutely sure? This cannot be undone.')) window.location.href='{% url  %}'">
                             🗑 &nbsp;DELETE MY ACCOUNT
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -238,10 +238,23 @@
     </div>
 </div>
 </div>
+<script>
+    window.tabToOpen = null;
 
-{% if 'username' in message.tags %}
-    window.tabToOpen = 'username';
-{% endif %}
+    {% if messages %}
+        {% for message in messages %}
+            {% with msg=message|lower %}
+                {% if 'username' in msg %}
+                    window.tabToOpen = 'username';
+                {% elif 'password' in msg %}
+                    window.tabToOpen = 'password';
+                {% elif 'profile' in msg %}
+                    window.tabToOpen = 'settings';
+                {% endif %}
+            {% endwith %}
+        {% endfor %}
+    {% endif %}
+</script>
 
 <script src="{% static 'js/profile.js' %}"></script>
 

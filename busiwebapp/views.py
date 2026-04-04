@@ -135,22 +135,36 @@ def search_api(request):
     q = request.GET.get('q', '').strip()
     results = []
     if q:
-        for item in Shoes.objects.filter(is_available=True, name__icontains=q)[:5]:
+        # Use the improved search utilities
+        from .search_utils import combined_search_querysets
+        shoes_qs, apparel_qs, toys_qs = combined_search_querysets(q)
+        
+        # Limit results per category to avoid too many API results
+        for item in shoes_qs[:5]:
             results.append({
-                'name': item.name, 'brand': item.brand.name if item.brand else '',
-                'category': 'Shoes', 'price': float(item.price),
-                'image': item.image.url if item.image else '',
-            })
-        for item in Apparels.objects.filter(is_available=True, name__icontains=q)[:5]:
-            results.append({
-                'name': item.name, 'brand': item.brand.name if item.brand else '',
-                'category': 'Apparel', 'price': float(item.price),
-                'image': item.image.url if item.image else '',
-            })
-        for item in Toys.objects.filter(is_available=True, name__icontains=q)[:5]:
-            results.append({
-                'name': item.name, 'brand': '', 'category': 'Toys',
+                'name': item.name, 
+                'brand': item.brand.name if item.brand else '',
+                'category': 'Shoes', 
                 'price': float(item.price),
+                'description': item.description,
+                'image': item.image.url if item.image else '',
+            })
+        for item in apparel_qs[:5]:
+            results.append({
+                'name': item.name, 
+                'brand': item.brand.name if item.brand else '',
+                'category': 'Apparel', 
+                'price': float(item.price),
+                'description': item.description,
+                'image': item.image.url if item.image else '',
+            })
+        for item in toys_qs[:5]:
+            results.append({
+                'name': item.name, 
+                'brand': '', 
+                'category': 'Toys',
+                'price': float(item.price),
+                'description': item.description,
                 'image': item.image.url if item.image else '',
             })
     return JsonResponse({'query': q, 'results': results})
@@ -162,34 +176,13 @@ def search(request):
     combined = []
     
     if not q:
-        # Note: Using 'search.html' because your screenshot shows 
-        # it is NOT inside a 'busiwebapp' subfolder
-        return render(request, 'search.html', {'total': 0, 'query': ''})
+        return render(request, 'busiwebapp/search.html', {'total': 0, 'query': ''})
 
-    # 1. Fetch by Name or Brand Name
-    # We use brand__name__icontains to reach into the Brand model
-    shoes_qs = Shoes.objects.filter(
-        Q(is_available=True) & 
-        (Q(name__icontains=q) | Q(brand__name__icontains=q))
-    ).distinct()
+    # Use the improved search utilities
+    from .search_utils import combined_search_querysets
+    shoes_qs, apparel_qs, toys_qs = combined_search_querysets(q)
 
-    apparel_qs = Apparels.objects.filter(
-        Q(is_available=True) & 
-        (Q(name__icontains=q) | Q(brand__name__icontains=q))
-    ).distinct()
-
-    toys_qs = Toys.objects.filter(is_available=True, name__icontains=q)
-
-    # 2. Category Keyword Logic
-    # If the user types 'shoes', show all available shoes regardless of name
-    if "shoe" in q:
-        shoes_qs = Shoes.objects.filter(is_available=True)
-    if "apparel" in q or "shirt" in q or "clothing" in q:
-        apparel_qs = Apparels.objects.filter(is_available=True)
-    if "toy" in q or "collect" in q:
-        toys_qs = Toys.objects.filter(is_available=True)
-
-    # 3. Combine into the list format your template expects: (kind, product)
+    # Combine into the list format your template expects: (kind, product)
     for item in shoes_qs:
         combined.append(('shoes', item))
     for item in apparel_qs:
@@ -209,15 +202,19 @@ def product_detail(request, product_type, pk):
     from django.shortcuts import get_object_or_404
     if product_type == 'shoes':
         product = get_object_or_404(Shoes, pk=pk)
+        brand_name = product.brand.name if product.brand else 'Unknown'
     elif product_type == 'apparels':
         product = get_object_or_404(Apparels, pk=pk)
+        brand_name = product.brand.name if product.brand else 'Unknown'
     elif product_type == 'toys':
         product = get_object_or_404(Toys, pk=pk)
+        brand_name = 'Collectible'
     else:
         return redirect('home')
     return render(request, 'busiwebapp/product_detail.html', {
         'product': product,
         'product_type': product_type,
+        'brand_name': brand_name,
     })
 
 

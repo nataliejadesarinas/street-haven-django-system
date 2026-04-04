@@ -1523,3 +1523,38 @@ footer { background: var(--surface); border-top: 1px solid var(--border); paddin
     border: 1px solid rgba(171,6,6,0.3);
     color: #ff6b6b;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SIDEBAR FILTER — active states & filter chips
+   Paste this at the very bottom of gg.css
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Active size button */
+.sz-btn.active {
+    background: var(--red);
+    color: #fff;
+    border-color: var(--red);
+    font-weight: 700;
+}
+
+/* Active color dot */
+.clr-dot.active {
+    outline: 3px solid var(--red);
+    outline-offset: 3px;
+    transform: scale(1.2);
+    transition: outline 0.15s, transform 0.15s;
+}
+
+/* Active brand logo in sidebar */
+.brand-item.filter-active {
+    opacity: 1 !important;
+    filter: none !important;
+    outline: 2px solid var(--red);
+    border-radius: 6px;
+    background: rgba(171, 6, 6, 0.10);
+}
+
+/* Filter chip bar spacing */
+#sh-filter-chips {
+    animation: pageFadeIn 0.25s ease both;
+}
