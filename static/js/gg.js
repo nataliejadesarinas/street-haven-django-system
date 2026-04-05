@@ -580,6 +580,68 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /* ══════════════════════════════════════════════════════
+   THEME FUNCTIONS
+══════════════════════════════════════════════════════ */
+function initTheme() {
+    // Theme is already applied at the top of the file to prevent FOUC
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const body = document.body;
+    
+    if (html.classList.contains('light')) {
+        html.classList.remove('light');
+        body && body.classList.remove('light');
+        localStorage.setItem('sh-theme', 'dark');
+    } else {
+        html.classList.add('light');
+        body && body.classList.add('light');
+        localStorage.setItem('sh-theme', 'light');
+    }
+}
+
+/* ══════════════════════════════════════════════════════
+   MODAL FUNCTIONS
+══════════════════════════════════════════════════════ */
+function openLoginModal() {
+    document.getElementById('loginModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function openSignupModal() {
+    document.getElementById('signupModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAllModals() {
+    document.querySelectorAll('.modal-overlay').forEach(function (overlay) {
+        overlay.classList.remove('open');
+    });
+    document.body.style.overflow = '';
+}
+
+function loadUserData() {
+    // Implementation depends on your user data structure
+    const user = JSON.parse(localStorage.getItem('sh-user') || 'null');
+    if (user) {
+        // Populate user data in profile sections
+        const elements = {
+            'profileUsername': user.username || '',
+            'profileEmail': user.email || '',
+            'profileFullName': user.full_name || '',
+            'profilePhone': user.phone || '',
+            'profileAddress': user.address || ''
+        };
+        
+        Object.keys(elements).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = elements[id];
+        });
+    }
+}
+
+/* ══════════════════════════════════════════════════════
    SORT — client-side, no page reload
 ══════════════════════════════════════════════════════ */
 function initSort() {
@@ -592,9 +654,11 @@ function initSort() {
 
 function sortProducts(order) {
 
-    // ✅ PUT IT HERE
-    function getPrice(val) {
-        return parseFloat(val) || 0;
+    // Helper function to safely parse price from dataset
+    function getPrice(card, attr) {
+        const value = card.dataset[attr] || card.dataset[attr.replace(/([A-Z])/g, '-$1').toLowerCase()] || '0';
+        // Remove commas and convert to number
+        return parseFloat(value.toString().replace(/,/g, '')) || 0;
     }
 
     document.querySelectorAll('.product-grid').forEach(function (grid) {
@@ -611,21 +675,28 @@ function sortProducts(order) {
 
             case 'price-asc':
                 sorted = cards.slice().sort(function (a, b) {
-                    return getPrice(a.dataset.price) - getPrice(b.dataset.price);
+                    return getPrice(a, 'price') - getPrice(b, 'price');
                 });
                 break;
 
             case 'price-desc':
                 sorted = cards.slice().sort(function (a, b) {
-                    return getPrice(b.dataset.price) - getPrice(a.dataset.price);
+                    return getPrice(b, 'price') - getPrice(a, 'price');
                 });
                 break;
 
             case 'discount':
                 sorted = cards.slice().sort(function (a, b) {
-                    var da = getPrice(a.dataset.oldPrice) - getPrice(a.dataset.price);
-                    var db = getPrice(b.dataset.oldPrice) - getPrice(b.dataset.price);
-                    return db - da;
+                    const oldPriceA = getPrice(a, 'oldPrice');
+                    const oldPriceB = getPrice(b, 'oldPrice');
+                    const priceA = getPrice(a, 'price');
+                    const priceB = getPrice(b, 'price');
+                    
+                    // Calculate discount amount (difference between old price and current price)
+                    const discountA = oldPriceA > 0 ? oldPriceA - priceA : 0;
+                    const discountB = oldPriceB > 0 ? oldPriceB - priceB : 0;
+                    
+                    return discountB - discountA;
                 });
                 break;
 
