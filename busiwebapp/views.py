@@ -274,3 +274,20 @@ def delete_product(request, product_type, pk):
         elif product_type == 'apparels': Apparels.objects.filter(pk=pk).delete()
         elif product_type == 'toys':   Toys.objects.filter(pk=pk).delete()
     return redirect('admin_dashboard')
+
+
+
+def location_api(request):
+    data = {
+        'Metro Manila': ['Manila', 'Quezon City', 'Makati', 'Pasig', 'Taguig', 'Mandaluyong', 'Marikina', 'Parañaque'],
+        'Bulacan':      ['Malolos', 'San Jose del Monte', 'Meycauayan', 'Santa Maria', 'Caloocan'],
+        'Rizal':        ['Antipolo', 'Taytay', 'Cainta', 'Rodriguez', 'San Mateo'],
+        'Cavite':       ['Dasmariñas', 'Bacoor', 'Imus', 'Trece Martires', 'Tagaytay'],
+        'Laguna':       ['Santa Cruz', 'Calamba', 'San Pablo', 'Biñan', 'Sta. Rosa'],
+        'Batangas':     ['Batangas City', 'Lipa City', 'Tanauan', 'Balayan', 'Nasugbu'],
+        'Pampanga':     ['San Fernando', 'Angeles City', 'Mabalacat', 'Porac', 'Lubao'],
+        'Bataan':       ['Balanga', 'Dinalupihan', 'Mariveles', 'Orani'],
+        'Zambales':     ['Olongapo City', 'Iba', 'Botolan', 'Candelaria'],
+        'Nueva Ecija':  ['Cabanatuan City', 'Palayan City', 'Gapan City', 'Muñoz'],
+    }
+    return JsonResponse(data)

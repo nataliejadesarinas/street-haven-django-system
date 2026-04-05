@@ -202,16 +202,39 @@ function openProductModal(card) {
             ${data.sizes.map((s,i) => `<div class="pm-sz${i===0?' active':''}" onclick="selectPmSize(this)">${s}</div>`).join('')}
         </div>`;
     document.getElementById('pmMainImg').innerHTML = `<img src="${imgSrc}" alt="${name}" onerror="this.style.display='none'">`;
+    function getAngleImages(baseSrc) {
+        // Extract base filename without extension
+        const baseName = baseSrc.split('/').pop().split('.')[0];
+        const extension = baseSrc.split('.').pop() || 'jpg';
+        
+        return {
+            front: baseSrc,
+            back: `static/images/${baseName}_back.${extension}`,
+            left: `static/images/${baseName}_left.${extension}`,
+            right: `static/images/${baseName}_right.${extension}`
+        };
+    }
+
+    const angleImages = getAngleImages(imgSrc);
+    
     document.getElementById('pmThumbs').innerHTML = `
-        <div class="pm-thumb active" onclick="switchAngle(this,'${imgSrc}','Front','')">
-            <img src="${imgSrc}" alt="Front" onerror="this.style.display='none'">
+        <div class="pm-thumb active" onclick="switchAngle(this,'${angleImages.front}','Front')">
+            <img src="${angleImages.front}" alt="Front" onerror="this.style.display='none'">
+            <div class="pm-thumb-label">FRONT</div>
         </div>
-        <div class="pm-thumb" onclick="switchAngle(this,'${imgSrc}','Side','↩️ ')">
-            <span style="font-size:26px">↩️</span>
+        <div class="pm-thumb" onclick="switchAngle(this,'${angleImages.back}','Back')">
+            <img src="${angleImages.back}" alt="Back" onerror="this.style.display='none'">
+            <div class="pm-thumb-label">BACK</div>
         </div>
-        <div class="pm-thumb" onclick="switchAngle(this,'${imgSrc}','Back','📐 ')">
-            <span style="font-size:26px">📐</span>
-        </div>`;
+        <div class="pm-thumb" onclick="switchAngle(this,'${angleImages.left}','Left')">
+            <img src="${angleImages.left}" alt="Left" onerror="this.style.display='none'">
+            <div class="pm-thumb-label">LEFT</div>
+        </div>
+        <div class="pm-thumb" onclick="switchAngle(this,'${angleImages.right}','Right')">
+            <img src="${angleImages.right}" alt="Right" onerror="this.style.display='none'">
+            <div class="pm-thumb-label">RIGHT</div>
+        </div>
+    `;
     document.getElementById('pmAddBtn').onclick = () => {
         addToCart(name, imgSrc, data.price, data.brand);
         closeProductModal();
@@ -260,7 +283,7 @@ function selectPmSize(el) {
     el.classList.add('active');
 }
 
-function switchAngle(thumb, src, label, prefix) {
+function switchAngle(thumb, src, label) {
     document.querySelectorAll('.pm-thumb').forEach(t => t.classList.remove('active'));
     thumb.classList.add('active');
     document.getElementById('pmMainImg').innerHTML = `<img src="${src}" alt="${label}" onerror="this.style.display='none'">`;
@@ -320,606 +343,422 @@ function initDOBDropdowns() {
     yearEl.addEventListener('change',  refreshDays);
 }
 
-function getDOBString() {
-    const month = document.getElementById('dobMonth')?.selectedIndex;
-    const day   = document.getElementById('dobDay')?.value;
-    const year  = document.getElementById('dobYear')?.value;
-    if (month && day && year)
-        return `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-    return '';
-}
-
 /* ══════════════════════════════════════════════════════
-   AUTH — MODALS
+   CITY DATA — Minimal cities per province
 ══════════════════════════════════════════════════════ */
-function openLoginModal() {
-    document.getElementById('loginModal')?.classList.add('open');
-    document.getElementById('signupModal')?.classList.remove('open');
-    document.body.style.overflow = 'hidden';
-}
+const CITY_DATA = {
+    'Metro Manila': ['Manila', 'Quezon City', 'Makati', 'Pasig', 'Taguig'],
+    'Bulacan': ['Malolos', 'San Jose del Monte', 'Meycauayan', 'Santa Maria'],
+    'Rizal': ['Antipolo', 'Taytay', 'Cainta', 'Rodriguez'],
+    'Cavite': ['Dasmariñas', 'Bacoor', 'Imus', 'Trece Martires'],
+    'Laguna': ['Santa Cruz', 'Calamba', 'San Pablo', 'Biñan'],
+    'Batangas': ['Batangas City', 'Lipa City', 'Tanjay', 'Balayan'],
+    'Pampanga': ['San Fernando', 'Angeles City', 'Mabalacat', 'Porac'],
+    'Bataan': ['Balanga', 'Dinalupihan', 'Mariveles', 'Orani'],
+    'Zambales': ['Olongapo City', 'Iba', 'Botolan', 'Candelaria'],
+    'Nueva Ecija': ['Cabanatuan City', 'Palayan City', 'Gapan City', 'Science City of Muñoz']
+};
 
-function openSignupModal() {
-    document.getElementById('signupModal')?.classList.add('open');
-    document.getElementById('loginModal')?.classList.remove('open');
-    document.body.style.overflow = 'hidden';
-}
+async function updateCities() {
+    const provinceEl = document.getElementById('signupProvince');
+    const cityEl = document.getElementById('signupCityMun');
+    if (!provinceEl || !cityEl) return;
 
-function closeAllModals() {
-    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
-    document.body.style.overflow = '';
-}
-
-/* ── LOGIN ── */
-function validateField(el) {
-    const formGroup = el.closest('.form-group');
-    if (!formGroup) return;
-    const val = el.value.trim();
-    const isValid = val.length > 0 && (el.type === 'email' ? /\S+@\S+\.\S+/.test(val) : el.type === 'password' ? val.length >= 6 : true);
-    el.classList.toggle('valid', isValid);
-    el.classList.toggle('invalid', !isValid);
-    formGroup.querySelector('label').classList.toggle('valid', isValid);
-    formGroup.querySelector('label').classList.toggle('invalid', !isValid);
-}
-
-async function doLogin() {
-    const emailEl    = document.querySelector('#loginModal input[type="email"]');
-    const passwordEl = document.querySelector('#loginModal input[type="password"]');
-    if (!emailEl || !passwordEl) return;
-
-    const email    = emailEl.value.trim();
-    const password = passwordEl.value;
-
-    if (!email || !password) { showNotif('Please fill in all fields'); return; }
+    const province = provinceEl.value;
+    cityEl.innerHTML = '<option value="">Loading cities...</option>';
 
     try {
-        const res  = await fetch('/login/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        });
-        const data = await res.json();
-        if (data.success) {
-            localStorage.setItem('sh-user', JSON.stringify(data.user));
-            closeAllModals();
-            showNotif(`Welcome back, ${data.user.username}!`);
-            setTimeout(() => location.reload(), 600);
-        } else {
-            showNotif(data.error || 'Invalid email or password');
+        const res = await fetch('/api/locations/');
+        if (!res.ok) throw new Error('API failed');
+        const CITY_DATA = await res.json();
+        
+        cityEl.innerHTML = '<option value="">City / Municipality</option>';
+        if (province && CITY_DATA[province]) {
+            CITY_DATA[province].forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                cityEl.appendChild(option);
+            });
         }
     } catch(e) {
-        showNotif('Network error — please try again');
+        console.error('Location API error:', e);
+        cityEl.innerHTML = '<option value="">Error loading cities</option>';
     }
 }
 
-/* ── REGISTER ── */
-async function doRegister() {
-    // Validate all fields before submit
-    const requiredIds = ['signupName', 'signupEmail', 'signupUsername', 'signupPassword'];
-    let allValid = true;
-    requiredIds.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) validateField(el);
-        if (!el.value.trim()) allValid = false;
-    });
-    const passwordEl = document.getElementById('signupPassword');
-    if (passwordEl && passwordEl.value.length < 6) allValid = false;
-
-    if (!allValid) {
-        showNotif('Please fill all required fields correctly');
-        return;
-    }
-
-    // Collect all fields
-    const name     = document.getElementById('signupName')?.value.trim()    || '';
-    const email    = document.getElementById('signupEmail')?.value.trim()   || '';
-    const username = document.getElementById('signupUsername')?.value.trim()|| '';
-    const password = document.getElementById('signupPassword')?.value       || '';
-    const contact  = document.getElementById('signupContact')?.value.trim() || '';
-    const street   = document.getElementById('signupStreet')?.value.trim()  || '';
-    const cityMun  = document.getElementById('signupCityMun')?.value.trim() || '';
-    const province = document.getElementById('signupProvince')?.value       || '';
-    const region   = document.getElementById('signupRegion')?.value         || '';
-    const zip      = document.getElementById('signupZip')?.value.trim()     || '';
-    const dob      = getDOBString();
-
-    const formData = {
-        name, email, username, password, contact, dob,
-        address: { street, cityMun, province, region, zip }
-    };
-
-    try {
-        const res  = await fetch('/register/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
-        });
-        const data = await res.json();
-        if (data.success) {
-            localStorage.setItem('sh-user', JSON.stringify(data.user));
-            closeAllModals();
-            showNotif(`Welcome to Haven, ${data.user.username}! 🔥`);
-            setTimeout(() => window.location.href = '/profile/', 800);
-        } else {
-            showNotif(data.error || 'Registration failed');
-        }
-    } catch(e) {
-        showNotif('Network error — please try again');
+// Auto-wire city updater to signupModal open (both templates)
+function initAddressDropdowns() {
+    const provinceEl = document.getElementById('signupProvince');
+    const cityEl = document.getElementById('signupCityMun');
+    if (provinceEl && cityEl) {
+        provinceEl.removeEventListener('change', updateCities); // Avoid duplicates
+        provinceEl.addEventListener('change', updateCities);
+        updateCities(); // Reset cities
     }
 }
 
 /* ══════════════════════════════════════════════════════
-   PROFILE PAGE
+   DOMContentLoaded — ONE single listener, everything wired here
 ══════════════════════════════════════════════════════ */
-function loadUserData() {
-    const user = JSON.parse(localStorage.getItem('sh-user') || 'null');
-    if (!user) return;
+document.addEventListener('DOMContentLoaded', function () {
 
-    // Sidebar card
-    _setText('profileUsername', user.username || 'User');
-    _setText('profileEmail',    user.email    || '');
-    _setText('avatarInitial',   (user.username || 'U')[0].toUpperCase());
-    _setText('orderCount',      user.orders    || 0);
-    _setText('favCount',        user.favorites || 0);
-
-    // Header avatar (nav area)
-    _setText('profileHeaderName',   user.username || 'User');
-    _setText('profileHeaderAvatar', (user.username || 'U')[0].toUpperCase());
-
-    // Settings form
-    _setVal('settingsName',     user.name     || '');
-    _setVal('settingsUsername', user.username || '');
-    _setVal('settingsEmail',    user.email    || '');
-    _setVal('settingsContact',  user.contact  || '');
-    _setVal('settingsDob',      user.dob      || '');
-
-    // Address fields in settings
-    if (user.address) {
-        _setVal('settingsStreet',   user.address.street   || '');
-        _setVal('settingsCityMun',  user.address.cityMun  || '');
-        _setVal('settingsProvince', user.address.province || '');
-        _setVal('settingsRegion',   user.address.region   || '');
-        _setVal('settingsZip',      user.address.zip      || '');
-    }
-
-    // Settings panel avatar
-    _setText('settingsAvatar',     (user.username || 'U')[0].toUpperCase());
-    _setText('settingsAvatarName', user.username || 'User');
-
-    // Profile photo
-    if (user.avatar) {
-        const img = document.getElementById('avatarImg');
-        if (img) { img.src = user.avatar; img.style.display = 'block'; }
-        const init = document.getElementById('avatarInitial');
-        if (init) init.style.display = 'none';
-    }
-}
-
-function _setText(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val;
-}
-
-function _setVal(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.value = val;
-}
-
-function switchTab(tab, btn) {
-    document.querySelectorAll('.profile-nav-item').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.profile-section').forEach(s => s.classList.remove('active'));
-    btn.classList.add('active');
-    const section = document.getElementById('section-' + tab);
-    if (section) section.classList.add('active');
-}
-
-function saveSettings() {
-    const user = JSON.parse(localStorage.getItem('sh-user') || '{}');
-    user.name     = document.getElementById('settingsName')?.value     || user.name;
-    user.username = document.getElementById('settingsUsername')?.value || user.username;
-    user.email    = document.getElementById('settingsEmail')?.value    || user.email;
-    user.contact  = document.getElementById('settingsContact')?.value  || '';
-    user.dob      = document.getElementById('settingsDob')?.value      || '';
-    user.address  = {
-        street:   document.getElementById('settingsStreet')?.value   || '',
-        cityMun:  document.getElementById('settingsCityMun')?.value  || '',
-        province: document.getElementById('settingsProvince')?.value || '',
-        region:   document.getElementById('settingsRegion')?.value   || '',
-        zip:      document.getElementById('settingsZip')?.value      || ''
-    };
-    localStorage.setItem('sh-user', JSON.stringify(user));
-    loadUserData();
-    showNotif('Settings saved!');
-    const successEl = document.getElementById('settingsSuccess');
-    if (successEl) { successEl.style.display = 'block'; setTimeout(() => successEl.style.display = 'none', 3500); }
-}
-
-function changePassword() {
-    const current = document.getElementById('currentPassword')?.value || '';
-    const newP    = document.getElementById('newPassword')?.value     || '';
-    const confirm = document.getElementById('confirmPassword')?.value || '';
-    if (!current)          { showNotif('Enter your current password'); return; }
-    if (newP.length < 6)   { showNotif('New password must be at least 6 characters'); return; }
-    if (newP !== confirm)  { showNotif('Passwords do not match'); return; }
-    showNotif('Password updated!');
-    ['currentPassword','newPassword','confirmPassword'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-    });
-    const successEl = document.getElementById('passwordSuccess');
-    if (successEl) { successEl.style.display = 'block'; setTimeout(() => successEl.style.display = 'none', 3500); }
-}
-
-function uploadAvatar(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    if (file.size > 2 * 1024 * 1024) { showNotif('Image too large — max 2MB'); return; }
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const user = JSON.parse(localStorage.getItem('sh-user') || '{}');
-        user.avatar = e.target.result;
-        localStorage.setItem('sh-user', JSON.stringify(user));
-        // Update all avatar images on the page
-        document.querySelectorAll('#avatarImg, .avatar-big img').forEach(img => {
-            img.src = user.avatar; img.style.display = 'block';
-        });
-        document.querySelectorAll('#avatarInitial, #settingsAvatar').forEach(el => {
-            el.style.display = 'none';
-        });
-        showNotif('Profile picture updated!');
-    };
-    reader.readAsDataURL(file);
-}
-
-function doLogout() {
-    if (confirm('Are you sure you want to logout?')) {
-        localStorage.removeItem('sh-user');
-        showNotif('Logged out — see you soon!');
-        setTimeout(() => window.location.href = '/', 800);
-    }
-}
-
-function deleteAccount() {
-    if (confirm('Permanently delete your account? This cannot be undone.')) {
-        localStorage.removeItem('sh-user');
-        localStorage.removeItem('sh-cart');
-        showNotif('Account deleted');
-        setTimeout(() => window.location.href = '/', 1200);
-    }
-}
-
-/* ══════════════════════════════════════════════════════
-   THEME TOGGLE (FIXED)
-══════════════════════════════════════════════════════ */
-
-function initTheme() {
-    const isLight = localStorage.getItem('sh-theme') === 'light';
-    // Apply to both <html> and <body> for full coverage
-    document.documentElement.classList.toggle('light', isLight);
-    document.body.classList.toggle('light', isLight);
-    updateThemeButtons();
-}
-
-function toggleTheme() {
-    const isLight = document.body.classList.toggle('light');
-    document.documentElement.classList.toggle('light', isLight);
-    localStorage.setItem('sh-theme', isLight ? 'light' : 'dark');
-    updateThemeButtons();
-}
-
-function updateThemeButtons() {
-    const isLight = document.body.classList.contains('light');
-    document.querySelectorAll('.theme-toggle').forEach(btn => {
-        btn.textContent = isLight ? '🌙 DARK' : '☀️ LIGHT';
-    });
-}
-
-/* ══════════════════════════════════════════════════════
-   DOMContentLoaded — wire everything up
-══════════════════════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', () => {
-
-    // Theme — init state + wire all toggle buttons
+    // ── Theme ──
     initTheme();
-    document.querySelectorAll('.theme-toggle').forEach(btn => {
+    document.querySelectorAll('.theme-toggle').forEach(function (btn) {
         btn.addEventListener('click', toggleTheme);
     });
 
-    // Cart
+    // ── Address dropdowns (signup modal) ──
+    var provinceEl = document.getElementById('signupProvince');
+    if (provinceEl) initAddressDropdowns();
+
+    // ── Wrap openSignupModal SAFELY here, not at file scope ──
+    var _origOpenSignup = openSignupModal;
+    openSignupModal = function () {
+        _origOpenSignup();
+        setTimeout(initAddressDropdowns, 50);
+    };
+
+    // ── Cart ──
     updateCartCount();
-
-    (function initGlobalSearch() {
-        const wrap = document.querySelector('.search-wrap');
-        const input = document.getElementById('globalSearchInput');
-        const btn = document.getElementById('globalSearchBtn');
-        const dd = document.getElementById('searchDropdown');
-        if (!wrap || !input || !dd) return;
-
-        let path = wrap.getAttribute('data-search-url') || wrap.dataset.searchUrl || '/api/search/';
-        if (!path.startsWith('/')) path = '/' + path.replace(/^\/+/, '');
-        let searchPage = wrap.getAttribute('data-search-page-url') || '/search/';
-        if (!searchPage.startsWith('/')) searchPage = '/' + searchPage.replace(/^\/+/, '');
-
-        function goToSearchPage() {
-            const q = input.value.trim();
-            if (!q) {
-                window.location.href = new URL(searchPage, window.location.origin).toString();
-                return;
-            }
-            const u = new URL(searchPage, window.location.origin);
-            u.searchParams.set('q', q);
-            window.location.href = u.toString();
-        }
-
-        let seq = 0;
-
-        function syncDropdownPosition() {
-            if (dd.hidden) return;
-            const r = input.getBoundingClientRect();
-            dd.style.left = r.left + 'px';
-            dd.style.top = r.bottom + 6 + 'px';
-            dd.style.width = Math.max(r.width, 200) + 'px';
-        }
-
-        function hideDropdown() {
-            dd.hidden = true;
-            dd.innerHTML = '';
-            dd.style.left = '';
-            dd.style.top = '';
-            dd.style.width = '';
-        }
-
-        function showLoading() {
-            dd.hidden = false;
-            dd.innerHTML = '<div class="search-loading" role="status">Searching…</div>';
-            syncDropdownPosition();
-        }
-
-        window.addEventListener('scroll', syncDropdownPosition, true);
-        window.addEventListener('resize', syncDropdownPosition);
-
-        function renderResults(query, results) {
-            dd.innerHTML = '';
-            if (!query.trim()) {
-                hideDropdown();
-                return;
-            }
-            if (!results.length) {
-                dd.hidden = false;
-                const empty = document.createElement('div');
-                empty.className = 'search-empty';
-                empty.setAttribute('role', 'status');
-                empty.textContent = 'No products match your search. Try a different name, brand, or category.';
-                dd.appendChild(empty);
-                syncDropdownPosition();
-                return;
-            }
-            dd.hidden = false;
-            results.forEach((item) => {
-                const row = document.createElement('a');
-                row.className = 'search-result-row';
-                row.href = '#';
-                row.setAttribute('role', 'option');
-
-                const thumb = document.createElement('span');
-                thumb.className = 'search-result-thumb';
-                if (item.image) {
-                    const im = document.createElement('img');
-                    im.src = item.image;
-                    im.alt = '';
-                    thumb.appendChild(im);
-                } else {
-                    thumb.textContent = '🛍';
-                }
-
-                const meta = document.createElement('span');
-                meta.className = 'search-result-meta';
-                const name = document.createElement('span');
-                name.className = 'search-result-name';
-                name.textContent = item.name || '';
-                const sub = document.createElement('span');
-                sub.className = 'search-result-sub';
-                sub.textContent = [item.brand, item.category].filter(Boolean).join(' · ');
-                meta.appendChild(name);
-                meta.appendChild(sub);
-
-                const price = document.createElement('span');
-                price.className = 'search-result-price';
-                price.textContent = '₱' + Number(item.price || 0).toLocaleString();
-
-                row.appendChild(thumb);
-                row.appendChild(meta);
-                row.appendChild(price);
-                row.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    hideDropdown();
-                    input.blur();
-                    goToSearchPage();
-                });
-                dd.appendChild(row);
-            });
-
-            const seeAll = document.createElement('a');
-            seeAll.className = 'search-see-all';
-            seeAll.href = '#';
-            seeAll.textContent = 'View all results →';
-            seeAll.addEventListener('click', (e) => {
-                e.preventDefault();
-                hideDropdown();
-                goToSearchPage();
-            });
-            dd.appendChild(seeAll);
-
-            syncDropdownPosition();
-        }
-
-        function runSearch() {
-            const q = input.value.trim();
-            if (!q) {
-                hideDropdown();
-                return;
-            }
-            const my = ++seq;
-            showLoading();
-            let fetchUrl;
-            try {
-                const u = new URL(path, window.location.origin);
-                u.searchParams.set('q', q);
-                fetchUrl = u.toString();
-            } catch (e) {
-                fetchUrl = path + (path.includes('?') ? '&' : '?') + 'q=' + encodeURIComponent(q);
-            }
-            fetch(fetchUrl, { credentials: 'same-origin' })
-                .then((res) => {
-                    if (!res.ok) throw new Error('bad status');
-                    return res.json();
-                })
-                .then((data) => {
-                    if (my !== seq) return;
-                    renderResults(data.query || q, data.results || []);
-                })
-                .catch(() => {
-                    if (my !== seq) return;
-                    dd.hidden = false;
-                    dd.innerHTML = '';
-                    const err = document.createElement('div');
-                    err.className = 'search-empty';
-                    err.setAttribute('role', 'alert');
-                    err.textContent = 'Search is temporarily unavailable. Please try again.';
-                    dd.appendChild(err);
-                    syncDropdownPosition();
-                });
-        }
-
-        const debounced = (function () {
-            let t;
-            return function () {
-                clearTimeout(t);
-                t = setTimeout(runSearch, 280);
-            };
-        })();
-
-        input.addEventListener('input', () => {
-            if (!input.value.trim()) {
-                seq += 1;
-                hideDropdown();
-                return;
-            }
-            debounced();
-        });
-
-        input.addEventListener('focus', () => {
-            if (input.value.trim()) debounced();
-        });
-
-        const searchForm = input.closest('form');
-        if (searchForm) {
-            searchForm.addEventListener('submit', (e) => {
-                if (!input.value.trim()) {
-                    e.preventDefault();
-                    window.location.href = new URL(searchPage, window.location.origin).toString();
-                    return;
-                }
-                hideDropdown();
-            });
-        }
-
-        document.addEventListener('click', (e) => {
-            if (!wrap.contains(e.target)) hideDropdown();
-        });
-
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                hideDropdown();
-                input.blur();
-            }
-        });
-    })();
-
-    document.querySelectorAll('.cart-btn').forEach(btn => btn.addEventListener('click', openCartSidebar));
-    const cartOverlay = document.getElementById('cartOverlay');
+    document.querySelectorAll('.cart-btn').forEach(function (btn) {
+        btn.addEventListener('click', openCartSidebar);
+    });
+    var cartOverlay = document.getElementById('cartOverlay');
     if (cartOverlay) cartOverlay.addEventListener('click', closeCartSidebar);
 
-    // Add-to-cart buttons on product cards
-    document.querySelectorAll('.add-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+    // ── Add-to-cart buttons ──
+    document.querySelectorAll('.add-btn').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
             e.stopPropagation();
             if (btn.dataset.pdCart !== undefined) {
-                addToCart(
-                    btn.dataset.name || '',
-                    btn.dataset.img || '',
-                    btn.dataset.price || 0,
-                    btn.dataset.brand || ''
-                );
+                addToCart(btn.dataset.name || '', btn.dataset.img || '', btn.dataset.price || 0, btn.dataset.brand || '');
                 return;
             }
-            const card   = btn.closest('.product-card');
+            var card = btn.closest('.product-card');
             if (!card) return;
-            const nameEl = card.querySelector('.p-name');
-            const imgEl  = card.querySelector('.product-thumb img');
-            const name   = nameEl ? nameEl.textContent.trim() : '';
-            const imgSrc = card.dataset.img || (imgEl ? imgEl.src : '');
-            const price  = card.dataset.price || 0;
-            const brand  = card.dataset.brand || '';
-            addToCart(name, imgSrc, price, brand);
+            var nameEl = card.querySelector('.p-name');
+            var imgEl  = card.querySelector('.product-thumb img');
+            var name   = nameEl ? nameEl.textContent.trim() : '';
+            var imgSrc = card.dataset.img || (imgEl ? imgEl.src : '');
+            addToCart(name, imgSrc, card.dataset.price || 0, card.dataset.brand || '');
         });
     });
 
-    document.querySelectorAll('.product-card:not(.search-result-card)').forEach(card => {
-        const thumb = card.querySelector('.product-thumb');
+    // ── Product card click → modal ──
+    document.querySelectorAll('.product-card:not(.search-result-card)').forEach(function (card) {
+        var thumb = card.querySelector('.product-thumb');
         if (thumb && !thumb.querySelector('.product-thumb-overlay')) {
-            const overlay = document.createElement('div');
+            var overlay = document.createElement('div');
             overlay.className = 'product-thumb-overlay';
             overlay.textContent = '👁 VIEW';
             thumb.appendChild(overlay);
         }
-        card.addEventListener('click', e => {
+        card.addEventListener('click', function (e) {
             if (e.target.classList.contains('add-btn')) return;
             openProductModal(card);
         });
     });
 
-    // Modal close buttons
-    document.querySelectorAll('.modal-close').forEach(btn => {
-        btn.addEventListener('click', () => {
+    // ── Modal close buttons ──
+    document.querySelectorAll('.modal-close').forEach(function (btn) {
+        btn.addEventListener('click', function () {
             btn.closest('.modal-overlay').classList.remove('open');
             document.body.style.overflow = '';
         });
     });
-
-    // Click outside modal to close
-    document.querySelectorAll('.modal-overlay').forEach(overlay => {
-        overlay.addEventListener('click', e => {
+    document.querySelectorAll('.modal-overlay').forEach(function (overlay) {
+        overlay.addEventListener('click', function (e) {
             if (e.target === overlay) closeAllModals();
         });
     });
 
-    // Login / signup trigger buttons
-    document.querySelectorAll('.btn-login').forEach(btn => btn.addEventListener('click', openLoginModal));
+    // ── Login button ──
+    document.querySelectorAll('.btn-login').forEach(function (btn) {
+        btn.addEventListener('click', openLoginModal);
+    });
 
-    // DOB dropdowns
+    // ── DOB dropdowns ──
     initDOBDropdowns();
 
-    // Profile page — load user data if on profile
-    if (document.querySelector('.profile-layout') || document.querySelector('.profile-page')) {
-        const user = JSON.parse(localStorage.getItem('sh-user') || 'null');
-        if (!user) {
-            window.location.href = '/';
-            return;
+    // ── Search ──
+    (function initGlobalSearch() {
+        var wrap  = document.querySelector('.search-wrap');
+        var input = document.getElementById('globalSearchInput');
+        var dd    = document.getElementById('searchDropdown');
+        if (!wrap || !input || !dd) return;
+
+        var path       = wrap.getAttribute('data-search-url') || '/api/search/';
+        var searchPage = wrap.getAttribute('data-search-page-url') || '/search/';
+
+        function goToSearchPage() {
+            var q = input.value.trim();
+            var u = new URL(searchPage, window.location.origin);
+            if (q) u.searchParams.set('q', q);
+            window.location.href = u.toString();
         }
+
+        function syncPos() {
+            if (dd.hidden) return;
+            var r = input.getBoundingClientRect();
+            dd.style.left  = r.left + 'px';
+            dd.style.top   = (r.bottom + 6) + 'px';
+            dd.style.width = Math.max(r.width, 200) + 'px';
+        }
+
+        function hideDD() {
+            dd.hidden = true; dd.innerHTML = '';
+            dd.style.left = dd.style.top = dd.style.width = '';
+        }
+
+        window.addEventListener('scroll', syncPos, true);
+        window.addEventListener('resize', syncPos);
+
+        var seq = 0;
+        function runSearch() {
+            var q = input.value.trim();
+            if (!q) { hideDD(); return; }
+            var my = ++seq;
+            dd.hidden = false;
+            dd.innerHTML = '<div class="search-loading">Searching…</div>';
+            syncPos();
+            var u = new URL(path, window.location.origin);
+            u.searchParams.set('q', q);
+            fetch(u.toString(), { credentials: 'same-origin' })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (my !== seq) return;
+                    dd.innerHTML = '';
+                    var results = data.results || [];
+                    if (!results.length) {
+                        dd.innerHTML = '<div class="search-empty">No products found.</div>';
+                        syncPos(); return;
+                    }
+                    results.forEach(function (item) {
+                        var row = document.createElement('a');
+                        row.className = 'search-result-row';
+                        row.href = '#';
+                        row.innerHTML =
+                            '<span class="search-result-thumb">' + (item.image ? '<img src="' + item.image + '" alt="">' : '🛍') + '</span>' +
+                            '<span class="search-result-meta"><span class="search-result-name">' + (item.name || '') + '</span>' +
+                            '<span class="search-result-sub">' + [item.brand, item.category].filter(Boolean).join(' · ') + '</span></span>' +
+                            '<span class="search-result-price">₱' + Number(item.price || 0).toLocaleString() + '</span>';
+                        row.addEventListener('click', function (e) { e.preventDefault(); hideDD(); goToSearchPage(); });
+                        dd.appendChild(row);
+                    });
+                    var sa = document.createElement('a');
+                    sa.className = 'search-see-all'; sa.href = '#'; sa.textContent = 'View all results →';
+                    sa.addEventListener('click', function (e) { e.preventDefault(); hideDD(); goToSearchPage(); });
+                    dd.appendChild(sa);
+                    dd.hidden = false; syncPos();
+                })
+                .catch(function () {
+                    if (my !== seq) return;
+                    dd.innerHTML = '<div class="search-empty">Search unavailable.</div>';
+                    dd.hidden = false; syncPos();
+                });
+        }
+
+        var debTimer;
+        input.addEventListener('input', function () {
+            if (!input.value.trim()) { seq++; hideDD(); return; }
+            clearTimeout(debTimer); debTimer = setTimeout(runSearch, 280);
+        });
+        input.addEventListener('focus', function () { if (input.value.trim()) runSearch(); });
+        document.addEventListener('click', function (e) { if (!wrap.contains(e.target)) hideDD(); });
+        input.addEventListener('keydown', function (e) { if (e.key === 'Escape') { hideDD(); input.blur(); } });
+
+        var form = input.closest('form');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                if (!input.value.trim()) { e.preventDefault(); goToSearchPage(); return; }
+                hideDD();
+            });
+        }
+    })();
+
+    // ── Profile page ──
+    if (document.querySelector('.profile-layout') || document.querySelector('.profile-page')) {
+        var user = JSON.parse(localStorage.getItem('sh-user') || 'null');
+        if (!user) { window.location.href = '/'; return; }
         loadUserData();
-        // Activate first tab
-        const firstTab = document.querySelector('.profile-nav-item');
-        const firstSection = document.querySelector('.profile-section');
-        if (firstTab)    firstTab.classList.add('active');
+        var firstTab     = document.querySelector('.profile-nav-item');
+        var firstSection = document.querySelector('.profile-section');
+        if (firstTab)     firstTab.classList.add('active');
         if (firstSection) firstSection.classList.add('active');
     }
 
-    // Update header login button if user is logged in
-    const user = JSON.parse(localStorage.getItem('sh-user') || 'null');
-    if (user) {
-        document.querySelectorAll('.btn-login').forEach(btn => {
-            btn.textContent = user.username.toUpperCase();
-            btn.onclick = () => window.location.href = '/profile/';
+    // ── Header avatar pill if logged in ──
+    var _user = JSON.parse(localStorage.getItem('sh-user') || 'null');
+    if (_user) {
+        document.querySelectorAll('.btn-login').forEach(function (btn) {
+            btn.textContent = _user.username.toUpperCase();
+            btn.onclick = function () { window.location.href = '/profile/'; };
         });
     }
+
+    // ── SORT ── (called last so all cards are in DOM)
+    initSort();
 });
+
+/* ══════════════════════════════════════════════════════
+   THEME FUNCTIONS
+══════════════════════════════════════════════════════ */
+function initTheme() {
+    // Theme is already applied at the top of the file to prevent FOUC
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const body = document.body;
+    
+    if (html.classList.contains('light')) {
+        html.classList.remove('light');
+        body && body.classList.remove('light');
+        localStorage.setItem('sh-theme', 'dark');
+    } else {
+        html.classList.add('light');
+        body && body.classList.add('light');
+        localStorage.setItem('sh-theme', 'light');
+    }
+}
+
+/* ══════════════════════════════════════════════════════
+   MODAL FUNCTIONS
+══════════════════════════════════════════════════════ */
+function openLoginModal() {
+    document.getElementById('loginModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function openSignupModal() {
+    document.getElementById('signupModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAllModals() {
+    document.querySelectorAll('.modal-overlay').forEach(function (overlay) {
+        overlay.classList.remove('open');
+    });
+    document.body.style.overflow = '';
+}
+
+function loadUserData() {
+    // Implementation depends on your user data structure
+    const user = JSON.parse(localStorage.getItem('sh-user') || 'null');
+    if (user) {
+        // Populate user data in profile sections
+        const elements = {
+            'profileUsername': user.username || '',
+            'profileEmail': user.email || '',
+            'profileFullName': user.full_name || '',
+            'profilePhone': user.phone || '',
+            'profileAddress': user.address || ''
+        };
+        
+        Object.keys(elements).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = elements[id];
+        });
+    }
+}
+
+/* ══════════════════════════════════════════════════════
+   SORT — client-side, no page reload
+══════════════════════════════════════════════════════ */
+function initSort() {
+    console.log('initSort() called');
+    const selects = document.querySelectorAll('.sort-select');
+    console.log('Found sort selects:', selects.length);
+    
+    selects.forEach(function (select, index) {
+        console.log('Setting up select', index, select);
+        select.addEventListener('change', function () {
+            console.log('Select changed, value:', this.value);
+            sortProducts(this.value);
+        });
+    });
+}
+
+function sortProducts(order) {
+    console.log('Sorting by:', order);
+
+    // Helper function to safely parse price from dataset
+    function getPrice(card, attr) {
+        const value = card.dataset[attr] || card.dataset[attr.replace(/([A-Z])/g, '-$1').toLowerCase()] || '0';
+        // Remove commas and convert to number
+        return parseFloat(value.toString().replace(/,/g, '')) || 0;
+    }
+
+    document.querySelectorAll('.product-grid').forEach(function (grid) {
+        var cards = Array.from(grid.querySelectorAll('.product-card'));
+        console.log('Found cards:', cards.length);
+        
+        if (!cards.length) return;
+
+        cards.forEach(function (card, i) {
+            if (!card.dataset.origIndex) card.dataset.origIndex = String(i);
+        });
+
+        // Debug first card data
+        if (cards.length > 0) {
+            console.log('First card data:', {
+                name: cards[0].dataset.name,
+                price: cards[0].dataset.price,
+                oldPrice: cards[0].dataset.oldPrice,
+                priceParsed: getPrice(cards[0], 'price'),
+                oldPriceParsed: getPrice(cards[0], 'oldPrice')
+            });
+        }
+
+        var sorted;
+
+        switch (order) {
+
+            case 'price-asc':
+                sorted = cards.slice().sort(function (a, b) {
+                    return getPrice(a, 'price') - getPrice(b, 'price');
+                });
+                break;
+
+            case 'price-desc':
+                sorted = cards.slice().sort(function (a, b) {
+                    return getPrice(b, 'price') - getPrice(a, 'price');
+                });
+                break;
+
+            case 'discount':
+                sorted = cards.slice().sort(function (a, b) {
+                    const oldPriceA = getPrice(a, 'oldPrice');
+                    const oldPriceB = getPrice(b, 'oldPrice');
+                    const priceA = getPrice(a, 'price');
+                    const priceB = getPrice(b, 'price');
+                    
+                    // Calculate discount amount (difference between old price and current price)
+                    const discountA = oldPriceA > 0 ? oldPriceA - priceA : 0;
+                    const discountB = oldPriceB > 0 ? oldPriceB - priceB : 0;
+                    
+                    return discountB - discountA;
+                });
+                break;
+
+            case 'name':
+                sorted = cards.slice().sort(function (a, b) {
+                    var na = (a.querySelector('.p-name') || {}).textContent || '';
+                    var nb = (b.querySelector('.p-name') || {}).textContent || '';
+                    return na.trim().toLowerCase().localeCompare(nb.trim().toLowerCase());
+                });
+                break;
+
+            default:
+                sorted = cards.slice().sort(function (a, b) {
+                    return parseInt(a.dataset.origIndex) - parseInt(b.dataset.origIndex);
+                });
+        }
+
+        sorted.forEach(function (card) {
+            grid.appendChild(card);
+        });
+    });
+}

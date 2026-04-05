@@ -30,7 +30,7 @@
             <option value="default">Featured</option>
             <option value="price-asc">Price: Low to High</option>
             <option value="price-desc">Price: High to Low</option>
-            <option value="name">Name A–Z</option>
+<option value="name">Name A–Z</option>
         </select>
         <span class="result-count">{{ apparel.count }} items</span>
     </div>
@@ -43,6 +43,7 @@
                     data-name="{{ product.name }}"
                     data-brand="{{ product.brand.name }}"
                     data-price="{{ product.price }}"
+                    data-old-price="{{ product.old_price|default_if_none:0|floatformat:2 }}"
                     data-desc="{{ product.description }}"
                     data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
 

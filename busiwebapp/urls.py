@@ -16,4 +16,5 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('admin-dashboard/delete/<str:product_type>/<int:pk>/',
          views.delete_product, name='delete_product'),
+    path('api/locations/', views.location_api, name='locations_api'),
 ]

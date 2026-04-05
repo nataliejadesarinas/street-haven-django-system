@@ -1,19 +1,9 @@
-# TODO: New Arrivals Page Implementation
+# Fix SORT Functionality
+Status: ✅ COMPLETE
 
-## Plan Summary
-Populate existing `/new/` route (URL/view already exist) with shoe-focused New Arrivals page showing latest 12 available shoes in cards with NEW badges.
-
-## Steps
-- [x] Step 1: Update busiwebapp/views.py - Modify `new()` view to return latest shoes only
-- [x] Step 2: Create busiwebapp/templates/busiwebapp/new.html - Full page template with product cards + NEW badges
-- [x] Step 3: Test locally - Run server, visit /new/, verify functionality
-- [x] Complete: Mark done
-
-**Status: ✅ COMPLETE**
-
-Files updated:
-- `busiwebapp/views.py` (new view → latest_shoes)
-- `busiwebapp/templates/busiwebapp/new.html` (page w/ NEW badges, images, cards)
-
-**/new/ now shows latest shoe products with NEW badges, images, name, brand, price!**
-
+## Steps:
+- [x] 1. Create this TODO.md with plan
+- [x] 2. Edit static/js/gg.js to remove broken duplicate event listener code
+- [x] 3. Test sorting on /shoes/ page (Price Low-High, Name A-Z, Discount)
+- [x] 4. Update TODO.md to mark complete
+- [x] 5. Attempt completion
