@@ -1,4 +1,6 @@
-# Import necessary modules
+# tests.py
+# This file contains Selenium tests for the Django homepage
+
 from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -6,44 +8,50 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 
-class HomePageTest(LiveServerTestCase):
+class HomepageTest(LiveServerTestCase):
     """
-    This test class checks the Django homepage using Selenium.
-    It verifies that the site header shows the brand identity.
+    Test class for verifying elements on the Django homepage.
+    Uses Selenium WebDriver to simulate browser interaction.
     """
 
     def setUp(self):
         """
-        Setup method runs before each test.
-        It initializes the browser driver using webdriver-manager.
+        Setup method that runs BEFORE each test.
+        Initializes the Chrome WebDriver and opens the browser.
+        """
+        # Automatically download and configure the correct ChromeDriver version
+        service = Service(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(service=service)
+
+        # Implicitly wait up to 5 seconds for elements to appear before throwing an error
+        self.driver.implicitly_wait(5)
+
+    def test_main_heading_text(self):
+        """
+        Test method to verify the <h1 id="main-heading"> element
+        on the Django homepage contains the correct text.
         """
 
-        # Configure Chrome options (optional but recommended)
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--start-maximized")
+        # Step 1: Navigate to the Django homepage (LiveServerTestCase starts it automatically)
+        self.driver.get(self.live_server_url)
 
-        # Launch Chrome using webdriver-manager (auto installs driver)
-        self.browser = webdriver.Chrome(
-            service=Service(ChromeDriverManager().install()),
-            options=chrome_options
-        )
+        # Step 2: Locate the <h1> element using its id attribute
+        heading = self.driver.find_element(By.ID, "main-heading")
+
+        # Step 3: Assert that the heading text matches exactly
+        self.assertEqual(heading.text, "Welcome to My Site!")
+        print("✅ Test passed: Heading text is correct!")
 
     def tearDown(self):
         """
-        Teardown method runs after each test.
-        It closes the browser to free resources.
+        Teardown method that runs AFTER each test.
+        Closes the browser to free up resources.
         """
-        self.browser.quit()
+        # Close the browser window after each test
+        self.driver.quit()
 
-    def test_home_shows_brand_logo(self):
-        """
-        Test case:
-        1. Navigate to the homepage
-        2. Confirm the header shows the Street.Haven brand
-        """
 
-        self.browser.get(self.live_server_url)
-
-        logo = self.browser.find_element(By.CLASS_NAME, "logo-text")
-        self.assertIn("STREET", logo.text)
-        self.assertIn("HAVEN", logo.text)
+# Entry point to run the tests directly
+if __name__ == "__main__":
+    import unittest
+    unittest.main()

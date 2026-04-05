@@ -37,32 +37,34 @@
     <div class="section" style="padding-top:24px">
         <div class="product-grid">
             {% for kind, product in combined %}
-            <div class="product-card search-result-card"
+            <div class="product-card" onclick="openProductModal(this)"
                  data-name="{{ product.name }}"
                  data-brand="{% if kind == 'toys' %}Collectible{% else %}{{ product.brand.name }}{% endif %}"
                  data-price="{{ product.price }}"
                  data-desc="{{ product.description }}"
                  data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
-                <a class="search-result-card-link" href="{% url 'product_detail' kind product.pk %}">
-                    <div class="product-thumb">
-                        {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                        {% else %}
-                            {% if kind == 'shoes' %}👟{% elif kind == 'apparel' %}👕{% else %}🧸{% endif %}
-                        {% endif %}
-                        {% if product.stock == 0 %}
-                            <span class="badge badge-hot">SOLD OUT</span>
-                        {% endif %}
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">{% if kind == 'toys' %}Collectible{% else %}{{ product.brand.name }}{% endif %}</div>
-                        <div class="p-name">{{ product.name }}</div>
-                        <div class="p-price"><span class="p-now">₱{{ product.price }}</span></div>
-                    </div>
-                </a>
-                <div class="search-result-card-actions">
-                    <button type="button" class="add-btn">+ ADD TO CART</button>
+
+                <div class="product-thumb">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        {% if kind == 'shoes' %}👟{% elif kind == 'apparel' %}👕{% else %}🧸{% endif %}
+                    {% endif %}
+                    <div class="product-thumb-overlay">👁 QUICK VIEW</div>
+                    {% if product.stock == 0 %}
+                        <span class="badge badge-hot">SOLD OUT</span>
+                    {% endif %}
                 </div>
+
+                <div class="product-info">
+                    <div class="p-brand">{% if kind == 'toys' %}Collectible{% else %}{{ product.brand.name }}{% endif %}</div>
+                    <div class="p-name">{{ product.name }}</div>
+                    <div class="p-price">
+                        <span class="p-now">₱{{ product.price }}</span>
+                    </div>
+                    <button class="add-btn">+ ADD TO CART</button>
+                </div>
+
             </div>
             {% endfor %}
         </div>
