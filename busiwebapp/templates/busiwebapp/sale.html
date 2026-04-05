@@ -30,7 +30,7 @@
             <option value="discount">Biggest Discount</option>
         </select>
         <span class="result-count">
-            {{ shoes.count }} items
+            {{ shoes.count|add:apparel.count|add:toys.count }} items
         </span>
     </div>
 
@@ -38,97 +38,91 @@
         <div class="product-grid">
 
             {% for product in shoes %}
-                <div class="product-card" onclick="openProductModal(this)"
-                    data-name="{{ product.name }}"
-                    data-brand="{{ product.brand.name }}"
-                    data-price="{{ product.price }}"
-                    data-desc="{{ product.description }}"
-                    data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                        {% else %}
-                            👟
-                        {% endif %}
-                        <div class="product-thumb-overlay">👁 QUICK VIEW</div>
-                        {% if product.stock == 0 %}
-                            <span class="badge badge-hot">SOLD OUT</span>
-                        {% endif %}
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">{{ product.brand.name }}</div>
-                        <div class="p-name">{{ product.name }}</div>
-                        <div class="p-price">
-                            <span class="p-now">₱{{ product.price }}</span>
-                        </div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
+            <div class="product-card"
+                onclick="openProductModal(this)"
+                data-name="{{ product.name }}"
+                data-brand="{% if product.brand %}{{ product.brand.name }}{% endif %}"
+                data-old-price="{{ product.old_price|default_if_none:0|floatformat:2 }}"
+data-price="{{ product.price|floatformat:2 }}"
+                data-desc="{{ product.description }}"
+                data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb">
+                    {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}👟{% endif %}
+                    <div class="product-thumb-overlay">👁 QUICK VIEW</div>
+                    {% if product.stock == 0 %}<span class="badge badge-hot">SOLD OUT</span>{% endif %}
                 </div>
+                <div class="product-info">
+                    <div class="p-brand">{% if product.brand %}{{ product.brand.name }}{% endif %}</div>
+                    <div class="p-name">{{ product.name }}</div>
+                    <div class="p-price">
+                        <span class="p-now">₱{{ product.price }}</span>
+                        {% if product.old_price %}<span class="p-old">₱{{ product.old_price }}</span>{% endif %}
+                    </div>
+                    <button class="add-btn">+ ADD TO CART</button>
+                </div>
+            </div>
             {% endfor %}
 
             {% for product in apparel %}
-                <div class="product-card" onclick="openProductModal(this)"
-                    data-name="{{ product.name }}"
-                    data-brand="{{ product.brand.name }}"
-                    data-price="{{ product.price }}"
-                    data-desc="{{ product.description }}"
-                    data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                        {% else %}
-                            👕
-                        {% endif %}
-                        <div class="product-thumb-overlay">👁 QUICK VIEW</div>
-                        {% if product.stock == 0 %}
-                            <span class="badge badge-hot">SOLD OUT</span>
-                        {% endif %}
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">{{ product.brand.name }}</div>
-                        <div class="p-name">{{ product.name }}</div>
-                        <div class="p-price">
-                            <span class="p-now">₱{{ product.price }}</span>
-                        </div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
+            <div class="product-card"
+                onclick="openProductModal(this)"
+                data-name="{{ product.name }}"
+                data-brand="{% if product.brand %}{{ product.brand.name }}{% endif %}"
+                data-old-price="{{ product.old_price|default_if_none:0|floatformat:2 }}"
+data-price="{{ product.price|floatformat:2 }}"
+                data-desc="{{ product.description }}"
+                data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb">
+                    {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}👕{% endif %}
+                    <div class="product-thumb-overlay">👁 QUICK VIEW</div>
+                    {% if product.stock == 0 %}<span class="badge badge-hot">SOLD OUT</span>{% endif %}
                 </div>
+                <div class="product-info">
+                    <div class="p-brand">{% if product.brand %}{{ product.brand.name }}{% endif %}</div>
+                    <div class="p-name">{{ product.name }}</div>
+                    <div class="p-price">
+                        <span class="p-now">₱{{ product.price }}</span>
+                        {% if product.old_price %}<span class="p-old">₱{{ product.old_price }}</span>{% endif %}
+                    </div>
+                    <button class="add-btn">+ ADD TO CART</button>
+                </div>
+            </div>
             {% endfor %}
 
             {% for product in toys %}
-                <div class="product-card" onclick="openProductModal(this)"
-                    data-name="{{ product.name }}"
-                    data-brand="Collectible"
-                    data-price="{{ product.price }}"
-                    data-desc="{{ product.description }}"
-                    data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
-                    <div class="badge badge-sale">SALE</div>
-                    <div class="product-thumb">
-                        {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                        {% else %}
-                            🧸
-                        {% endif %}
-                        <div class="product-thumb-overlay">👁 QUICK VIEW</div>
-                        {% if product.stock == 0 %}
-                            <span class="badge badge-hot">SOLD OUT</span>
-                        {% endif %}
-                    </div>
-                    <div class="product-info">
-                        <div class="p-brand">Collectible</div>
-                        <div class="p-name">{{ product.name }}</div>
-                        <div class="p-price">
-                            <span class="p-now">₱{{ product.price }}</span>
-                        </div>
-                        <button class="add-btn">+ ADD TO CART</button>
-                    </div>
+            <div class="product-card"
+                onclick="openProductModal(this)"
+                data-name="{{ product.name }}"
+                data-brand="Collectible"
+                data-old-price="{{ product.old_price|default_if_none:0|floatformat:2 }}"
+data-price="{{ product.price|floatformat:2 }}"
+                data-desc="{{ product.description }}"
+                data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
+                <div class="badge badge-sale">SALE</div>
+                <div class="product-thumb">
+                    {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}🧸{% endif %}
+                    <div class="product-thumb-overlay">👁 QUICK VIEW</div>
+                    {% if product.stock == 0 %}<span class="badge badge-hot">SOLD OUT</span>{% endif %}
                 </div>
+                <div class="product-info">
+                    <div class="p-brand">Collectible</div>
+                    <div class="p-name">{{ product.name }}</div>
+                    <div class="p-price">
+                        <span class="p-now">₱{{ product.price }}</span>
+                        {% if product.old_price %}<span class="p-old">₱{{ product.old_price }}</span>{% endif %}
+                    </div>
+                    <button class="add-btn">+ ADD TO CART</button>
+                </div>
+            </div>
             {% endfor %}
 
             {% if not shoes and not apparel and not toys %}
-                <p style="color:var(--muted)">No sale items available.</p>
+            <p style="color:var(--muted)">No sale items available.</p>
             {% endif %}
 
         </div>

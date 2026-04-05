@@ -40,10 +40,12 @@
         <div class="product-grid">
 
             {% for product in shoes %}
-                <div class="product-card" onclick="openProductModal(this)"
+                <div class="product-card"
+                    onclick="openProductModal(this)"
                     data-name="{{ product.name }}"
-                    data-brand="{{ product.brand.name }}"
+                    data-brand="{% if product.brand %}{{ product.brand.name }}{% endif %}"
                     data-price="{{ product.price }}"
+                    data-old-price="{{ product.old_price|default:0 }}"
                     data-desc="{{ product.description }}"
                     data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
 
@@ -60,10 +62,13 @@
                     </div>
 
                     <div class="product-info">
-                        <div class="p-brand">{{ product.brand.name }}</div>
+                        <div class="p-brand">{% if product.brand %}{{ product.brand.name }}{% endif %}</div>
                         <div class="p-name">{{ product.name }}</div>
                         <div class="p-price">
                             <span class="p-now">₱{{ product.price }}</span>
+                            {% if product.old_price %}
+                            <span class="p-old">₱{{ product.old_price }}</span>
+                            {% endif %}
                         </div>
                         <button class="add-btn">+ ADD TO CART</button>
                     </div>
