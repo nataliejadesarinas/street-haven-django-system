@@ -27,6 +27,23 @@
         window.location.href = window.location.pathname + '?' + params.toString();
     }
 
+    /* ─── Smooth scroll to maintain sidebar position ───────────── */
+    function applyFilterWithScroll(updates) {
+        // Store current scroll position
+        const sidebar = document.querySelector('.sidebar');
+        const scrollY = sidebar ? sidebar.scrollTop : 0;
+        
+        // Apply filter
+        applyFilter(updates);
+        
+        // Restore scroll position after page loads
+        setTimeout(() => {
+            if (sidebar) {
+                sidebar.scrollTop = scrollY;
+            }
+        }, 100);
+    }
+
     /* ═══════════════════════════════════════════════════════════
        RESTORE ACTIVE STATES from URL on every page load
     ═══════════════════════════════════════════════════════════ */
@@ -34,6 +51,7 @@
         const params   = getParams();
         const brand    = (params.get('brand')     || '').toLowerCase();
         const color    = (params.get('color')     || '').toLowerCase();
+        const size     = params.get('size')      || '';
         const priceMin = params.get('price_min')  || '';
         const priceMax = params.get('price_max')  || '';
 
@@ -56,6 +74,15 @@
             document.querySelectorAll('.clr-dot').forEach(dot => {
                 if ((dot.dataset.color || '').toLowerCase() === color) {
                     dot.classList.add('active');
+                }
+            });
+        }
+
+        /* Size buttons */
+        if (size) {
+            document.querySelectorAll('.sz-btn').forEach(btn => {
+                if (btn.textContent.trim() === size) {
+                    btn.classList.add('active');
                 }
             });
         }
@@ -150,7 +177,24 @@
             dot.addEventListener('click', () => {
                 const current = (getParams().get('color') || '').toLowerCase();
                 /* Toggle off if same color */
-                applyFilter({ color: current === colorName.toLowerCase() ? null : colorName });
+                applyFilterWithScroll({ color: current === colorName.toLowerCase() ? null : colorName });
+            });
+        });
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SIZE BUTTONS
+    ═══════════════════════════════════════════════════════════ */
+    function initSizeButtons() {
+        document.querySelectorAll('.sz-btn').forEach(btn => {
+            btn.style.cursor = 'pointer';
+            const size = btn.textContent.trim();
+            if (!size) return;
+
+            btn.addEventListener('click', () => {
+                const current = getParams().get('size') || '';
+                /* Toggle off if same size */
+                applyFilterWithScroll({ size: current === size ? null : size });
             });
         });
     }
@@ -225,6 +269,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         restoreActiveStates();
         initColorDots();
+        initSizeButtons();
         initBrandItems();
         initPriceFilter();
         updateResultCount();

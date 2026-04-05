@@ -69,7 +69,7 @@ body {
 
 /* ── BANNER ── */
 .banner {
-    position: sticky;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -82,7 +82,7 @@ body {
     padding: 7px;
     color: #fff;
     text-transform: uppercase;
-    z-index: 9999; /* stays above everything */
+    z-index: 10001; /* Highest z-index to stay above everything */
 }
 
 /* ══════════════════════════════════════════════════════
@@ -94,7 +94,7 @@ header {
     height: 66px;
     display: flex; align-items: center;
     padding: 0 20px; gap: 20px;
-    position: sticky; top: 0; z-index: 9999;
+    position: sticky; top: 28px; z-index: 9999;
     transition: background 0.35s;
     overflow: visible;
 }
@@ -294,7 +294,9 @@ a.search-result-row {
 /* ══════════════════════════════════════════════════════
    LAYOUT
 ══════════════════════════════════════════════════════ */
-.layout { display: flex; min-height: calc(100vh - 91px); }
+.layout { 
+    display: flex; 
+    }
 
 /* ══════════════════════════════════════════════════════
    LEFT SIDEBAR
@@ -304,9 +306,9 @@ a.search-result-row {
     background: var(--surface);
     border-right: 1px solid var(--border);
     flex-shrink: 0; overflow-y: auto;
-    position: sticky; top: 96px;
-    height: calc(100vh - 96px);
     transition: background 0.35s, border-color 0.35s;
+    height: calc(100vh - 28px); /* Account for fixed banner only */
+    padding-top: 35px; /* Space for header to show "Sort by" */
 }
 .sidebar::-webkit-scrollbar { width: 4px; }
 .sidebar::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px; }
@@ -439,7 +441,11 @@ a.search-result-row {
 /* ══════════════════════════════════════════════════════
    MAIN CONTENT
 ══════════════════════════════════════════════════════ */
-.main-content { flex: 1; overflow: hidden; }
+.main-content { 
+    flex: 1; 
+    overflow-y: auto;
+    height: calc(100vh - 94px); /* Account for fixed banner + header */
+}
 .page { display: none; }
 .page.active { display: block; animation: pageFadeIn 0.35s ease; }
 
@@ -451,7 +457,7 @@ a.search-result-row {
 /* ══════════════════════════════════════════════════════
    HERO
 ══════════════════════════════════════════════════════ */
-.hero { position: relative; height: 560px; overflow: hidden; background: #111; }
+.hero { position: relative; height: calc(100vh - 94px); overflow: hidden; background: #111; }
 .hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .hero-overlay {
     position: absolute; inset: 0;
@@ -712,7 +718,7 @@ a.search-result-row {
     padding: 36px 36px 28px; border-bottom: 1px solid var(--border);
     background: linear-gradient(120deg, rgba(100,0,0,0.18) 0%, transparent 60%);
 }
-.pg-title { font-family: 'Bebas Neue', sans-serif; font-size: 62px; letter-spacing: 4px; line-height: 1; }
+.pg-title { font-family: 'Bebas Neue', sans-serif; font-size: 62px; letter-spacing: 4px; line-height: 2; }
 .pg-title .red { color: var(--red); }
 .pg-desc { color: var(--muted); font-size: 14px; margin-top: 6px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; }
 
