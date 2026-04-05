@@ -202,16 +202,39 @@ function openProductModal(card) {
             ${data.sizes.map((s,i) => `<div class="pm-sz${i===0?' active':''}" onclick="selectPmSize(this)">${s}</div>`).join('')}
         </div>`;
     document.getElementById('pmMainImg').innerHTML = `<img src="${imgSrc}" alt="${name}" onerror="this.style.display='none'">`;
+    function getAngleImages(baseSrc) {
+        // Extract base filename without extension
+        const baseName = baseSrc.split('/').pop().split('.')[0];
+        const extension = baseSrc.split('.').pop() || 'jpg';
+        
+        return {
+            front: baseSrc,
+            back: `static/images/${baseName}_back.${extension}`,
+            left: `static/images/${baseName}_left.${extension}`,
+            right: `static/images/${baseName}_right.${extension}`
+        };
+    }
+
+    const angleImages = getAngleImages(imgSrc);
+    
     document.getElementById('pmThumbs').innerHTML = `
-        <div class="pm-thumb active" onclick="switchAngle(this,'${imgSrc}','Front','')">
-            <img src="${imgSrc}" alt="Front" onerror="this.style.display='none'">
+        <div class="pm-thumb active" onclick="switchAngle(this,'${angleImages.front}','Front')">
+            <img src="${angleImages.front}" alt="Front" onerror="this.style.display='none'">
+            <div class="pm-thumb-label">FRONT</div>
         </div>
-        <div class="pm-thumb" onclick="switchAngle(this,'${imgSrc}','Side','↩️ ')">
-            <span style="font-size:26px">↩️</span>
+        <div class="pm-thumb" onclick="switchAngle(this,'${angleImages.back}','Back')">
+            <img src="${angleImages.back}" alt="Back" onerror="this.style.display='none'">
+            <div class="pm-thumb-label">BACK</div>
         </div>
-        <div class="pm-thumb" onclick="switchAngle(this,'${imgSrc}','Back','📐 ')">
-            <span style="font-size:26px">📐</span>
-        </div>`;
+        <div class="pm-thumb" onclick="switchAngle(this,'${angleImages.left}','Left')">
+            <img src="${angleImages.left}" alt="Left" onerror="this.style.display='none'">
+            <div class="pm-thumb-label">LEFT</div>
+        </div>
+        <div class="pm-thumb" onclick="switchAngle(this,'${angleImages.right}','Right')">
+            <img src="${angleImages.right}" alt="Right" onerror="this.style.display='none'">
+            <div class="pm-thumb-label">RIGHT</div>
+        </div>
+    `;
     document.getElementById('pmAddBtn').onclick = () => {
         addToCart(name, imgSrc, data.price, data.brand);
         closeProductModal();
@@ -260,7 +283,7 @@ function selectPmSize(el) {
     el.classList.add('active');
 }
 
-function switchAngle(thumb, src, label, prefix) {
+function switchAngle(thumb, src, label) {
     document.querySelectorAll('.pm-thumb').forEach(t => t.classList.remove('active'));
     thumb.classList.add('active');
     document.getElementById('pmMainImg').innerHTML = `<img src="${src}" alt="${label}" onerror="this.style.display='none'">`;
