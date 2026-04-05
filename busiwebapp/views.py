@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from .models import Brand, Category, Shoes, Apparels, Toys
 from .forms import ShoesForm, ApparelsForm, ToysForm
 from django.db.models import Q
@@ -135,6 +136,7 @@ def new(request):
     })
 
 
+@login_required
 def profile(request):
     return render(request, 'busiwebapp/profile.html')
 
