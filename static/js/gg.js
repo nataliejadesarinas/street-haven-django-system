@@ -645,14 +645,21 @@ function loadUserData() {
    SORT — client-side, no page reload
 ══════════════════════════════════════════════════════ */
 function initSort() {
-    document.querySelectorAll('.sort-select').forEach(function (select) {
+    console.log('initSort() called');
+    const selects = document.querySelectorAll('.sort-select');
+    console.log('Found sort selects:', selects.length);
+    
+    selects.forEach(function (select, index) {
+        console.log('Setting up select', index, select);
         select.addEventListener('change', function () {
+            console.log('Select changed, value:', this.value);
             sortProducts(this.value);
         });
     });
 }
 
 function sortProducts(order) {
+    console.log('Sorting by:', order);
 
     // Helper function to safely parse price from dataset
     function getPrice(card, attr) {
@@ -663,11 +670,24 @@ function sortProducts(order) {
 
     document.querySelectorAll('.product-grid').forEach(function (grid) {
         var cards = Array.from(grid.querySelectorAll('.product-card'));
+        console.log('Found cards:', cards.length);
+        
         if (!cards.length) return;
 
         cards.forEach(function (card, i) {
             if (!card.dataset.origIndex) card.dataset.origIndex = String(i);
         });
+
+        // Debug first card data
+        if (cards.length > 0) {
+            console.log('First card data:', {
+                name: cards[0].dataset.name,
+                price: cards[0].dataset.price,
+                oldPrice: cards[0].dataset.oldPrice,
+                priceParsed: getPrice(cards[0], 'price'),
+                oldPriceParsed: getPrice(cards[0], 'oldPrice')
+            });
+        }
 
         var sorted;
 

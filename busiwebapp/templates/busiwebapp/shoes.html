@@ -45,7 +45,7 @@
                     data-name="{{ product.name }}"
                     data-brand="{% if product.brand %}{{ product.brand.name }}{% endif %}"
                     data-price="{{ product.price }}"
-                    data-old-price="{{ product.old_price|default:0 }}"
+                    data-old-price="{{ product.old_price|default_if_none:0|floatformat:2 }}"
                     data-desc="{{ product.description }}"
                     data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
 
