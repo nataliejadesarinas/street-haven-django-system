@@ -52,15 +52,24 @@ class Shoes(models.Model):
     price = models.FloatField()
     stock = models.IntegerField()
     description = models.TextField()
-    image = models.ImageField(upload_to='shoes/')
+    image_front = models.ImageField(upload_to='shoes/', default='shoes/placeholder.jpg', verbose_name="Front Image")
+    image_back = models.ImageField(upload_to='shoes/', blank=True, null=True, default='shoes/placeholder.jpg', verbose_name="Back Image")
+    image_left = models.ImageField(upload_to='shoes/', blank=True, null=True, default='shoes/placeholder.jpg', verbose_name="Left Side Image")
+    image_right = models.ImageField(upload_to='shoes/', blank=True, null=True, default='shoes/placeholder.jpg', verbose_name="Right Side Image")
     color = models.CharField(max_length=50)
     gender = models.CharField(max_length=10)
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
     brand = models.ForeignKey('Brand', on_delete=models.CASCADE)
     is_available = models.BooleanField(default=True)
+    old_price = models.FloatField(null=True, blank=True, verbose_name="Old Price (for discount display)")
 
     def __str__(self):
         return self.name
+    
+    @property
+    def image(self):
+        """Return the left image for backward compatibility, fallback to front if left doesn't exist"""
+        return self.image_left or self.image_front
     
 class Apparels(models.Model):
     name = models.CharField(max_length=100)

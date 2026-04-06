@@ -47,7 +47,11 @@
                     data-price="{{ product.price }}"
                     data-old-price="{{ product.old_price|default_if_none:0|floatformat:2 }}"
                     data-desc="{{ product.description }}"
-                    data-img="{% if product.image %}{{ product.image.url }}{% endif %}">
+                    data-img="{% if product.image %}{{ product.image.url }}{% endif %}"
+                    data-image-left="{% if product.image_left %}{{ product.image_left.url }}{% endif %}"
+                    data-image-front="{% if product.image_front %}{{ product.image_front.url }}{% endif %}"
+                    data-image-back="{% if product.image_back %}{{ product.image_back.url }}{% endif %}"
+                    data-image-right="{% if product.image_right %}{{ product.image_right.url }}{% endif %}">
 
                     <div class="product-thumb">
                         {% if product.image %}
