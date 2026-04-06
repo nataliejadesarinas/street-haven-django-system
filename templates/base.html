@@ -36,7 +36,7 @@
     </nav>
     <div class="search-wrap" data-search-url="{% url 'search_api' %}" data-search-page-url="{% url 'search' %}">
         <form class="search-bar" action="{% url 'search' %}" method="get" role="search">
-            <button type="submit" id="globalSearchBtn" aria-label="Search">🔍</button>
+            <button type="submit" id="globalSearchBtn" aria-label="Search"></button>
             <input type="search" id="globalSearchInput" name="q" value="{{ request.GET.q|default:'' }}" autocomplete="off" placeholder="Search sneakers, apparel, brands..." aria-autocomplete="list" aria-controls="searchDropdown" maxlength="100">
         </form>
         <div class="search-dropdown" id="searchDropdown" role="listbox" hidden></div>

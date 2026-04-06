@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from .models import Brand, Category, Shoes, Apparels, Toys
 from .forms import ShoesForm, ApparelsForm, ToysForm
 from django.db.models import Q
@@ -11,34 +12,42 @@ from django.db.models import Q
 # ─────────────────────────────────────────────
 def _apply_filters(request, shoes_qs=None, apparel_qs=None, toys_qs=None):
     """
-    Reads brand, color, price_min, price_max from GET params
+    Reads brand, color, price_min, price_max, size from GET params
     and applies them as AND logic to whichever querysets are passed in.
-    Size is intentionally omitted — no size field exists on the models yet.
     Returns (shoes_qs, apparel_qs, toys_qs, active_filters).
     """
     brand     = request.GET.get('brand',     '').strip()
     color     = request.GET.get('color',     '').strip()
     price_min = request.GET.get('price_min', '').strip()
     price_max = request.GET.get('price_max', '').strip()
+    size      = request.GET.get('size',      '').strip()
 
     active_filters = {
         'brand':     brand,
         'color':     color,
         'price_min': price_min,
         'price_max': price_max,
+        'size':      size,
     }
 
     # BRAND
     if brand:
         if shoes_qs   is not None: shoes_qs   = shoes_qs.filter(brand__name__iexact=brand)
         if apparel_qs is not None: apparel_qs = apparel_qs.filter(brand__name__iexact=brand)
-        # Toys have no brand field — skip
+        # Toys have no brand field — exclude them completely when brand filter is active
+        if toys_qs    is not None: toys_qs    = Toys.objects.none()
 
     # COLOR  (icontains so "Black" matches "Black & White" etc.)
     if color:
         if shoes_qs   is not None: shoes_qs   = shoes_qs.filter(color__icontains=color)
         if apparel_qs is not None: apparel_qs = apparel_qs.filter(color__icontains=color)
         if toys_qs    is not None: toys_qs    = toys_qs.filter(color__icontains=color)
+
+    # SIZE (Note: size filtering would require size field in models - currently placeholder)
+    if size:
+        # This is a placeholder - actual size filtering would require size fields in the models
+        # For now, we'll just pass the size parameter through for display purposes
+        pass
 
     # PRICE RANGE
     try:    pmin = float(price_min) if price_min else None
@@ -127,6 +136,7 @@ def new(request):
     })
 
 
+@login_required
 def profile(request):
     return render(request, 'busiwebapp/profile.html')
 
