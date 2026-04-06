@@ -219,6 +219,16 @@ function openProductModal(card) {
         image: imgSrc
     });
     
+    // Debug: Log the dataset and angle images
+    console.log('Card dataset:', card.dataset);
+    console.log('Angle images:', angleImages);
+    
+    // Additional debug: Check if we have different images
+    console.log('LEFT image:', angleImages.left);
+    console.log('FRONT image:', angleImages.front);
+    console.log('BACK image:', angleImages.back);
+    console.log('RIGHT image:', angleImages.right);
+
     document.getElementById('pmThumbs').innerHTML = `
         <div class="pm-thumb active" onclick="switchAngle(this,'${angleImages.left}','Left')">
             <img src="${angleImages.left}" alt="Left" onerror="this.style.display='none'">
