@@ -20,11 +20,13 @@ class ApparelsForm(forms.ModelForm):
     gender = forms.ChoiceField(choices=GENDER_CHOICES)
     class Meta:
         model = Apparels
-        fields = ['name', 'brand', 'category', 'price', 'stock',
-                  'description', 'image', 'color', 'gender', 'is_available']
+        fields = ['name', 'brand', 'category', 'price', 'old_price', 'stock',
+                  'description', 'image_front', 'image_back', 'image_left', 'image_right', 
+                  'color', 'gender', 'is_available']
 
 class ToysForm(forms.ModelForm):
     class Meta:
         model = Toys
-        fields = ['name', 'price', 'stock', 'description',
-                  'image', 'color', 'is_available']
+        fields = ['name', 'price', 'old_price', 'stock', 'description',
+                  'image_front', 'image_back', 'image_left', 'image_right', 
+                  'color', 'is_available']
