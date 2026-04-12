@@ -1,11 +1,18 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Q, Count, Sum
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from .models import Brand, Category, Shoes, Apparels, Toys
 from .forms import ShoesForm, ApparelsForm, ToysForm
-from django.db.models import Q
-
+import json
+from datetime import date
 
 # ─────────────────────────────────────────────
 #  SHARED FILTER HELPER
@@ -293,3 +300,64 @@ def location_api(request):
         'Nueva Ecija':  ['Cabanatuan City', 'Palayan City', 'Gapan City', 'Muñoz'],
     }
     return JsonResponse(data)
+
+
+@csrf_exempt
+@require_POST
+def login_api(request):
+    """API endpoint for login with superuser redirect"""
+    try:
+        data = json.loads(request.body)
+        email = data.get('email', '').strip()
+        password = data.get('password', '')
+        
+        if not email or not password:
+            return JsonResponse({'success': False, 'error': 'Email and password are required'})
+        
+        # Validate email format
+        import re
+        email_regex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+        if not re.match(email_regex, email):
+            return JsonResponse({'success': False, 'error': 'Please enter a valid email address'})
+        
+        # Try to find user by email
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Account not found. Do you want to create an account?'})
+        
+        # Check if user is active
+        if not user.is_active:
+            return JsonResponse({'success': False, 'error': 'Your account is not active. Please contact support.'})
+        
+        # Authenticate user
+        authenticated_user = authenticate(request, username=user.username, password=password)
+        
+        if authenticated_user is not None:
+            # Login the user
+            login(request, authenticated_user)
+            
+            # Return user data including superuser status
+            return JsonResponse({
+                'success': True,
+                'user': {
+                    'id': authenticated_user.id,
+                    'username': authenticated_user.username,
+                    'email': authenticated_user.email,
+                    'is_superuser': authenticated_user.is_superuser,
+                    'is_staff': authenticated_user.is_staff,
+                    'first_name': authenticated_user.first_name,
+                    'last_name': authenticated_user.last_name,
+                }
+            })
+        else:
+            return JsonResponse({'success': False, 'error': 'Wrong email or password. Please try again.'})
+            
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'Invalid request format'})
+    except Exception as e:
+        # Log the error for debugging
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f'Login error: {str(e)}')
+        return JsonResponse({'success': False, 'error': 'Login failed. Please try again.'})
