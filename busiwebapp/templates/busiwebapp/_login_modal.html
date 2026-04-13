@@ -1,83 +1,81 @@
 {% load static %}
+
+<!-- LOGIN MODAL -->
 <div class="modal-overlay" id="loginModal">
     <div class="modal">
-        <button class="modal-close" onclick="closeAllModals()">✕</button>
+        <button class="modal-close" type="button" onclick="closeAllModals()">✕</button>
         <div class="modal-title">WELCOME BACK</div>
         <div class="modal-sub">Sign in to your Street.Haven account</div>
-        <form id="loginForm">
+
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
             <div class="form-group">
-                <label>EMAIL</label>
-                <input type="email" name="email" placeholder="you@email.com" required>
+                <label>USERNAME</label>
+                <input type="text" name="username" placeholder="juandc_haven" required autocomplete="username">
             </div>
             <div class="form-group">
                 <label>PASSWORD</label>
-                <input type="password" name="password" placeholder="••••••••" required>
+                <input type="password" name="password" placeholder="••••••••" required autocomplete="current-password">
             </div>
             <button type="submit" class="modal-btn">LOGIN</button>
         </form>
+
         <div class="modal-divider">— OR —</div>
-        <button class="modal-btn-outline" onclick="openSignupModal()">CREATE ACCOUNT</button>
-        <div class="modal-switch">No account? <a onclick="openSignupModal()">Sign up here</a></div>
+        <button type="button" class="modal-btn-outline" onclick="openSignupModal()">CREATE ACCOUNT</button>
+        <div class="modal-switch">No account? <a href="#" onclick="openSignupModal()">Sign up here</a></div>
     </div>
 </div>
 
+<!-- REGISTER MODAL -->
 <div class="modal-overlay" id="signupModal">
-    <div class="modal">
-        <button class="modal-close" onclick="closeAllModals()">✕</button>
+    <div class="modal modal-register">
+        <button class="modal-close" type="button" onclick="closeAllModals()">✕</button>
         <div class="modal-title">JOIN THE HAVEN</div>
         <div class="modal-sub">Create your Street.Haven account</div>
-        <form id="signupForm">
+
+        <form method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
             <div class="form-group">
                 <label>FULL NAME</label>
-                <input type="text" name="full_name" placeholder="Juan dela Cruz" required>
+                <input type="text" name="name" placeholder="Juan dela Cruz" required>
+            </div>
+            <div class="form-group">
+                <label>USERNAME</label>
+                <input type="text" name="username" placeholder="juandc_haven" required autocomplete="username">
             </div>
             <div class="form-group">
                 <label>EMAIL</label>
-                <input type="email" name="email" placeholder="you@email.com" required>
+                <input type="email" name="email" placeholder="you@email.com">
             </div>
             <div class="form-group">
                 <label>PASSWORD</label>
-                <input type="password" name="password" placeholder="••••••••" required minlength="6">
+                <input type="password" name="password" placeholder="••••••••" required minlength="6" autocomplete="new-password">
+            </div>
+            <div class="form-group">
+                <label>DATE OF BIRTH</label>
+                <div class="dob-row">
+                    <select class="dob-select" name="dob_month" id="dobMonth">
+                        <option value="">Month</option>
+                        <option>January</option><option>February</option><option>March</option>
+                        <option>April</option><option>May</option><option>June</option>
+                        <option>July</option><option>August</option><option>September</option>
+                        <option>October</option><option>November</option><option>December</option>
+                    </select>
+                    <select class="dob-select" name="dob_day" id="dobDay"><option value="">Day</option></select>
+                    <select class="dob-select" name="dob_year" id="dobYear"><option value="">Year</option></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>CONTACT NUMBER</label>
+                <input type="tel" name="contact" placeholder="+63 9XX XXX XXXX">
+            </div>
+            <div class="form-group">
+                <label>DELIVERY ADDRESS</label>
+                <input type="text" name="address" placeholder="Street, City, Province">
             </div>
             <button type="submit" class="modal-btn">CREATE ACCOUNT</button>
         </form>
-        
-        <!-- Delivery Address Section -->
-        <div class="modal-divider" style="display:flex;align-items:center;gap:10px;margin:14px 0 16px;">
-          <span style="flex:1;height:1px;background:var(--border);display:block"></span>
-          <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;">Delivery Address</span>
-          <span style="flex:1;height:1px;background:var(--border);display:block"></span>
-        </div>
-        <div class="form-group">
-          <label>Street address, house no., barangay</label>
-          <input type="text" id="signupStreet" placeholder="Street address, house no., barangay">
-        </div>
-        <div class="form-group">
-          <label>City / Province</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <select id="signupCityMun" class="dob-select">
-              <option value="">City / Municipality</option>
-            </select>
-            <select id="signupProvince" class="dob-select">
-              <option value="">Province</option>
-              <option>Metro Manila</option><option>Bulacan</option><option>Rizal</option>
-              <option>Cavite</option><option>Laguna</option><option>Batangas</option>
-              <option>Pampanga</option><option>Bataan</option><option>Zambales</option>
-              <option>Nueva Ecija</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Region / ZIP</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <select id="signupRegion" class="dob-select">
-              <option value="">Region</option>
-              <option value="NCR">NCR</option><option value="CALABARZON">CALABARZON</option>
-            </select>
-            <input type="text" id="signupZip" placeholder="ZIP Code">
-          </div>
-        </div>
-        
-        <div class="modal-switch">Already have one? <a onclick="openLoginModal()">Login here</a></div>
+
+        <div class="modal-switch">Already have one? <a href="#" onclick="openLoginModal()">Login here</a></div>
     </div>
 </div>

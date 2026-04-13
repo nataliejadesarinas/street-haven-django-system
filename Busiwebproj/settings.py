@@ -120,7 +120,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-STATIC_ROOT = BASE_DIR / "staticfiles"
+# Disable staticfiles collection - use static directory directly
+STATIC_ROOT = None
 
 # ── MEDIA FILES (user-uploaded images) ──────────────────
 import os

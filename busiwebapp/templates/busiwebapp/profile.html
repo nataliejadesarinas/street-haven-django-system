@@ -5,9 +5,15 @@
 {% block nav_profile %}active{% endblock %}
 
 {% block content %}
-<div class="message {% if message.level_tag == 'success' %}success{% else %}error{% endif %}"></div>
+
+{% if messages %}
+    {% for message in messages %}
+    <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
 <div class="profile-layout">
- 
+
     <!-- ── SIDEBAR ── -->
     <div>
         <div class="profile-card">
@@ -31,7 +37,7 @@
                 <div class="profile-email">{{ user.email }}</div>
                 <div class="profile-joined">📅 Joined {{ user.date_joined|date:"F Y" }}</div>
             </div>
- 
+
             <div class="profile-stats">
                 <div class="pstat">
                     <div class="pstat-num">{{ order_count }}</div>
@@ -46,7 +52,7 @@
                     <div class="pstat-lbl">DAY RTN</div>
                 </div>
             </div>
- 
+
             <nav class="profile-nav">
                 <button class="profile-nav-item active" onclick="switchTab('orders', this)"><span class="pnav-icon">📦</span> Order History</button>
                 <button class="profile-nav-item" onclick="switchTab('favorites', this)"><span class="pnav-icon">❤️</span> Favorites</button>
@@ -54,14 +60,14 @@
                 <button class="profile-nav-item" onclick="switchTab('username', this)"><span class="pnav-icon">✏️</span> Change Username</button>
                 <button class="profile-nav-item" onclick="switchTab('password', this)"><span class="pnav-icon">🔒</span> Change Password</button>
             </nav>
- 
+
             <a href="{% url 'logout' %}" class="logout-profile-btn">⏻ &nbsp;LOGOUT</a>
         </div>
     </div>
- 
+
     <!-- ── MAIN CONTENT ── -->
     <div class="profile-main">
- 
+
         <!-- ORDER HISTORY -->
         <div class="profile-section active" id="section-orders">
             <div class="section-panel">
@@ -86,13 +92,13 @@
                             <div class="empty-icon">📦</div>
                             <div class="empty-text">NO ORDERS YET</div>
                             <div class="empty-sub">Your purchase history will appear here once you place an order.</div>
-                            <a href="{% url 'all' %}" class="empty-btn">SHOP NOW</a>
+                            <a href="{% url 'all_products' %}" class="empty-btn">SHOP NOW</a>
                         </div>
                     {% endif %}
                 </div>
             </div>
         </div>
- 
+
         <!-- FAVORITES -->
         <div class="profile-section" id="section-favorites">
             <div class="section-panel">
@@ -104,12 +110,12 @@
                         <div class="empty-icon">❤️</div>
                         <div class="empty-text">NO FAVORITES YET</div>
                         <div class="empty-sub">Save items you love and find them here.</div>
-                        <a href="{% url 'all' %}" class="empty-btn">BROWSE PRODUCTS</a>
+                        <a href="{% url 'all_products' %}" class="empty-btn">BROWSE PRODUCTS</a>
                     </div>
                 </div>
             </div>
         </div>
- 
+
         <!-- PROFILE SETTINGS -->
         <div class="profile-section" id="section-settings">
             <div class="section-panel">
@@ -117,7 +123,7 @@
                     <div class="section-panel-title">PROFILE SETTINGS</div>
                 </div>
                 <div class="section-panel-body">
- 
+
                     <!-- AVATAR UPLOAD -->
                     <div class="avatar-upload-row">
                         <div class="avatar-big">
@@ -133,7 +139,7 @@
                             <button class="btn-upload-pic" type="button" onclick="document.getElementById('avatarFileInput').click()">📷 &nbsp;CHANGE PHOTO</button>
                         </div>
                     </div>
- 
+
                     <form method="POST" action="{% url 'profile' %}">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="update_profile">
@@ -168,7 +174,7 @@
                 </div>
             </div>
         </div>
- 
+
         <!-- CHANGE USERNAME -->
         <div class="profile-section" id="section-username">
             <div class="section-panel">
@@ -194,7 +200,7 @@
                 </div>
             </div>
         </div>
- 
+
         <!-- CHANGE PASSWORD -->
         <div class="profile-section" id="section-password">
             <div class="section-panel">
@@ -221,23 +227,27 @@
                         </div>
                         <button type="submit" class="btn-save-settings">UPDATE PASSWORD</button>
                     </form>
- 
+
                     <hr class="form-divider">
- 
+
                     <div class="danger-zone">
                         <div class="danger-title">⚠ &nbsp;DANGER ZONE</div>
                         <div class="danger-sub">Deleting your account is permanent and cannot be undone. All your orders and data will be erased.</div>
-                        <button class="btn-danger" onclick="if(confirm('Are you absolutely sure? This cannot be undone.')) window.location.href='{% url  %}'">
-                            🗑 &nbsp;DELETE MY ACCOUNT
-                        </button>
+                        <form method="POST" action="{% url 'delete_account' %}" id="deleteAccountForm">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-danger"
+                                onclick="return confirm('Are you absolutely sure? This cannot be undone.')">
+                                🗑 &nbsp;DELETE MY ACCOUNT
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
- 
+
     </div>
 </div>
-</div>
+
 <script>
     window.tabToOpen = null;
 
@@ -254,9 +264,26 @@
             {% endwith %}
         {% endfor %}
     {% endif %}
+
+    if (window.tabToOpen) {
+        setTimeout(function() {
+            let tabButton;
+            if (window.tabToOpen === 'username') {
+                tabButton = Array.from(document.querySelectorAll('.profile-nav-item')).find(btn =>
+                    btn.textContent.includes('Username'));
+            } else if (window.tabToOpen === 'password') {
+                tabButton = Array.from(document.querySelectorAll('.profile-nav-item')).find(btn =>
+                    btn.textContent.includes('Password'));
+            } else if (window.tabToOpen === 'settings') {
+                tabButton = Array.from(document.querySelectorAll('.profile-nav-item')).find(btn =>
+                    btn.textContent.includes('Settings'));
+            }
+
+            if (tabButton && typeof switchTab === 'function') {
+                switchTab(window.tabToOpen, tabButton);
+            }
+        }, 100);
+    }
 </script>
 
-<script src="{% static 'js/profile.js' %}"></script>
-
-
-    <div class="notif" id="notif"></div>\n    <link rel="stylesheet" href="{% static 'css/gg.css' %}">\n    <script src="{% static 'js/gg.js' %}"></script>\n{% endblock %}
+{% endblock %}

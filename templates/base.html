@@ -7,7 +7,6 @@
     <link rel="icon" href="{% static 'images/logohaven.png' %}" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/gg.css' %}">
-    <!-- FOUC fix: apply saved theme before paint -->
     <script>
         (function () {
             if (localStorage.getItem('sh-theme') === 'light') {
@@ -18,7 +17,16 @@
     <title>{% block title %}Street.Haven{% endblock %}</title>
 </head>
 <body>
-<div class="banner">🔥 FREE SHIPPING ON ORDERS OVER ₱500 &nbsp;|&nbsp; 30-DAY RETURNS &nbsp;|&nbsp; NEW DROPS EVERY WEEK 🔥</div>
+
+{% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+    <div class="message-item {% if message.tags == 'success' %}success{% else %}error{% endif %}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="banner"> FREE SHIPPING ON ORDERS OVER 500 &nbsp;|&nbsp; 30-DAY RETURNS &nbsp;|&nbsp; NEW DROPS EVERY WEEK </div>
 
 <header>
     <a class="logo" href="{% url 'home' %}">
@@ -37,19 +45,40 @@
     <div class="search-wrap" data-search-url="{% url 'search_api' %}" data-search-page-url="{% url 'search' %}">
         <form class="search-bar" action="{% url 'search' %}" method="get" role="search">
             <button type="submit" id="globalSearchBtn" aria-label="Search"></button>
-            <input type="search" id="globalSearchInput" name="q" value="{{ request.GET.q|default:'' }}" autocomplete="off" placeholder="Search sneakers, apparel, brands..." aria-autocomplete="list" aria-controls="searchDropdown" maxlength="100">
+            <input type="search" id="globalSearchInput" name="q" value="{{ request.GET.q|default:'' }}"
+                   autocomplete="off" placeholder="Search sneakers, apparel, brands..."
+                   aria-autocomplete="list" aria-controls="searchDropdown" maxlength="100">
         </form>
         <div class="search-dropdown" id="searchDropdown" role="listbox" hidden></div>
     </div>
+
     <div class="header-right">
-        {% if request.session.user %}
-        <a class="user-profile-btn" href="{% url 'profile' %}">
-            <div class="user-avatar-header" id="profileHeaderAvatar">{{ request.session.user.username.0|upper }}</div>
-            <span class="user-name-header" id="profileHeaderName">{{ request.session.user.username }}</span>
-        </a>
+        {% if user.is_authenticated %}
+            {# ── Logged-in state ── #}
+            <a class="user-profile-btn" href="{% url 'profile' %}">
+                <div class="user-avatar-header">
+                    {{ user.username.0|upper }}
+                </div>
+                <span class="user-name-header">
+                    {{ user.username }}
+                    {% if user.is_superuser %}
+                        <span class="user-admin-badge">ADMIN</span>
+                    {% endif %}
+                </span>
+            </a>
+
+            {% if user.is_superuser or user.is_staff %}
+                <a href="{% url 'admin_dashboard' %}" class="admin-panel-link">ADMIN PANEL</a>
+            {% endif %}
+
+            <a href="{% url 'logout' %}" class="logout-link">
+                LOGOUT
+            </a>
         {% else %}
-        <button class="btn-login" onclick="openLoginModal()">LOGIN</button>
+            {# ── Guest state ── #}
+            <button class="btn-login" onclick="openLoginModal()">LOGIN</button>
         {% endif %}
+
         <button class="cart-btn">🛒<span class="cart-count">0</span></button>
         <button class="theme-toggle">☀️ LIGHT</button>
     </div>
@@ -66,29 +95,20 @@
             <a class="sb-item {% block sb_shoes %}{% endblock %}" href="{% url 'shoes' %}"><span class="sb-icon">👟</span> Shoes</a>
             <a class="sb-item {% block sb_apparel %}{% endblock %}" href="{% url 'apparel' %}"><span class="sb-icon">👕</span> Apparel</a>
             <a class="sb-item {% block sb_toys %}{% endblock %}" href="{% url 'toys' %}"><span class="sb-icon">🧸</span> Toys</a>
-            <a class="sb-item {% block sb_new %}{% endblock %}" href="{% url 'new' %}"><span class="sb-icon">✨</span> New Arrivals <span class="sb-badge" style="background:#1a1aff">NEW</span></a>
+            <a class="sb-item {% block sb_new %}{% endblock %}" href="{% url 'new' %}"><span class="sb-icon">✨</span> New Arrivals <span class="sb-badge sb-badge-new">NEW</span></a>
         </div>
 
-        <!-- BRANDS STRIP — data-brand drives the JS filter -->
         <div class="brands-strip">
             <div class="brands-label">— OUR BRANDS —</div>
             <div class="brands-row">
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Nike"       data-brand="Nike">
-                    <img src="{% static 'images/nikelogo.jpg' %}"       alt="Nike Logo"        class="brand-svg-lg"><span>NIKE</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Jordan"     data-brand="Jordan">
-                    <img src="{% static 'images/jordanlogo.png' %}"     alt="Jordan Logo"      class="brand-svg-lg"><span>JORDAN</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Adidas"     data-brand="Adidas">
-                    <img src="{% static 'images/adidaslogo.png' %}"     alt="Adidas Logo"      class="brand-svg-lg"><span>ADIDAS</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=New Balance" data-brand="New Balance">
-                    <img src="{% static 'images/newbalancelogo.png' %}" alt="New Balance Logo" class="brand-svg-lg"><span>NEW BALANCE</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Puma"       data-brand="Puma">
-                    <img src="{% static 'images/pumalogo.png' %}"       alt="Puma Logo"        class="brand-svg-lg"><span>PUMA</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Vans"       data-brand="Vans">
-                    <img src="{% static 'images/vanslogo.png' %}"       alt="Vans Logo"        class="brand-svg-lg"><span>VANS</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Converse"   data-brand="Converse">
-                    <img src="{% static 'images/converselogo.png' %}"   alt="Converse Logo"    class="brand-svg-lg"><span>CONVERSE</span></a>
-                <a class="brand-item" href="{% url 'all_products' %}?brand=Reebok"     data-brand="Reebok">
-                    <img src="{% static 'images/reeboklogo.png' %}"     alt="Reebok Logo"      class="brand-svg-lg"><span>REEBOK</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=Nike"        data-brand="Nike"><img src="{% static 'images/nikelogo.jpg' %}"       alt="Nike"        class="brand-svg-lg"><span>NIKE</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=Jordan"      data-brand="Jordan"><img src="{% static 'images/jordanlogo.png' %}"     alt="Jordan"      class="brand-svg-lg"><span>JORDAN</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=Adidas"      data-brand="Adidas"><img src="{% static 'images/adidaslogo.png' %}"     alt="Adidas"      class="brand-svg-lg"><span>ADIDAS</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=New Balance" data-brand="New Balance"><img src="{% static 'images/newbalancelogo.png' %}" alt="New Balance" class="brand-svg-lg"><span>NEW BALANCE</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=Puma"        data-brand="Puma"><img src="{% static 'images/pumalogo.png' %}"       alt="Puma"        class="brand-svg-lg"><span>PUMA</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=Vans"        data-brand="Vans"><img src="{% static 'images/vanslogo.png' %}"       alt="Vans"        class="brand-svg-lg"><span>VANS</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=Converse"    data-brand="Converse"><img src="{% static 'images/converselogo.png' %}"   alt="Converse"    class="brand-svg-lg"><span>CONVERSE</span></a>
+                <a class="brand-item" href="{% url 'all_products' %}?brand=Reebok"      data-brand="Reebok"><img src="{% static 'images/reeboklogo.png' %}"     alt="Reebok"      class="brand-svg-lg"><span>REEBOK</span></a>
             </div>
         </div>
 
@@ -116,29 +136,25 @@
                 <div class="sz-btn">XXL</div><div class="sz-btn">3XL</div>
             </div>
         </div>
-        {% else %}
-        {# Default or toys: no sizes #}
         {% endif %}
         {% endblock %}
 
-        <!-- COLOR — data-color is what the JS reads for the filter value -->
         <div class="sb-section">
             <div class="sb-title">COLOR</div>
             <div class="color-row">
-                <div class="clr-dot" style="background:#fff"                   data-color="White"  title="White"></div>
-                <div class="clr-dot" style="background:#111;border-color:#555" data-color="Black"  title="Black"></div>
-                <div class="clr-dot" style="background:#cc0000"                data-color="Red"    title="Red"></div>
-                <div class="clr-dot" style="background:#1a1aff"                data-color="Blue"   title="Blue"></div>
-                <div class="clr-dot" style="background:#00aa44"                data-color="Green"  title="Green"></div>
-                <div class="clr-dot" style="background:#ffaa00"                data-color="Yellow" title="Yellow"></div>
-                <div class="clr-dot" style="background:#ff69b4"                data-color="Pink"   title="Pink"></div>
-                <div class="clr-dot" style="background:#888"                   data-color="Grey"   title="Grey"></div>
+                <div class="clr-dot clr-dot-white" data-color="White" title="White"></div>
+                <div class="clr-dot clr-dot-black" data-color="Black" title="Black"></div>
+                <div class="clr-dot clr-dot-red" data-color="Red" title="Red"></div>
+                <div class="clr-dot clr-dot-blue" data-color="Blue" title="Blue"></div>
+                <div class="clr-dot clr-dot-green" data-color="Green" title="Green"></div>
+                <div class="clr-dot clr-dot-yellow" data-color="Yellow" title="Yellow"></div>
+                <div class="clr-dot clr-dot-pink" data-color="Pink" title="Pink"></div>
+                <div class="clr-dot clr-dot-grey" data-color="Grey" title="Grey"></div>
             </div>
         </div>
 
-        <!-- PRICE RANGE -->
-        <div class="sb-section" style="padding-bottom:28px">
-            <div class="sb-title">PRICE RANGE (₱)</div>
+        <div class="sb-section sb-section-price">
+            <div class="sb-title">PRICE RANGE ()</div>
             <div class="price-row">
                 <input type="number" placeholder="Min" min="0">
                 <span class="price-sep">—</span>
@@ -151,7 +167,7 @@
     <!-- PAGE CONTENT -->
     {% block content %}{% endblock %}
 
-</div><!-- end layout -->
+</div>
 
 <!-- ABOUT -->
 <div class="about-wrapper">
@@ -208,100 +224,133 @@
         </div>
     </div>
     <div class="footer-bottom">
-        <p>© 2025 Street.Haven — All rights reserved.</p>
-        <p>Made in the Philippines 🇵🇭</p>
+        <p> 2025 Street.Haven — All rights reserved.</p>
+        <p>Made in the Philippines </p>
     </div>
 </footer>
 
-<!-- LOGIN MODAL -->
+<!-- ════════════════════════════════════════════
+     LOGIN MODAL  —  submits to /login/ (Django view)
+     ════════════════════════════════════════════ -->
 <div class="modal-overlay" id="loginModal">
     <div class="modal">
-        <button class="modal-close">✕</button>
+        <button class="modal-close" type="button" onclick="closeAllModals()">×</button>
         <div class="modal-title">WELCOME<br>BACK</div>
         <div class="modal-sub">Sign in to your Street.Haven account</div>
-        <div class="form-group"><label>EMAIL</label><input type="email" placeholder="you@email.com"></div>
-        <div class="form-group"><label>PASSWORD</label><input type="password" placeholder="••••••••"></div>
-        <button class="modal-btn" onclick="doLogin()">LOGIN</button>
-        <div class="modal-divider">— OR —</div>
-        <button class="modal-btn-outline" onclick="openSignupModal()">REGISTER</button>
+
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>USERNAME</label>
+                <input type="text" name="username" placeholder="juandc_haven"
+                       required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label>PASSWORD</label>
+                <input type="password" name="password" placeholder="••••••••"
+                       required autocomplete="current-password">
+            </div>
+            <button type="submit" class="modal-btn">LOGIN</button>
+        </form>
+
+        <div class="modal-divider">
+            <span class="modal-divider-line"></span>
+            <span class="modal-divider-text">— OR —</span>
+            <span class="modal-divider-line"></span>
+        </div>
+        <button type="button" class="modal-btn-outline" onclick="openSignupModal()">CREATE ACCOUNT</button>
         <div class="modal-switch">No account? <a href="#" onclick="openSignupModal()">Sign Up</a></div>
     </div>
 </div>
 
-<!-- SIGNUP / REGISTER MODAL -->
+<!-- ════════════════════════════════════════════
+     SIGNUP / REGISTER MODAL  —  submits to /register/
+     ════════════════════════════════════════════ -->
 <div class="modal-overlay" id="signupModal">
-  <div class="modal modal-register">
-    <button class="modal-close">&#10005;</button>
-    <div class="modal-title">JOIN THE<br><span style="color:var(--red)">HAVEN</span></div>
-    <div class="modal-sub">Create your Street.Haven account</div>
+    <div class="modal modal-register">
+        <button class="modal-close" type="button" onclick="closeAllModals()">×</button>
+        <div class="modal-title">JOIN THE<br><span class="modal-title-red">HAVEN</span></div>
+        <div class="modal-sub">Create your Street.Haven account</div>
 
-    <div class="form-group"><label>Full Name</label><input type="text" placeholder="Juan dela Cruz" id="signupName" oninput="validateField(this)"></div>
-    <div class="form-group"><label>Email</label><input type="email" placeholder="you@email.com" id="signupEmail" oninput="validateField(this)"></div>
-    <div class="form-group"><label>Username</label><input type="text" placeholder="juandc_haven" id="signupUsername" oninput="validateField(this)"></div>
-    <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••" id="signupPassword" oninput="validateField(this)"></div>
+        <form method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="name" placeholder="Juan dela Cruz" id="signupName">
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="juandc_haven"
+                       id="signupUsername" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="you@email.com" id="signupEmail">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="••••••••"
+                       id="signupPassword" required minlength="6" autocomplete="new-password">
+            </div>
 
-    <div class="form-group">
-      <label>Date of Birth</label>
-      <div class="dob-row">
-        <select class="dob-select" id="dobMonth">
-          <option value="">Month</option>
-          <option>January</option><option>February</option><option>March</option>
-          <option>April</option><option>May</option><option>June</option>
-          <option>July</option><option>August</option><option>September</option>
-          <option>October</option><option>November</option><option>December</option>
-        </select>
-        <select class="dob-select" id="dobDay"><option value="">Day</option></select>
-        <select class="dob-select" id="dobYear"><option value="">Year</option></select>
-      </div>
+            <div class="form-group">
+                <label>Date of Birth</label>
+                <div class="dob-row">
+                    <select class="dob-select" name="dob_month" id="dobMonth">
+                        <option value="">Month</option>
+                        <option>January</option><option>February</option><option>March</option>
+                        <option>April</option><option>May</option><option>June</option>
+                        <option>July</option><option>August</option><option>September</option>
+                        <option>October</option><option>November</option><option>December</option>
+                    </select>
+                    <select class="dob-select" name="dob_day" id="dobDay"><option value="">Day</option></select>
+                    <select class="dob-select" name="dob_year" id="dobYear"><option value="">Year</option></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Contact Number</label>
+                <input type="tel" name="contact" placeholder="+63 9XX XXX XXXX" id="signupContact">
+            </div>
+
+            <div class="modal-divider">
+                <span class="modal-divider-line"></span>
+                <span class="modal-divider-text">Delivery Address</span>
+                <span class="modal-divider-line"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Address</label>
+                <div class="address-grid">
+                    <input type="text" name="street" placeholder="Street address, house no., barangay" id="signupStreet">
+                    <div class="address-grid-2col">
+                        <select id="signupCityMun" name="city" class="dob-select">
+                            <option value="">City / Municipality</option>
+                        </select>
+                        <select id="signupProvince" name="province" class="dob-select">
+                            <option value="">Province</option>
+                            <option>Metro Manila</option><option>Bulacan</option><option>Rizal</option>
+                            <option>Cavite</option><option>Laguna</option><option>Batangas</option>
+                            <option>Pampanga</option><option>Bataan</option><option>Zambales</option>
+                            <option>Nueva Ecija</option>
+                        </select>
+                    </div>
+                    <div class="address-grid-2col">
+                        <select name="region" class="dob-select">
+                            <option value="">Region</option>
+                            <option value="NCR">NCR</option>
+                            <option value="CALABARZON">CALABARZON</option>
+                            <option value="Central Luzon">Central Luzon</option>
+                        </select>
+                        <input type="text" name="zip" placeholder="ZIP Code" id="signupZip">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="modal-btn">CREATE ACCOUNT</button>
+        </form>
+        <div class="modal-switch">Already have one? <a href="#" onclick="openLoginModal()">Login</a></div>
     </div>
-
-    <div class="form-group"><label>Contact Number</label><input type="tel" placeholder="+63 9XX XXX XXXX" id="signupContact" oninput="validateField(this)"></div>
-
-    <div class="modal-divider" style="display:flex;align-items:center;gap:10px;margin:14px 0 16px;">
-      <span style="flex:1;height:1px;background:var(--border);display:block"></span>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;">Delivery Address</span>
-      <span style="flex:1;height:1px;background:var(--border);display:block"></span>
-    </div>
-
-    <div class="form-group">
-      <label>Address</label>
-      <div style="display:grid;gap:8px">
-        <input type="text" placeholder="Street address, house no., barangay" id="signupStreet">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-<select id="signupCityMun" class="dob-select">
-            <option value="">City / Municipality</option>
-        </select>
-          <select id="signupProvince" class="dob-select">
-            <option value="">Province</option>
-            <option>Metro Manila</option><option>Bulacan</option><option>Rizal</option>
-            <option>Cavite</option><option>Laguna</option><option>Batangas</option>
-            <option>Pampanga</option><option>Bataan</option><option>Zambales</option>
-            <option>Nueva Ecija</option>
-          </select>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <select id="signupRegion" class="dob-select">
-            <option value="">Region</option>
-            <option value="NCR">NCR</option>
-            <option value="CALABARZON">CALABARZON</option>
-            <option value="Central Luzon">Central Luzon</option>
-            <option value="MIMAROPA">MIMAROPA</option>
-            <option value="Ilocos">Ilocos Region</option>
-            <option value="Bicol">Bicol Region</option>
-            <option value="Western Visayas">Western Visayas</option>
-            <option value="Central Visayas">Central Visayas</option>
-            <option value="Davao">Davao Region</option>
-            <option value="BARMM">BARMM</option>
-            <option value="CAR">CAR</option>
-          </select>
-          <input type="text" placeholder="ZIP Code" id="signupZip">
-        </div>
-      </div>
-    </div>
-
-    <button class="modal-btn" onclick="doRegister()">CREATE ACCOUNT</button>
-    <div class="modal-switch">Already have one? <a href="#" onclick="openLoginModal()">Login</a></div>
-  </div>
 </div>
 
 <!-- CART OVERLAY -->
@@ -310,8 +359,8 @@
 <!-- CART SIDEBAR -->
 <div class="cart-sidebar" id="cartSidebar">
     <div class="cart-sidebar-header">
-        <div class="cart-sidebar-title">🛒 YOUR CART</div>
-        <button class="cart-sidebar-close" onclick="closeCartSidebar()">✕</button>
+        <div class="cart-sidebar-title">YOUR CART</div>
+        <button class="cart-sidebar-close" onclick="closeCartSidebar()">×</button>
     </div>
     <div class="cart-items-wrap" id="cartItemsWrap"></div>
     <div class="cart-sidebar-footer" id="cartFooter"></div>
@@ -363,6 +412,21 @@
 <!-- NOTIFICATION -->
 <div class="notif" id="notif"></div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{% static 'js/gg.js' %}" defer></script>
+
+<script>
+/* ── Auto-open login modal if Django sent an error message ── */
+document.addEventListener('DOMContentLoaded', function () {
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                openLoginModal();
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+});
+</script>
+
 </body>
 </html>
