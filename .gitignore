@@ -11,3 +11,5 @@ env/
 *.pyd
 .Python
 *.so
+staticfiles/
+media/
